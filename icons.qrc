@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="next">graphics/i_next.png</file>
+        <file alias="pause">graphics/i_pause.png</file>
+        <file alias="play">graphics/i_play.png</file>
+        <file alias="previous">graphics/i_previous.png</file>
+        <file alias="rewind_b">graphics/i_rewind_b.png</file>
+        <file alias="rewind_f">graphics/i_rewind_f.png</file>
+        <file alias="stop">graphics/i_stop.png</file>
+    </qresource>
+</RCC>
