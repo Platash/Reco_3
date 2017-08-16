@@ -10,14 +10,23 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/videoio.hpp"
 
+#include <thread>
+#include <atomic>
+
 using namespace cv;
 
-class Player : public QThread {
-    Q_OBJECT
+enum class State:uint8_t {
+    STOPPED = 0,
+    PAUSED = 1,
+    PLAYING = 2,
+    REWINDING_F = 3,
+    REWINDING_B = 4,
+};
+
+class Player {
 
  private:
-    bool stop;
-    QMutex mutex;
+    Mutex mutex;
     QWaitCondition condition;
     Mat frame;
     int frameRate;
@@ -25,25 +34,14 @@ class Player : public QThread {
     Mat RGBframe;
     QImage img;
 
- signals:
- //Signal to output frame to be displayed
-      void processedImage(const QImage &image);
- protected:
-     void run();
-     void msleep(int ms);
  public:
-    //Constructor
-    Player(QObject *parent = 0);
-    //Destructor
+    Player();
     ~Player();
-    //Load a video from memory
-    bool loadVideo(std::string filename);
-    //Play the video
-    void Play();
-    //Stop the video
-    void Stop();
-    //check if the player has been stopped
-    bool isStopped() const;
+
+    void play();
+    void stop();
+
+    std::atomic<State> state;
 };
 
 #endif // PLAYER_H

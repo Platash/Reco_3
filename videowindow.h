@@ -4,6 +4,14 @@
 #include <QWidget>
 #include <QResource>
 #include <QIcon>
+#include <QPixmap>
+
+#include <opencv2/core/utility.hpp>
+#include <opencv2/tracking.hpp>
+#include <opencv2/videoio.hpp>
+#include <opencv2/highgui.hpp>
+
+#include "player.h"
 
 namespace Ui {
 class VideoWindow;
@@ -14,8 +22,10 @@ class VideoWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit VideoWindow(QWidget *parent = 0);
+    explicit VideoWindow(std::string fileName = "", QWidget *parent = 0);
     ~VideoWindow();
+
+    void updatePlayerVideo(QPixmap img);
 
 private slots:
     void on_b_rewind_b_pressed();
@@ -38,6 +48,9 @@ private slots:
 
 private:
     Ui::VideoWindow *ui;
+    Player* player;
+    std::string fileName;
+    cv::VideoCapture* capture;
 };
 
 #endif // VIDEOWINDOW_H

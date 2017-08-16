@@ -154,7 +154,7 @@
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">Background-color: #000;</string>
+    <string notr="true">Background-color: #808080;</string>
    </property>
    <property name="text">
     <string/>
@@ -210,6 +210,19 @@
      <bool>true</bool>
     </property>
    </widget>
+  </widget>
+  <widget class="QSlider" name="slider">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>510</y>
+     <width>461</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
   </widget>
  </widget>
  <resources/>

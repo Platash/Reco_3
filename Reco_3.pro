@@ -13,19 +13,18 @@ TARGET = Reco_3
 TEMPLATE = app
 
 INCLUDEPATH += /usr/local/include/opencv2
+#INCLUDEPATH += /usr/local/include/opencv
 
-LIBS += -L/usr/local/lib
-LIBS += -lopencv_core
-LIBS += -lopencv_imgcodecs
-LIBS += -lopencv_imgproc
-LIBS += -lopencv_highgui
-LIBS += -lopencv_ml
-LIBS += -lopencv_video
-LIBS += -lopencv_videoio
-LIBS += -lopencv_features2d
-LIBS += -lopencv_calib3d
-LIBS += -lopencv_objdetect
-LIBS += -lopencv_flann
+#LIBS += `pkg-config opencv --libs`
+
+unix {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += opencv
+}
+
+#LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video
+#LIBS += -lopencv_videoio -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_flann -lopencv_objdetect
+#LIBS += -lopencv_photo -lopencv_stitching -lopencv_superres -lopencv_videostab
 
 
 # The following define makes your compiler emit warnings if you use
