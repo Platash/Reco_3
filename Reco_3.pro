@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -pthread
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,6 +16,7 @@ INCLUDEPATH += /usr/local/include/opencv2
 #INCLUDEPATH += /usr/local/include/opencv
 
 #LIBS += `pkg-config opencv --libs`
+LIBS += -pthread
 
 unix {
     CONFIG += link_pkgconfig
@@ -44,7 +45,7 @@ SOURCES += \
         mainwindow.cpp \
     videowindow.cpp \
     preprocessing.cpp \
-    player.cpp \
+    videolabel.cpp
 
 
 
@@ -53,8 +54,8 @@ HEADERS += \
     videowindow.h \
     constants.h \
     preprocessing.h \
-    player.h \
     constants.h \
+    videolabel.h
 
 
 

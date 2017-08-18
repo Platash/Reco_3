@@ -85,7 +85,7 @@ private:
     cv::Ptr<cv::Tracker> tracker;
     void setIcons();
     void setFailedScreen();
-    cv::Rect2d roi;
+    cv::Rect2d selectRoi();
 };
 
 #endif // VIDEOWINDOW_H

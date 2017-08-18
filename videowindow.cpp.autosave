@@ -101,15 +101,6 @@ void VideoWindow::on_b_unselect_clicked() {
     ui->b_select->setChecked(false);
 }
 
-cv::Rect2d VideoWindow::selectRoi() {
-    QPainter painter(ui->l_video);
-    painter.begin(this);
-   // painter.setPen(pen);
-    painter.drawPixmap(0, 0, *currentFrame);
-    painter.drawRect(rect);
-    painter.end();
-}
-
 //==================================================================
 
 //          PRIVATE METHODS
