@@ -10,10 +10,9 @@ VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent)
         ui->slider->setMaximum((int)capture->get(CV_CAP_PROP_FRAME_COUNT));
         frameRate = (int) capture->get(CV_CAP_PROP_FPS);
         state = State::STOPPED;
+        setLabel();
         updateImage();
         tracker = cv::Tracker::create("BOOSTING");
-        ui->l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
-
     } else {
         setFailedScreen();
     }
@@ -25,6 +24,16 @@ VideoWindow::~VideoWindow()
     delete ui;
     capture -> release();
     delete capture;
+}
+
+void VideoWindow::setLabel() {
+    l_video = new VideoLabel();
+    l_video->setParent(this);
+    l_video->setFixedHeight(capture->get(CV_CAP_PROP_FRAME_HEIGHT));
+    l_video->setFixedWidth(capture->get(CV_CAP_PROP_FRAME_WIDTH));
+    l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
+    QLayout* la = this->layout();
+    dynamic_cast<QGridLayout*>(la)->addWidget(l_video, 0, 0);
 }
 
 //=================================================================
@@ -94,20 +103,11 @@ void VideoWindow::on_b_next_clicked() {
 
 
 void VideoWindow::on_b_select_clicked() {
-    ui->l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
+   l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 void VideoWindow::on_b_unselect_clicked() {
     ui->b_select->setChecked(false);
-}
-
-cv::Rect2d VideoWindow::selectRoi() {
-    QPainter painter(ui->l_video);
-    painter.begin(this);
-   // painter.setPen(pen);
-    painter.drawPixmap(0, 0, *currentFrame);
-    painter.drawRect(rect);
-    painter.end();
 }
 
 //==================================================================
@@ -138,7 +138,7 @@ void VideoWindow::setFailedScreen()
     ui->b_play->setEnabled(false);
     ui->b_pause->setEnabled(false);
     ui->slider->setEnabled(false);
-    ui->l_video->setText("Failed opening video");
+    l_video->setText("Failed opening video");
 }
 
 void VideoWindow::setSelection(bool selection) {
@@ -163,6 +163,8 @@ void VideoWindow::play() {
     }
 }
 
+
+
 void VideoWindow::updateImage() {
     QPixmap pixmap;
     (*capture) >> currentFrame;
@@ -171,7 +173,7 @@ void VideoWindow::updateImage() {
     }
     pixmap = mat2Pixmap(currentFrame);
     if(!pixmap.isNull()) {
-        ui->l_video->setPixmap(pixmap);
+        l_video->setPixmap(pixmap);
     }
 }
 

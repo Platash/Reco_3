@@ -18,6 +18,8 @@
 #include <atomic>
 #include <time.h>
 
+#include "videolabel.h"
+
 namespace Ui {
 class VideoWindow;
 }
@@ -69,23 +71,25 @@ private:
     QPixmap mat2Pixmap(cv::Mat matImg);
     void msleep(int ms);
     void updateImage();
-
     void setSelection(bool enabled) ;
+    void setLabel();
+    void setIcons();
+    void setFailedScreen();
+    cv::Rect2d selectRoi();
 
     Ui::VideoWindow *ui;
     std::string fileName;
     cv::VideoCapture* capture;
     std::atomic<State> state;
+    std::atomic<bool> isTracking;
     int frameRate;
     std::thread* playThread;
     cv::Mat currentFrame;
+    QPixmap currentPixmap;
     time_t start;
     time_t end;
-    bool isTracking;
     cv::Ptr<cv::Tracker> tracker;
-    void setIcons();
-    void setFailedScreen();
-    cv::Rect2d roi;
+    VideoLabel* l_video;
 };
 
 #endif // VIDEOWINDOW_H
