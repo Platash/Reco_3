@@ -57,7 +57,8 @@ HEADERS += \
     preprocessing.h \
     constants.h \
     videolabel.h \
-    tracker.h
+    tracker.h \
+    common.h
 
 
 

@@ -24,6 +24,8 @@ namespace Ui {
 class VideoWindow;
 }
 
+class VideoLabel;
+
 enum class State:uint8_t {
     STOPPED = 0,
     PAUSED = 1,
@@ -39,7 +41,7 @@ class VideoWindow : public QWidget
 public:
     explicit VideoWindow(std::string fileName = "", QWidget *parent = 0);
     ~VideoWindow();
-
+    friend class VideoLabel;
 
 private slots:
     void on_b_rewind_b_pressed();

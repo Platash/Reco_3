@@ -31,7 +31,7 @@ void VideoWindow::setLabel() {
     l_video->setParent(this);
     l_video->setFixedHeight(capture->get(CV_CAP_PROP_FRAME_HEIGHT));
     l_video->setFixedWidth(capture->get(CV_CAP_PROP_FRAME_WIDTH));
-    l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
+   // l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
     QLayout* la = this->layout();
     dynamic_cast<QGridLayout*>(la)->addWidget(l_video, 0, 0);
 }
@@ -103,7 +103,7 @@ void VideoWindow::on_b_next_clicked() {
 
 
 void VideoWindow::on_b_select_clicked() {
-   l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
+    l_video->setAttribute(Qt::WA_TransparentForMouseEvents, false);
 }
 
 void VideoWindow::on_b_unselect_clicked() {
@@ -157,11 +157,13 @@ void VideoWindow::play() {
     while (state == State::PLAYING) {
         updateImage();
         if(isTracking) {
-
+            ui->b_select->setEnabled(false);
         }
         this->msleep(delay);
     }
 }
+
+
 
 
 
