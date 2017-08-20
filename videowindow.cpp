@@ -11,6 +11,7 @@ VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent)
         frameRate = (int) capture->get(CV_CAP_PROP_FPS);
         state = State::STOPPED;
         tracker = cv::Tracker::create("BOOSTING");
+        isTracking = false;
     } else {
         setFailedScreen();
     }
@@ -28,7 +29,7 @@ void VideoWindow::setLabel() {
     l_video->setParent(this);
     l_video->setFixedHeight(capture->get(CV_CAP_PROP_FRAME_HEIGHT));
     l_video->setFixedWidth(capture->get(CV_CAP_PROP_FRAME_WIDTH));
-   // l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
+    // l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
     QLayout* la = this->layout();
     dynamic_cast<QGridLayout*>(la)->addWidget(l_video, 0, 0);
     connect(l_video, &VideoLabel::selectionSet,
@@ -107,12 +108,19 @@ void VideoWindow::on_b_unselect_clicked() {
 }
 
 void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
-    isTracking = true;
+    std::cout << "set selection" << std::endl;
     p1.x = p1_.x();
     p1.y = p1_.y();
     p2.x = p2_.x();
     p2.y = p2_.y();
-    myTracker.startTracking(cv::Rect2d(p1, p2), "BOOSTING", &currentFrame);
+    if(!isTracking) {
+        isTracking = true;
+        myTracker.startTracking("BOOSTING", &currentFrame,
+                                p1_.x(), p1_.y(), p2_.x(), p2_.y());
+    } else {
+        myTracker.modifyTracking(p1_.x(), p1_.y(), p2_.x(), p2_.y());
+    }
+
 }
 
 //==================================================================
@@ -147,19 +155,16 @@ void VideoWindow::setFailedScreen()
 }
 
 void VideoWindow::play() {
-    cv::Rect2d roi;
-    cv::Mat dst;
-    cv::Scalar scalar(255, 0, 0);
     int delay = (1000/frameRate);
-    //Ptr<Tracker> tracker = Tracker::create( "BOOSTING" );
-
 
     while (state == State::PLAYING) {
         (*capture) >> currentFrame;
+        if(currentFrame.rows==0 || currentFrame.cols==0) {
+            on_b_stop_clicked();
+            return;
+        }
         if(isTracking) {
             myTracker.track(&currentFrame);
-            //rectangle(currentFrame, p1, p2, scalar, 2, 1 );
-
         }
         updateImage();
         this->msleep(delay);
@@ -168,9 +173,6 @@ void VideoWindow::play() {
 
 void VideoWindow::updateImage() {
     QPixmap pixmap;
-    if(currentFrame.rows==0 || currentFrame.cols==0) {
-        state = State::STOPPED;
-    }
     pixmap = mat2Pixmap(currentFrame);
     if(!pixmap.isNull()) {
         l_video->setPixmap(pixmap);

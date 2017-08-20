@@ -20,6 +20,7 @@
 
 #include "videolabel.h"
 #include "mytracker.h"
+#include "facedetector.h"
 
 namespace Ui {
 class VideoWindow;
@@ -98,6 +99,7 @@ private:
     cv::Point p1;
     cv::Point p2;
     MyTracker myTracker;
+    FaceDetector faceDetector;
 };
 
 #endif // VIDEOWINDOW_H

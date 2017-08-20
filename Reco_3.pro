@@ -46,7 +46,8 @@ SOURCES += \
     videowindow.cpp \
     preprocessing.cpp \
     videolabel.cpp \
-    mytracker.cpp
+    mytracker.cpp \
+    facedetector.cpp
 
 
 
@@ -58,7 +59,8 @@ HEADERS += \
     constants.h \
     videolabel.h \
     common.h \
-    mytracker.h
+    mytracker.h \
+    facedetector.h
 
 
 
