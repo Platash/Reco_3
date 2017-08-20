@@ -16,7 +16,7 @@ class FaceDetector
 public:
     FaceDetector();
 
-    bool getBestFace(cv::Mat frame, cv::Rect2d roi, cv::Rect bestFaceRoi);
+    bool getBestFace(cv::Mat* frame, cv::Rect2d roi, cv::Rect* bestFaceRoi);
 
 private:
     cv::CascadeClassifier face_cascade;

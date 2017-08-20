@@ -6,8 +6,9 @@ enum class TrackerType {
 };
 
 MyTracker::MyTracker() {
-
+    roiChanged = false;
 }
+static const  std::string TRACKER = "KCF";
 
 void MyTracker::startTracking(std::string trackerType, cv::Mat* frame_p,
                               int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
@@ -18,8 +19,8 @@ void MyTracker::startTracking(std::string trackerType, cv::Mat* frame_p,
     p2_x = p2_x_;
     p2_y = p2_y_;
     roi = cv::Rect2d(cv::Point(p1_x, p1_y), cv::Point(p2_x, p2_y));
-    //roiChanged = true;
-    tracker = cv::Tracker::create("BOOSTING");
+    roiChanged = false;
+    tracker = cv::Tracker::create(TRACKER);
     tracker->init(*frame_p, roi);
 }
 
@@ -41,16 +42,15 @@ void MyTracker::track(cv::Mat* frame_p) {
     if(roiChanged) {
         std::cout << "roi changed" << std::endl;
         roi = cv::Rect2d(cv::Point(p1_x, p1_y), cv::Point(p2_x, p2_y));
-        tracker = cv::Tracker::create("BOOSTING");
+        tracker = cv::Tracker::create(TRACKER);
         tracker->init(*frame_p, roi);
-        //tracker->init(*frame_p, roi);
         roiChanged = false;
         if(roi.width==0 || roi.height==0)
             return;
     }
-    // return at the end of video
+    cv::Rect bestFace;
+    faceDetector.getBestFace(frame_p, roi, &bestFace);
     bool success = tracker->update(*frame_p, roi);
-    // draw the tracked object
     cv::Mat crop = (*frame_p)(roi);
     if (crop.empty()) return;
 
@@ -59,7 +59,6 @@ void MyTracker::track(cv::Mat* frame_p) {
     if(success) {
         rectangle(*frame_p, roi, cv::Scalar(255, 0, 0), 2, 1);
     }
-
 
     if(frameCount >= 10) {
         frameCount = 0;

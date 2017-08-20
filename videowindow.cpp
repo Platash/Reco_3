@@ -3,6 +3,8 @@
 
 VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_) {
     capture = new cv::VideoCapture(fileName_);
+    capture->set(CV_CAP_PROP_FRAME_WIDTH, 640);
+    capture->set(CV_CAP_PROP_FRAME_HEIGHT, 480);
     ui->setupUi(this);
     setIcons();
     l_video = new VideoLabel();
@@ -165,9 +167,11 @@ void VideoWindow::play() {
         }
         if(isTracking) {
             myTracker.track(&currentFrame);
+        } else {
+            this->msleep(delay);
         }
         updateImage();
-        this->msleep(delay);
+
     }
 }
 

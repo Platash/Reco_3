@@ -6,17 +6,18 @@ FaceDetector::FaceDetector() {
     }
 }
 
-bool FaceDetector::getBestFace(cv::Mat frame, cv::Rect2d roi, cv::Rect bestFaceRoi) {
+bool FaceDetector::getBestFace(cv::Mat* frame_p, cv::Rect2d roi, cv::Rect* bestFaceRoi) {
     std::vector<cv::Rect> detected_faces;
-
+    cv::Rect roi_(roi);
     bool result = false;
-    face_cascade.detectMultiScale(frame, detected_faces);
+    face_cascade.detectMultiScale(*frame_p, detected_faces);
     if(detected_faces.size() == 0) {
         return false;
     }
     for(int i = 0; i < detected_faces.size(); ++i) {
-        cv::Rect intersection = roi & detected_faces[i];
-        std::cout << "Intersection: " << intersection.area() << std::endl;
+        cv::Rect intersection = roi_ & detected_faces[i];
+        rectangle(*frame_p, intersection, cv::Scalar(255, 255, 0), 2, 1);
+        //std::cout << "Intersection: " << intersection.area() << std::endl;
         if(intersection.area() == 0) {
             continue;
         }

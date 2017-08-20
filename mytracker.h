@@ -12,6 +12,7 @@
 #include <time.h>
 
 #include "common.h"
+#include "facedetector.h"
 
 
 class MyTracker
@@ -35,6 +36,7 @@ private:
      std::atomic<int> p2_x;
      std::atomic<int> p2_y;
      std::atomic<bool> roiChanged;
+     FaceDetector faceDetector;
 };
 
 #endif // TRACKER_H
