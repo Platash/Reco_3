@@ -5,13 +5,11 @@ VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent)
     capture = new cv::VideoCapture(fileName_);
     ui->setupUi(this);
     setIcons();
-
+    l_video = new VideoLabel();
     if(capture->isOpened()) {
         ui->slider->setMaximum((int)capture->get(CV_CAP_PROP_FRAME_COUNT));
         frameRate = (int) capture->get(CV_CAP_PROP_FPS);
         state = State::STOPPED;
-        setLabel();
-        updateImage();
         tracker = cv::Tracker::create("BOOSTING");
     } else {
         setFailedScreen();
@@ -27,13 +25,16 @@ VideoWindow::~VideoWindow()
 }
 
 void VideoWindow::setLabel() {
-    l_video = new VideoLabel();
     l_video->setParent(this);
     l_video->setFixedHeight(capture->get(CV_CAP_PROP_FRAME_HEIGHT));
     l_video->setFixedWidth(capture->get(CV_CAP_PROP_FRAME_WIDTH));
    // l_video->setAttribute(Qt::WA_TransparentForMouseEvents);
     QLayout* la = this->layout();
     dynamic_cast<QGridLayout*>(la)->addWidget(l_video, 0, 0);
+    connect(l_video, &VideoLabel::selectionSet,
+            this, &VideoWindow::setSelection);
+    (*capture) >> currentFrame;
+    updateImage();
 }
 
 //=================================================================
@@ -43,7 +44,7 @@ void VideoWindow::setLabel() {
 //================================================================
 
 void VideoWindow::on_b_rewind_b_pressed() {
-    setSelection(false);
+
 }
 
 void VideoWindow::on_b_rewind_b_released() {
@@ -52,7 +53,7 @@ void VideoWindow::on_b_rewind_b_released() {
 }
 
 void VideoWindow::on_b_rewind_f_pressed() {
-    setSelection(false);
+
 }
 
 void VideoWindow::on_b_rewind_f_released() {
@@ -64,8 +65,9 @@ void VideoWindow::on_b_rewind_f_released() {
 void VideoWindow::on_b_stop_clicked() {
     state = State::STOPPED;
     capture -> set(CV_CAP_PROP_POS_MSEC, 0);
+    (*capture) >> currentFrame;
     updateImage();
-    setSelection(true);
+    isTracking = false;
 
 }
 
@@ -78,14 +80,12 @@ void VideoWindow::on_b_previous_clicked() {
 void VideoWindow::on_b_play_clicked() {
     state = State::PLAYING;
     playThread = new std::thread(&VideoWindow::play, this);
-    setSelection(false);
-    //playThread.join();
-    //play();
+
 }
 
 void VideoWindow::on_b_pause_clicked() {
     state = State::PAUSED;
-    setSelection(true);
+
 }
 
 void VideoWindow::on_b_next_clicked() {
@@ -102,12 +102,17 @@ void VideoWindow::on_b_next_clicked() {
 //==================================================================
 
 
-void VideoWindow::on_b_select_clicked() {
-    l_video->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+void VideoWindow::on_b_unselect_clicked() {
+    isTracking = false;
 }
 
-void VideoWindow::on_b_unselect_clicked() {
-    ui->b_select->setChecked(false);
+void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
+    isTracking = true;
+    p1.x = p1_.x();
+    p1.y = p1_.y();
+    p2.x = p2_.x();
+    p2.y = p2_.y();
+    myTracker.startTracking(cv::Rect2d(p1, p2), "BOOSTING", &currentFrame);
 }
 
 //==================================================================
@@ -141,11 +146,6 @@ void VideoWindow::setFailedScreen()
     l_video->setText("Failed opening video");
 }
 
-void VideoWindow::setSelection(bool selection) {
-    ui->b_select->setEnabled(selection);
-    ui->b_unselect->setEnabled(selection);
-}
-
 void VideoWindow::play() {
     cv::Rect2d roi;
     cv::Mat dst;
@@ -155,21 +155,19 @@ void VideoWindow::play() {
 
 
     while (state == State::PLAYING) {
-        updateImage();
+        (*capture) >> currentFrame;
         if(isTracking) {
-            ui->b_select->setEnabled(false);
+            myTracker.track(&currentFrame);
+            //rectangle(currentFrame, p1, p2, scalar, 2, 1 );
+
         }
+        updateImage();
         this->msleep(delay);
     }
 }
 
-
-
-
-
 void VideoWindow::updateImage() {
     QPixmap pixmap;
-    (*capture) >> currentFrame;
     if(currentFrame.rows==0 || currentFrame.cols==0) {
         state = State::STOPPED;
     }

@@ -23,5 +23,6 @@ void MainWindow::on_actionOpen_Video_triggered() {
         videoWindow = nullptr;
     }
     videoWindow = new VideoWindow(fileName.toStdString());
+    videoWindow->setLabel();
     videoWindow->show();
 }

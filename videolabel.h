@@ -23,26 +23,26 @@ class VideoLabel : public QLabel {
     Q_OBJECT
 signals:
     void mousePressed(const QPoint&);
+    void selectionSet(QPoint p1, QPoint p2);
+
 public:
     explicit VideoLabel(QWidget* parent =0, Qt::WindowFlags f = Qt::WindowFlags());
 
     ~VideoLabel();
+    friend class VideoWindow;
 
     void mousePressEvent( QMouseEvent* ev ) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
-    void paintEvent(QPaintEvent *event) override;
 
 private:
 
-    std::atomic<int> p1_x;
-    std::atomic<int> p1_y;
-    std::atomic<int> p2_x;
-    std::atomic<int> p2_y;
-    std::atomic<bool> drawSelection{false};
-    QPainter* painter;
-    bool buttonPressed;
-    //QRubberBand* rubberBand;
+    QPoint p1;
+    QPoint p2;
+   // std::atomic<bool> drawSelection{false};
+    //QPainter* painter;
+   bool buttonPressed;
+    QRubberBand* rubberBand;
 };
 
 #endif // VIDEOLABEL_H

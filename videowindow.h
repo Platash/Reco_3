@@ -19,6 +19,7 @@
 #include <time.h>
 
 #include "videolabel.h"
+#include "mytracker.h"
 
 namespace Ui {
 class VideoWindow;
@@ -41,7 +42,13 @@ class VideoWindow : public QWidget
 public:
     explicit VideoWindow(std::string fileName = "", QWidget *parent = 0);
     ~VideoWindow();
+
+    void setLabel();
+
     friend class VideoLabel;
+
+public slots:
+    void setSelection(QPoint p1, QPoint p2);
 
 private slots:
     void on_b_rewind_b_pressed();
@@ -58,8 +65,6 @@ private slots:
 
     void on_b_next_clicked();
 
-    void on_b_select_clicked();
-
     void on_b_unselect_clicked();
 
     void on_b_rewind_f_pressed();
@@ -73,11 +78,9 @@ private:
     QPixmap mat2Pixmap(cv::Mat matImg);
     void msleep(int ms);
     void updateImage();
-    void setSelection(bool enabled) ;
-    void setLabel();
+
     void setIcons();
     void setFailedScreen();
-    cv::Rect2d selectRoi();
 
     Ui::VideoWindow *ui;
     std::string fileName;
@@ -92,6 +95,9 @@ private:
     time_t end;
     cv::Ptr<cv::Tracker> tracker;
     VideoLabel* l_video;
+    cv::Point p1;
+    cv::Point p2;
+    MyTracker myTracker;
 };
 
 #endif // VIDEOWINDOW_H
