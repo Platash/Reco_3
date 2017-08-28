@@ -18,8 +18,11 @@ public:
 
     bool getBestFace(cv::Mat* frame, cv::Rect2d roi, cv::Rect* bestFaceRoi);
 
+    void prepareFaces(std::string directory);
+    bool detectAndCropFace(const cv::Mat &src, cv::Mat& dst);
 private:
     cv::CascadeClassifier face_cascade;
+
 };
 
 #endif // FACEDETECTOR_H

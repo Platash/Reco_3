@@ -49,8 +49,8 @@ void MyTracker::track(cv::Mat* frame_p) {
             return;
     }
     cv::Rect bestFace;
-    faceDetector.getBestFace(frame_p, roi, &bestFace);
     bool success = tracker->update(*frame_p, roi);
+    bool faceDetection = faceDetector.getBestFace(frame_p, roi, &bestFace);
     cv::Mat crop = (*frame_p)(roi);
     if (crop.empty()) return;
 

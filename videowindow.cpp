@@ -183,18 +183,6 @@ void VideoWindow::updateImage() {
     }
 }
 
-QPixmap VideoWindow::mat2Pixmap(cv::Mat matImg) {
-    QImage img;
-    cv::Mat RGBframe;
-    if (matImg.channels()== 3){
-        cv::cvtColor(matImg, RGBframe, CV_BGR2RGB);
-        img = QImage((const unsigned char*)(RGBframe.data), RGBframe.cols, RGBframe.rows, QImage::Format_RGB888);
-    } else {
-        img = QImage((const unsigned char*)(matImg.data), matImg.cols, matImg.rows, QImage::Format_Indexed8);
-    }
-    return QPixmap::fromImage(img);
-}
-
 void VideoWindow::msleep(int ms) {
     struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
     nanosleep(&ts, NULL);

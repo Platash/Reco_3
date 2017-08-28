@@ -21,6 +21,7 @@
 #include "videolabel.h"
 #include "mytracker.h"
 #include "facedetector.h"
+#include "common.h"
 
 namespace Ui {
 class VideoWindow;
@@ -76,7 +77,6 @@ private:
 
     void play();
     void stop();
-    QPixmap mat2Pixmap(cv::Mat matImg);
     void msleep(int ms);
     void updateImage();
 
@@ -100,6 +100,7 @@ private:
     cv::Point p2;
     MyTracker myTracker;
     FaceDetector faceDetector;
+    std::vector<cv::Mat> faces;
 };
 
 #endif // VIDEOWINDOW_H
