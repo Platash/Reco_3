@@ -19,15 +19,19 @@
 #include <time.h>
 
 #include "videolabel.h"
+#include "imageprocessor.h"
 #include "mytracker.h"
 #include "facedetector.h"
+#include "preprocessing.h"
 #include "common.h"
+#include "imageprocessor.h"
 
 namespace Ui {
 class VideoWindow;
 }
 
 class VideoLabel;
+//class ImageProcessor;
 
 enum class State:uint8_t {
     STOPPED = 0,
@@ -88,19 +92,18 @@ private:
     cv::VideoCapture* capture;
     std::atomic<State> state;
     std::atomic<bool> isTracking;
+    MyTracker myTracker;
     int frameRate;
     std::thread* playThread;
     cv::Mat currentFrame;
     QPixmap currentPixmap;
     time_t start;
     time_t end;
-    cv::Ptr<cv::Tracker> tracker;
     VideoLabel* l_video;
     cv::Point p1;
     cv::Point p2;
-    MyTracker myTracker;
-    FaceDetector faceDetector;
-    std::vector<cv::Mat> faces;
+    Preprocessing prep;
+    ImageProcessor processor;
 };
 
 #endif // VIDEOWINDOW_H

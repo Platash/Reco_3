@@ -15,7 +15,7 @@ int QualityAssessment::getBlurriness(cv::Mat& image) {
     return static_cast<float>(1. / (sumSq / image.size().area() + 1e-6));
 }
 
-int QualityAssessment::getQuality(cv::Mat& image) {
+int QualityAssessment::getScore(cv::Mat& image) {
     int result = 0;
     if(measuringBlur) {
         result += blurCoef * getBlurriness(image);

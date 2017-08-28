@@ -12,7 +12,7 @@
 #include <time.h>
 
 #include "common.h"
-#include "facedetector.h"
+//#include "facedetector.h"
 
 
 class MyTracker
@@ -22,8 +22,12 @@ public:
     void startTracking(std::string trackerType, cv::Mat* frame,
                        int p1_x_, int p1_y_, int p2_x_, int p2_y_);
     void stopTracking();
-    void track(cv::Mat* frame);
+    bool track(cv::Mat* frame);
     void modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_);
+    void setRoi(cv::Rect2d roi_);
+    cv::Rect2d getRoi();
+
+    std::string trackerType = "KCF";
 
 private:
     cv::Ptr<cv::Tracker> tracker;
@@ -36,7 +40,7 @@ private:
      std::atomic<int> p2_x;
      std::atomic<int> p2_y;
      std::atomic<bool> roiChanged;
-     FaceDetector faceDetector;
+
 };
 
 #endif // TRACKER_H

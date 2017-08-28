@@ -19,7 +19,7 @@ public:
     QualityAssessment():measuringBlur(true), blurCoef(1) {
 
     }
-    int getQuality(cv::Mat& image);
+    int getScore(cv::Mat& image);
 };
 
 #endif // QUALITYASSESSMENT_H

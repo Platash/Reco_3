@@ -6,7 +6,7 @@ FaceDetector::FaceDetector() {
     }
 }
 
-bool FaceDetector::getBestFace(cv::Mat* frame_p, cv::Rect2d roi, cv::Rect* bestFaceRoi) {
+bool FaceDetector::getBestFace(cv::Mat* frame_p, cv::Rect2d& roi, cv::Rect& bestFaceRoi) {
     std::vector<cv::Rect> detected_faces;
     cv::Rect roi_(roi);
     bool result = false;
@@ -31,7 +31,7 @@ bool FaceDetector::getBestFace(cv::Mat* frame_p, cv::Rect2d roi, cv::Rect* bestF
         }
     }
     if(result) {
-        *bestFaceRoi = detected_faces[index];
+        bestFaceRoi = detected_faces[index];
     }
     return result;
 
@@ -57,12 +57,12 @@ bool FaceDetector::detectAndCropFace(const cv::Mat& src, cv::Mat& dst) {
 
     int x_left = detected_faces[0].x - CROP_THRESHOLD >= 0 ? detected_faces[0].x - CROP_THRESHOLD : 0;
     int x_right = detected_faces[0].size().width + CROP_THRESHOLDx2 < src.size().width ?
-                  detected_faces[0].width + CROP_THRESHOLDx2 :
-                  src.size().width;
+                detected_faces[0].width + CROP_THRESHOLDx2 :
+            src.size().width;
     int y_up = detected_faces[0].y - CROP_THRESHOLD >= 0 ? detected_faces[0].y - CROP_THRESHOLD : 0;
     int y_down = detected_faces[0].size().height + CROP_THRESHOLDx2 < src.size().height ?
-                 detected_faces[0].size().height + CROP_THRESHOLDx2 :
-                 src.size().height;
+                detected_faces[0].size().height + CROP_THRESHOLDx2 :
+            src.size().height;
 
     cv::Rect rect(x_left, y_up, x_right, y_down);
     dst = src(rect);

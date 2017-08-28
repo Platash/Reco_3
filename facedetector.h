@@ -16,7 +16,7 @@ class FaceDetector
 public:
     FaceDetector();
 
-    bool getBestFace(cv::Mat* frame, cv::Rect2d roi, cv::Rect* bestFaceRoi);
+    bool getBestFace(cv::Mat* frame, cv::Rect2d& roi, cv::Rect &bestFaceRoi);
 
     void prepareFaces(std::string directory);
     bool detectAndCropFace(const cv::Mat &src, cv::Mat& dst);

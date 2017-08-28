@@ -16,15 +16,6 @@ Mat Preprocessing::equalize(const Mat &src) {
     clahe->setClipLimit(2);
     clahe->apply(im_gray,dst_clahe);
 
-    //namedWindow(source_window, CV_WINDOW_AUTOSIZE);
-    //namedWindow(equalized_window, CV_WINDOW_AUTOSIZE);
-    //namedWindow(equalized_window_cl, CV_WINDOW_AUTOSIZE);
-
-    //imshow(source_window, im_gray);
-    //imshow(equalized_window, dst_eq);
-    //imshow(equalized_window_cl, dst_clahe);
-
-    //waitKey(0);
     return dst_clahe;
 }
 

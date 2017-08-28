@@ -9,12 +9,19 @@
 
 class Face {
 public:
-    Face() {
-
+    Face(cv::Mat face_, int score_):face(face_), score(score_) {
     }
 
-    int score;
+    inline bool operator <(const Face& that) {
+        return score < that.score;
+    }
+
+    inline bool operator >(const Face& that) {
+        return score > that.score;
+    }
+
     cv::Mat face;
+    int score;
 
 };
 

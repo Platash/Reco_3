@@ -19,36 +19,21 @@
 using namespace std;
 using namespace cv;
 
-class Preprocessing
-{
+class Preprocessing {
 
 private:
-    int readFileNames(vector<string> &filenames, const string &directory);
-    //Mat detectAndCrop(Mat& src);
-
-    const string& directory;
+    const string directory;
     vector<Mat> images;
-    vector<Mat>* faces;
-
-    CascadeClassifier face_cascade;
 
 public:
-    Preprocessing();
-    Preprocessing(const string& directory_, vector<Mat>* faces_):faces(faces_),
-                                                                 directory(directory_) {
-        if(!face_cascade.load(FACE_CASCADE_PATH)) {
-            printf("--(!)Error loading face cascade\n");  };
+    Preprocessing()=default;
+    Preprocessing(const string directory_):directory(directory_) {
+
     }
 
-    void readFiles();
     Mat equalize(const Mat& src);
-    void detectAndCropFace(const Mat& frame);
-    void detectAndCropFaces();
-
-    void prepareFaces();
     Mat rescale(Mat& src);
-    void writeImages(vector<Mat>& images) const;
-    Mat alignFace(Mat& face) const;
+    //Mat alignFace(Mat& face) const;
 
 
 

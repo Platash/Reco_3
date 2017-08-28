@@ -51,7 +51,8 @@ SOURCES += \
     facerecognition.cpp \
     qualityassessment.cpp \
     face.cpp \
-    common.cpp
+    common.cpp \
+    imageprocessor.cpp
 
 
 
@@ -67,7 +68,8 @@ HEADERS += \
     facedetector.h \
     facerecognition.h \
     qualityassessment.h \
-    face.h
+    face.h \
+    imageprocessor.h
 
 
 

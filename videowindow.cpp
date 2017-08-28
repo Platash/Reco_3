@@ -12,7 +12,6 @@ VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent)
         ui->slider->setMaximum((int)capture->get(CV_CAP_PROP_FRAME_COUNT));
         frameRate = (int) capture->get(CV_CAP_PROP_FPS);
         state = State::STOPPED;
-        tracker = cv::Tracker::create("BOOSTING");
         isTracking = false;
     } else {
         setFailedScreen();
@@ -158,20 +157,24 @@ void VideoWindow::setFailedScreen()
 
 void VideoWindow::play() {
     int delay = (1000/frameRate);
-
+   // cv::Mat equalized;
+   // cv::Mat equalized_color;
     while (state == State::PLAYING) {
         (*capture) >> currentFrame;
         if(currentFrame.rows==0 || currentFrame.cols==0) {
             on_b_stop_clicked();
             return;
-        }
+        };
         if(isTracking) {
-            myTracker.track(&currentFrame);
+            //equalized = prep.equalize(currentFrame);
+            //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
+            if(myTracker.track(&currentFrame)) {
+                processor.processImage(currentFrame, myTracker.getRoi());
+            }
         } else {
             this->msleep(delay);
         }
         updateImage();
-
     }
 }
 
