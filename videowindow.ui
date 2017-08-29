@@ -23,7 +23,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Tools</string>
+      <string>Tracker</string>
      </property>
      <widget class="QPushButton" name="b_unselect">
       <property name="geometry">

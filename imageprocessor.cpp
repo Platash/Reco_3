@@ -1,7 +1,7 @@
 #include "imageprocessor.h"
 
 
-void ImageProcessor::processImage(Mat image, cv::Rect2d roi) {
+void ImageProcessor::pickFace(Mat image, cv::Rect2d roi) {
      cv::Rect bestFaceRoi;
      if(faceDetector.getBestFace(&image, roi, bestFaceRoi)) {
          cv::Mat crop = image(bestFaceRoi);
@@ -23,5 +23,9 @@ void ImageProcessor::processImage(Mat image, cv::Rect2d roi) {
 //         imwrite(FACE_RESULT_PATH + "img_"+ std::to_string(fileNameIndex) + ".jpg", crop);
 //         ++fileNameIndex;
 //     }
-//     ++frameCount;
+     //     ++frameCount;
+}
+
+void ImageProcessor::makeAverageFace() {
+
 }

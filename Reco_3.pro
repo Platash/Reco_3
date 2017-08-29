@@ -13,15 +13,17 @@ TARGET = Reco_3
 TEMPLATE = app
 
 INCLUDEPATH += /usr/local/include/opencv2
+INCLUDEPATH += /home/siobhan/UJ/Masters/Libs/dlib-19.4
 #INCLUDEPATH += /usr/local/include/opencv
-
-#LIBS += `pkg-config opencv --libs`
-LIBS += -pthread
 
 unix {
     CONFIG += link_pkgconfig
+    LIBS += -pthread
     PKGCONFIG += opencv
+    PKGCONFIG += x11
 }
+
+
 
 #LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video
 #LIBS += -lopencv_videoio -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_flann -lopencv_objdetect
@@ -52,7 +54,10 @@ SOURCES += \
     qualityassessment.cpp \
     face.cpp \
     common.cpp \
-    imageprocessor.cpp
+    imageprocessor.cpp \
+    averageface.cpp \
+    landmarkdetection.cpp \
+    ../../../UJ/Masters/Libs/dlib-19.4/dlib/all/source.cpp
 
 
 
@@ -69,7 +74,9 @@ HEADERS += \
     facerecognition.h \
     qualityassessment.h \
     face.h \
-    imageprocessor.h
+    imageprocessor.h \
+    averageface.h \
+    landmarkdetection.h
 
 
 

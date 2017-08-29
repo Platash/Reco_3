@@ -89,3 +89,12 @@ QPixmap mat2Pixmap(cv::Mat matImg) {
     }
     return QPixmap::fromImage(img);
 }
+
+void writeShapeToFile(dlib::full_object_detection shape, string path) {
+    ofstream dst;
+    dst.open(path);
+    for(int i = 0; i < shape.num_parts(); ++i) {
+        dst << shape.part(i).x() - 1 << " " << shape.part(i).y() - 1 << std::endl;
+    }
+    dst.close();
+}

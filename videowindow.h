@@ -5,6 +5,7 @@
 #include <QResource>
 #include <QIcon>
 #include <QPixmap>
+#include <QMessageBox>
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/tracking.hpp>
@@ -86,6 +87,7 @@ private:
 
     void setIcons();
     void setFailedScreen();
+    void askForAverageFace();
 
     Ui::VideoWindow *ui;
     std::string fileName;
@@ -104,6 +106,7 @@ private:
     cv::Point p2;
     Preprocessing prep;
     ImageProcessor processor;
+
 };
 
 #endif // VIDEOWINDOW_H

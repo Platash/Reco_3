@@ -35,7 +35,8 @@ public:
     ~ImageProcessor() {
     }
 
-    void processImage(cv::Mat image, Rect2d roi);
+    void pickFace(cv::Mat image, Rect2d roi);
+    void makeAverageFace();
 
     std::atomic<int> faceCount;
 

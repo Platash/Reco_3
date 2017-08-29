@@ -67,10 +67,11 @@ void VideoWindow::on_b_rewind_f_released() {
 void VideoWindow::on_b_stop_clicked() {
     state = State::STOPPED;
     capture -> set(CV_CAP_PROP_POS_MSEC, 0);
+    ui->b_play->setChecked(false);
     (*capture) >> currentFrame;
     updateImage();
     isTracking = false;
-
+    askForAverageFace();
 }
 
 void VideoWindow::on_b_previous_clicked() {
@@ -169,12 +170,25 @@ void VideoWindow::play() {
             //equalized = prep.equalize(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(&currentFrame)) {
-                processor.processImage(currentFrame, myTracker.getRoi());
+                processor.pickFace(currentFrame, myTracker.getRoi());
             }
         } else {
             this->msleep(delay);
         }
         updateImage();
+    }
+}
+
+void VideoWindow::askForAverageFace() {
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Average Face");
+    msgBox.setText("Create Average Face from picked face images?");
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    if(msgBox.exec() == QMessageBox::Yes){
+      processor.makeAverageFace();
     }
 }
 
