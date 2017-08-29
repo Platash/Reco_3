@@ -56,7 +56,6 @@ SOURCES += \
     common.cpp \
     imageprocessor.cpp \
     averageface.cpp \
-    landmarkdetection.cpp \
     ../../../UJ/Masters/Libs/dlib-19.4/dlib/all/source.cpp
 
 
@@ -64,9 +63,7 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     videowindow.h \
-    constants.h \
     preprocessing.h \
-    constants.h \
     videolabel.h \
     common.h \
     mytracker.h \
@@ -75,8 +72,7 @@ HEADERS += \
     qualityassessment.h \
     face.h \
     imageprocessor.h \
-    averageface.h \
-    landmarkdetection.h
+    averageface.h
 
 
 

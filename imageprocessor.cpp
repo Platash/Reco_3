@@ -26,6 +26,9 @@ void ImageProcessor::pickFace(Mat image, cv::Rect2d roi) {
      //     ++frameCount;
 }
 
-void ImageProcessor::makeAverageFace() {
+void ImageProcessor::processAverageFace() {
+    for(auto face: faces) {
+        averageFaceCreator.getLandmarks(face);
+    }
 
 }

@@ -188,7 +188,7 @@ void VideoWindow::askForAverageFace() {
     msgBox.addButton(QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     if(msgBox.exec() == QMessageBox::Yes){
-      processor.makeAverageFace();
+      processor.processAverageFace();
     }
 }
 

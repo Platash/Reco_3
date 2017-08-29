@@ -23,7 +23,7 @@
 #include <QPixmap>
 #include <QImage>
 
-#define FACE_MAX_SIZE 400
+
 #define CROP_THRESHOLD 10
 #define CROP_THRESHOLDx2 20
 #define SOURCE_IMAGE_MAX_SIZE 800
@@ -33,6 +33,9 @@
 
 #define CROP_THRESHOLD 10
 #define CROP_THRESHOLDx2 20
+
+static int FACE_MAX_SIZE_W = 400;
+static int FACE_MAX_SIZE_H = 400;
 
 static const std::string FACE_RESULT_PATH = "/home/siobhan/UJ/Masters_stuff/results/tracked_faces/";
 static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/haarcascade_frontalface_alt_tree.xml";

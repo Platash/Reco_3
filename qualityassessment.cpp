@@ -15,13 +15,16 @@ int QualityAssessment::getBlurriness(cv::Mat& image) {
     return static_cast<float>(1. / (sumSq / image.size().area() + 1e-6));
 }
 
-int QualityAssessment::getScore(cv::Mat& image) {
-    int result = 0;
+double QualityAssessment::getScore(cv::Mat& image) {
+    double result = 0;
     if(measuringBlur) {
         result += blurCoef * getBlurriness(image);
     }
     if(measuringContrast) {
         result += contrastCoef * getContrast(image);
+    }
+    if(measuringSize) {
+        result += sizeCoef * (image.rows / FACE_MAX_SIZE_W);
     }
     return result;
 }

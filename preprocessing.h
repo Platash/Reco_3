@@ -1,7 +1,7 @@
 #ifndef PREPROCESSING_H
 #define PREPROCESSING_H
 
-#include "constants.h"
+#include "common.h"
 
 #include <dirent.h> // for linux systems
 #include <sys/stat.h> // for linux systems

@@ -26,19 +26,22 @@
 #include "common.h"
 #include "face.h"
 #include "preprocessing.h"
+#include "averageface.h"
 
 class ImageProcessor {
 public:
     ImageProcessor():faceCount(10), worstScore(0) {
+
     }
 
     ~ImageProcessor() {
     }
 
     void pickFace(cv::Mat image, Rect2d roi);
-    void makeAverageFace();
+    void processAverageFace();
 
     std::atomic<int> faceCount;
+    cv::Mat averageFaceCreator;
 
 private:
 
@@ -46,8 +49,11 @@ private:
     FaceDetector faceDetector;
     FaceRecognition faceRecognition;
     QualityAssessment qualityAssessment;
+
     std::vector<Face> faces;
     Preprocessing prep;
+    AverageFace averageFaceCreator;
+
 };
 
 #endif // IMAGEPROCESSOR_H
