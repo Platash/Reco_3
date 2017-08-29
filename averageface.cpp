@@ -130,11 +130,11 @@ void AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
 void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,
                                       cv::Mat &tform) {
-    vector <Point2f> inPts = inPoints;
-    vector <Point2f> outPts = outPoints;
+    std::vector <cv::Point2f> inPts = inPoints;
+    std::vector <cv::Point2f> outPts = outPoints;
 
-    inPts.push_back(Point2f(0,0));
-    outPts.push_back(Point2f(0,0));
+    inPts.push_back(cv::Point2f(0,0));
+    outPts.push_back(cv::Point2f(0,0));
 
     inPts[2].x =  c60 * (inPts[0].x - inPts[1].x) - s60 * (inPts[0].y - inPts[1].y) + inPts[1].x;
     inPts[2].y =  s60 * (inPts[0].x - inPts[1].x) + c60 * (inPts[0].y - inPts[1].y) + inPts[1].y;
@@ -148,23 +148,23 @@ void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::v
 void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Point2f> &points,
                                              std::vector<std::vector<int> > &delaunayTri) {
     // Create an instance of Subdiv2D
-    Subdiv2D subdiv(rect);
+    cv::Subdiv2D subdiv(rect);
 
     // Insert points into subdiv
-    for( vector<Point2f>::iterator it = points.begin(); it != points.end(); it++) {
+    for(std::vector<cv::Point2f>::iterator it = points.begin(); it != points.end(); it++) {
         subdiv.insert(*it);
     }
 
-    vector<Vec6f> triangleList;
+    std::vector<cv::Vec6f> triangleList;
     subdiv.getTriangleList(triangleList);
-    vector<Point2f> pt(3);
-    vector<int> ind(3);
+    std::vector<cv::Point2f> pt(3);
+    std::vector<int> ind(3);
 
     for(size_t i = 0; i < triangleList.size(); ++i) {
-        Vec6f t = triangleList[i];
-        pt[0] = Point2f(t[0], t[1]);
-        pt[1] = Point2f(t[2], t[3]);
-        pt[2] = Point2f(t[4], t[5 ]);
+        cv::Vec6f t = triangleList[i];
+        pt[0] = cv::Point2f(t[0], t[1]);
+        pt[1] = cv::Point2f(t[2], t[3]);
+        pt[2] = cv::Point2f(t[4], t[5 ]);
 
         if(rect.contains(pt[0]) && rect.contains(pt[1]) && rect.contains(pt[2])) {
             for(int j = 0; j < 3; j++) {
@@ -182,48 +182,49 @@ void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Poin
 void AverageFace::applyAffineTransform(cv::Mat &warpImage, cv::Mat &src, std::vector<cv::Point2f> &srcTri,
                                        std::vector<cv::Point2f> &dstTri) {
     // Given a pair of triangles, find the affine transform.
-    Mat warpMat = getAffineTransform( srcTri, dstTri );
+    cv::Mat warpMat = getAffineTransform(srcTri, dstTri);
 
     // Apply the Affine Transform just found to the src image
-    warpAffine( src, warpImage, warpMat, warpImage.size(), INTER_LINEAR, BORDER_REFLECT_101);
+    warpAffine(src, warpImage, warpMat, warpImage.size(), cv::INTER_LINEAR, cv::BORDER_REFLECT_101);
 }
 
 void AverageFace::warpTriangle(cv::Mat &img1, cv::Mat &img2, std::vector<cv::Point2f> t1,
                                std::vector<cv::Point2f> t2) {
     // Find bounding rectangle for each triangle
-    Rect r1 = boundingRect(t1);
-    Rect r2 = boundingRect(t2);
+    cv::Rect r1 = boundingRect(t1);
+    cv::Rect r2 = boundingRect(t2);
 
     // Offset points by left top corner of the respective rectangles
-    vector<Point2f> t1Rect, t2Rect;
-    vector<Point> t2RectInt;
+    std::vector<cv::Point2f> t1Rect;
+    std::vector<cv::Point2f> t2Rect;
+    std::vector<cv::Point> t2RectInt;
     for(int i = 0; i < 3; i++) {
         //tRect.push_back( Point2f( t[i].x - r.x, t[i].y -  r.y) );
-        t2RectInt.push_back(Point((int)(t2[i].x - r2.x), (int)(t2[i].y - r2.y)) ); // for fillConvexPoly
+        t2RectInt.push_back(cv::Point((int)(t2[i].x - r2.x), (int)(t2[i].y - r2.y)) ); // for fillConvexPoly
 
-        t1Rect.push_back(Point2f( t1[i].x - r1.x, t1[i].y -  r1.y) );
-        t2Rect.push_back(Point2f( t2[i].x - r2.x, t2[i].y - r2.y) );
+        t1Rect.push_back(cv::Point2f( t1[i].x - r1.x, t1[i].y -  r1.y) );
+        t2Rect.push_back(cv::Point2f( t2[i].x - r2.x, t2[i].y - r2.y) );
     }
 
     // Get mask by filling triangle
-    Mat mask = Mat::zeros(r2.height, r2.width, CV_32FC3);
-    fillConvexPoly(mask, t2RectInt, Scalar(1.0, 1.0, 1.0), 16, 0);
+    cv::Mat mask = cv::Mat::zeros(r2.height, r2.width, CV_32FC3);
+    fillConvexPoly(mask, t2RectInt, cv::Scalar(1.0, 1.0, 1.0), 16, 0);
 
     // Apply warpImage to small rectangular patches
-    Mat img1Rect, img2Rect;
+    cv::Mat img1Rect, img2Rect;
     img1(r1).copyTo(img1Rect);
 
-    Mat warpImage = Mat::zeros(r2.height, r2.width, img1Rect.type());
+    cv::Mat warpImage = cv::Mat::zeros(r2.height, r2.width, img1Rect.type());
 
     applyAffineTransform(warpImage, img1Rect, t1Rect, t2Rect);
 
     // Copy triangular region of the rectangular patch to the output image
     multiply(warpImage,mask, warpImage);
-    multiply(img2(r2), Scalar(1.0,1.0,1.0) - mask, img2(r2));
+    multiply(img2(r2), cv::Scalar(1.0,1.0,1.0) - mask, img2(r2));
     img2(r2) = img2(r2) + warpImage;
 }
 
 void AverageFace::constrainPoint(cv::Point2f &p, cv::Size sz) {
-    p.x = min(max( (double)p.x, 0.0), (double)(sz.width - 1));
-    p.y = min(max( (double)p.y, 0.0), (double)(sz.height - 1));
+    p.x = std::min(std::max( (double)p.x, 0.0), (double)(sz.width - 1));
+    p.y = std::min(std::max( (double)p.y, 0.0), (double)(sz.height - 1));
 }

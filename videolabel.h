@@ -13,9 +13,9 @@
 //#include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
 
-#include <thread>
-#include <atomic>
-#include <time.h>
+//#include <thread>
+//#include <atomic>
+//#include <time.h>
 
 #include "videowindow.h"
 

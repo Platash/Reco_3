@@ -6,17 +6,17 @@
 #include <QIcon>
 #include <QPixmap>
 
-#include <opencv2/core/utility.hpp>
-#include <opencv2/tracking.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/highgui.hpp>
+//#include <opencv2/core/utility.hpp>
+//#include <opencv2/tracking.hpp>
+//#include <opencv2/videoio.hpp>
+//#include <opencv2/highgui.hpp>
 #include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include "opencv2/opencv.hpp"
+//#include <opencv2/imgproc/imgproc.hpp>
+//#include "opencv2/opencv.hpp"
 
-#include <thread>
+//#include <thread>
 #include <atomic>
-#include <time.h>
+//#include <time.h>
 #include <algorithm>
 
 #include "mytracker.h"
@@ -37,11 +37,12 @@ public:
     ~ImageProcessor() {
     }
 
-    void pickFace(cv::Mat image, Rect2d roi);
+    bool pickFace(cv::Mat image, Rect2d roi);
     void processAverageFace();
+    std::vector<Face> getFaces();
 
     std::atomic<int> faceCount;
-    cv::Mat averageFaceCreator;
+    cv::Mat averageFace;
 
 private:
 

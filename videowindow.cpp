@@ -158,8 +158,8 @@ void VideoWindow::setFailedScreen()
 
 void VideoWindow::play() {
     int delay = (1000/frameRate);
-   // cv::Mat equalized;
-   // cv::Mat equalized_color;
+    // cv::Mat equalized;
+    // cv::Mat equalized_color;
     while (state == State::PLAYING) {
         (*capture) >> currentFrame;
         if(currentFrame.rows==0 || currentFrame.cols==0) {
@@ -170,7 +170,9 @@ void VideoWindow::play() {
             //equalized = prep.equalize(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(&currentFrame)) {
-                processor.pickFace(currentFrame, myTracker.getRoi());
+                if(processor.pickFace(currentFrame, myTracker.getRoi())) {
+                    updateSmallFaces(processor.getFaces());
+                }
             }
         } else {
             this->msleep(delay);
@@ -188,13 +190,30 @@ void VideoWindow::askForAverageFace() {
     msgBox.addButton(QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     if(msgBox.exec() == QMessageBox::Yes){
-      processor.processAverageFace();
+        processor.processAverageFace();
+    }
+}
+
+void VideoWindow::updateSmallFaces(std::vector<Face> &faces) {
+    for(int i = 0; i < faces.size(); ++i) {
+        QPixmap pixmap = mat2Pixmap(faces.at(i).face);
+        if(NULL == smallFaces.at(i)) {
+            QLabel temp;
+            temp.setFixedHeight(SMALL_FACE_SIZE);
+            temp.setFixedWidth(SMALL_FACE_SIZE);
+            temp.setPixmap(pixmap);
+            smallFaces.at(i) = temp;
+            QLayout* la = this->layout();
+            dynamic_cast<QGridLayout*>(la)->addWidget(smallFaces.at(i), 2, i);
+
+        } else {
+
+        }
     }
 }
 
 void VideoWindow::updateImage() {
-    QPixmap pixmap;
-    pixmap = mat2Pixmap(currentFrame);
+    QPixmap pixmap = mat2Pixmap(currentFrame);
     if(!pixmap.isNull()) {
         l_video->setPixmap(pixmap);
     }

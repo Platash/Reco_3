@@ -34,6 +34,8 @@
 #define CROP_THRESHOLD 10
 #define CROP_THRESHOLDx2 20
 
+static int SMALL_FACE_SIZE = 50;
+
 static int FACE_MAX_SIZE_W = 400;
 static int FACE_MAX_SIZE_H = 400;
 

@@ -7,13 +7,13 @@
 #include <QPixmap>
 #include <QMessageBox>
 
-#include <opencv2/core/utility.hpp>
-#include <opencv2/tracking.hpp>
+//#include <opencv2/core/utility.hpp>
+//#include <opencv2/tracking.hpp>
 #include <opencv2/videoio.hpp>
-#include <opencv2/highgui.hpp>
+//#include <opencv2/highgui.hpp>
 #include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include "opencv2/opencv.hpp"
+//#include <opencv2/imgproc/imgproc.hpp>
+//#include "opencv2/opencv.hpp"
 
 #include <thread>
 #include <atomic>
@@ -88,6 +88,7 @@ private:
     void setIcons();
     void setFailedScreen();
     void askForAverageFace();
+    void updateSmallFaces(std::vector<Face>& faces);
 
     Ui::VideoWindow *ui;
     std::string fileName;
@@ -106,7 +107,7 @@ private:
     cv::Point p2;
     Preprocessing prep;
     ImageProcessor processor;
-
+    std::vector<QLabel> smallFaces;
 };
 
 #endif // VIDEOWINDOW_H

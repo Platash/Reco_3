@@ -3,9 +3,9 @@
 
 #include "common.h"
 
-#include <dirent.h> // for linux systems
-#include <sys/stat.h> // for linux systems
-#include <algorithm>    // std::sort
+//#include <dirent.h> // for linux systems
+//#include <sys/stat.h> // for linux systems
+//#include <algorithm>    // std::sort
 #include <iostream>   //cout
 
 #include "opencv2/objdetect.hpp"
@@ -13,8 +13,9 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include <opencv2/opencv.hpp>
-
 #include <opencv2/core/core.hpp>
+
+#include "common.h"
 
 using namespace std;
 using namespace cv;
