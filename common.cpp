@@ -2,6 +2,8 @@
 
 using namespace std;
 
+//======================= IO methods ==================================================
+
 int readFileNames(vector<string> &filenames, const string &directory) {
 #ifdef WINDOWS
     HANDLE dir;
@@ -78,6 +80,35 @@ void writeImages(std::vector<cv::Mat> &images, std::string path) {
     }
 }
 
+void read_csv(const string& filename, vector<cv::Mat>& images, vector<int>& labels, char separator) {
+    std::ifstream file(filename.c_str(), ifstream::in);
+    if (!file) {
+        string error_message = "No valid input file was given, please check the given filename.";
+        CV_Error(cv::Error::StsBadArg, error_message);
+    }
+    string line, path, classlabel;
+    while (getline(file, line)) {
+        stringstream liness(line);
+        getline(liness, path, separator);
+        getline(liness, classlabel);
+        if(!path.empty() && !classlabel.empty()) {
+            images.push_back(cv::imread(path, 0));
+            labels.push_back(atoi(classlabel.c_str()));
+        }
+    }
+}
+
+void writeShapeToFile(dlib::full_object_detection shape, string path) {
+    ofstream dst;
+    dst.open(path);
+    for(int i = 0; i < shape.num_parts(); ++i) {
+        dst << shape.part(i).x() - 1 << " " << shape.part(i).y() - 1 << std::endl;
+    }
+    dst.close();
+}
+
+//========================= Image processing ============================================
+
 QPixmap mat2Pixmap(cv::Mat matImg) {
     QImage img;
     cv::Mat RGBframe;
@@ -90,11 +121,21 @@ QPixmap mat2Pixmap(cv::Mat matImg) {
     return QPixmap::fromImage(img);
 }
 
-void writeShapeToFile(dlib::full_object_detection shape, string path) {
-    ofstream dst;
-    dst.open(path);
-    for(int i = 0; i < shape.num_parts(); ++i) {
-        dst << shape.part(i).x() - 1 << " " << shape.part(i).y() - 1 << std::endl;
+cv::Mat norm_0_255(cv::InputArray _src) {
+    cv::Mat src = _src.getMat();
+    // Create and return normalized image:
+    cv::Mat dst;
+    switch(src.channels()) {
+    case 1:
+        cv::normalize(_src, dst, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+        break;
+    case 3:
+        cv::normalize(_src, dst, 0, 255, cv::NORM_MINMAX, CV_8UC3);
+        break;
+    default:
+        src.copyTo(dst);
+        break;
     }
-    dst.close();
+    return dst;
 }
+

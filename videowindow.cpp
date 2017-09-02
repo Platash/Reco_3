@@ -9,7 +9,6 @@ VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent)
     setIcons();
     l_video = new VideoLabel();
     if(capture->isOpened()) {
-        ui->slider->setMaximum((int)capture->get(CV_CAP_PROP_FRAME_COUNT));
         frameRate = (int) capture->get(CV_CAP_PROP_FPS);
         state = State::STOPPED;
         isTracking = false;
@@ -71,7 +70,9 @@ void VideoWindow::on_b_stop_clicked() {
     (*capture) >> currentFrame;
     updateImage();
     isTracking = false;
-    askForAverageFace();
+    if(processor.getFaceCount() > 0) {
+            askForAverageFace();
+    }
 }
 
 void VideoWindow::on_b_previous_clicked() {
@@ -152,7 +153,6 @@ void VideoWindow::setFailedScreen()
     ui->b_stop->setEnabled(false);
     ui->b_play->setEnabled(false);
     ui->b_pause->setEnabled(false);
-    ui->slider->setEnabled(false);
     l_video->setText("Failed opening video");
 }
 
@@ -170,9 +170,9 @@ void VideoWindow::play() {
             //equalized = prep.equalize(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(&currentFrame)) {
-                if(processor.pickFace(currentFrame, myTracker.getRoi())) {
-                    updateSmallFaces(processor.getFaces());
-                }
+                //if(processor.pickFace(currentFrame, myTracker.getRoi())) {
+                    //updateSmallFaces(processor.getFaces());
+                //}
             }
         } else {
             this->msleep(delay);
@@ -194,7 +194,7 @@ void VideoWindow::askForAverageFace() {
     }
 }
 
-void VideoWindow::updateSmallFaces(std::vector<Face> &faces) {
+/*void VideoWindow::updateSmallFaces(std::vector<Face> &faces) {
     for(int i = 0; i < faces.size(); ++i) {
         QPixmap pixmap = mat2Pixmap(faces.at(i).face);
         if(NULL == smallFaces.at(i)) {
@@ -210,6 +210,16 @@ void VideoWindow::updateSmallFaces(std::vector<Face> &faces) {
 
         }
     }
+}*/
+
+void VideoWindow::showRecoWindow(QPixmap pixmap) {
+    if(recoWindow != nullptr) {
+        delete recoWindow;
+        recoWindow = nullptr;
+    }
+    recoWindow = new RecoWindow();
+    recoWindow->setLabel(pixmap);
+    recoWindow->show();
 }
 
 void VideoWindow::updateImage() {

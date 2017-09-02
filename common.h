@@ -42,11 +42,15 @@ static int FACE_MAX_SIZE_H = 400;
 static const std::string FACE_RESULT_PATH = "/home/siobhan/UJ/Masters_stuff/results/tracked_faces/";
 static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/haarcascade_frontalface_alt_tree.xml";
 
-
+//===================IO methods =======================
 int readFileNames(std::vector<std::string> &filenames, const std::string &directory);
 void readImages(std::string& directory, std::vector<cv::Mat>& images);
 void writeImages(std::vector<cv::Mat> &images, std::string path);
-QPixmap mat2Pixmap(cv::Mat matImg);
 void writeShapeToFile(dlib::full_object_detection shape, std::string path);
+void read_csv(const std::string& filename, std::vector<cv::Mat>& images, std::vector<int>& labels, char separator = ';');
+
+//==================Image processing =================
+QPixmap mat2Pixmap(cv::Mat matImg);
+
 
 #endif // COMMON_H

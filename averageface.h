@@ -34,7 +34,7 @@ public:
 
     void init(std::string path);
     void getLandmarks(Face face);
-    void makeAverageFace(std::vector<Face>& faces);
+    cv::Mat makeAverageFace(std::vector<Face>& faces);
 
 private:
     void similarityTransform(std::vector<cv::Point2f>& inPoints, std::vector<cv::Point2f>& outPoints, cv::Mat &tform);

@@ -20,7 +20,7 @@ void AverageFace::getLandmarks(Face face) {
     }
 }
 
-void AverageFace::makeAverageFace(std::vector<Face>& faces) {
+cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
     int numImages = faces.size();
 
@@ -126,6 +126,7 @@ void AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
     // Divide by numImages to get average
     output = output / (double)numImages;
+    return output;
 }
 
 void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,

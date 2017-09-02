@@ -53,13 +53,6 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QSlider" name="slider">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
     <layout class="QHBoxLayout" name="flow_control" stretch="0,0,0,0,0,0,0">
      <property name="spacing">
       <number>4</number>

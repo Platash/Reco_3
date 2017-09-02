@@ -19,7 +19,7 @@
 //#include <time.h>
 #include <algorithm>
 
-#include "mytracker.h"
+#include "peopletracker.h"
 #include "facedetector.h"
 #include "facerecognition.h"
 #include "qualityassessment.h"
@@ -40,6 +40,7 @@ public:
     bool pickFace(cv::Mat image, Rect2d roi);
     void processAverageFace();
     std::vector<Face> getFaces();
+    int getFaceCount();
 
     std::atomic<int> faceCount;
     cv::Mat averageFace;

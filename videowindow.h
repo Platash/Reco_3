@@ -21,11 +21,12 @@
 
 #include "videolabel.h"
 #include "imageprocessor.h"
-#include "mytracker.h"
+#include "peopletracker.h"
 #include "facedetector.h"
 #include "preprocessing.h"
 #include "common.h"
 #include "imageprocessor.h"
+#include "recowindow.h"
 
 namespace Ui {
 class VideoWindow;
@@ -89,13 +90,14 @@ private:
     void setFailedScreen();
     void askForAverageFace();
     void updateSmallFaces(std::vector<Face>& faces);
+    void showRecoWindow(QPixmap pixmap);
 
     Ui::VideoWindow *ui;
     std::string fileName;
     cv::VideoCapture* capture;
     std::atomic<State> state;
     std::atomic<bool> isTracking;
-    MyTracker myTracker;
+    PeopleTracker myTracker;
     int frameRate;
     std::thread* playThread;
     cv::Mat currentFrame;
@@ -103,11 +105,13 @@ private:
     time_t start;
     time_t end;
     VideoLabel* l_video;
+    RecoWindow* recoWindow;
     cv::Point p1;
     cv::Point p2;
     Preprocessing prep;
     ImageProcessor processor;
     std::vector<QLabel> smallFaces;
+
 };
 
 #endif // VIDEOWINDOW_H

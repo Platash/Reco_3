@@ -15,10 +15,10 @@
 //#include "facedetector.h"
 
 
-class MyTracker
+class PeopleTracker
 {
 public:
-    MyTracker();
+    PeopleTracker();
     void startTracking(std::string trackerType, cv::Mat* frame,
                        int p1_x_, int p1_y_, int p2_x_, int p2_y_);
     void stopTracking();

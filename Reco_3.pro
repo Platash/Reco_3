@@ -14,7 +14,7 @@ TEMPLATE = app
 
 INCLUDEPATH += /usr/local/include/opencv2
 INCLUDEPATH += /home/siobhan/UJ/Masters/Libs/dlib-19.4
-#INCLUDEPATH += /usr/local/include/opencv
+INCLUDEPATH += /usr/local/include/opencv
 
 unix {
     CONFIG += link_pkgconfig
@@ -48,7 +48,6 @@ SOURCES += \
     videowindow.cpp \
     preprocessing.cpp \
     videolabel.cpp \
-    mytracker.cpp \
     facedetector.cpp \
     facerecognition.cpp \
     qualityassessment.cpp \
@@ -56,7 +55,9 @@ SOURCES += \
     common.cpp \
     imageprocessor.cpp \
     averageface.cpp \
-    ../../../UJ/Masters/Libs/dlib-19.4/dlib/all/source.cpp
+    ../../../UJ/Masters/Libs/dlib-19.4/dlib/all/source.cpp \
+    peopletracker.cpp \
+    recowindow.cpp
 
 
 
@@ -64,21 +65,23 @@ HEADERS += \
         mainwindow.h \
     videowindow.h \
     preprocessing.h \
-    videolabel.h \
     common.h \
-    mytracker.h \
     facedetector.h \
     facerecognition.h \
     qualityassessment.h \
     face.h \
     imageprocessor.h \
-    averageface.h
+    averageface.h \
+    peopletracker.h \
+    videolabel.h \
+    recowindow.h
 
 
 
 FORMS += \
         mainwindow.ui \
-    videowindow.ui
+    videowindow.ui \
+    recowindow.ui
 
 DISTFILES += \
     graphics/i_next.png \

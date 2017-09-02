@@ -1,16 +1,16 @@
-#include "mytracker.h"
+#include "peopletracker.h"
 #include "common.h"
 
 enum class TrackerType {
 
 };
 
-MyTracker::MyTracker() {
+PeopleTracker::PeopleTracker() {
     roiChanged = false;
 }
 
 
-void MyTracker::startTracking(std::string trackerType, cv::Mat* frame_p,
+void PeopleTracker::startTracking(std::string trackerType, cv::Mat* frame_p,
                               int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
     fileNameIndex = 0;
     frameCount = 0;
@@ -24,7 +24,7 @@ void MyTracker::startTracking(std::string trackerType, cv::Mat* frame_p,
     tracker->init(*frame_p, roi);
 }
 
-void MyTracker::modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
+void PeopleTracker::modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
     std::cout << "modify tracking" << std::endl;
     p1_x = p1_x_;
     p1_x = p1_x_;
@@ -34,17 +34,17 @@ void MyTracker::modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
     roiChanged = true;
 }
 
-void MyTracker::stopTracking() {
+void PeopleTracker::stopTracking() {
 }
 
-cv::Rect2d MyTracker::getRoi() {
+cv::Rect2d PeopleTracker::getRoi() {
     return roi;
 }
-void MyTracker::setRoi(cv::Rect2d roi_) {
+void PeopleTracker::setRoi(cv::Rect2d roi_) {
     roi = roi_;
 }
 
-bool MyTracker::track(cv::Mat* frame_p) {
+bool PeopleTracker::track(cv::Mat* frame_p) {
     if(roiChanged) {
         std::cout << "roi changed" << std::endl;
         roi = cv::Rect2d(cv::Point(p1_x, p1_y), cv::Point(p2_x, p2_y));
