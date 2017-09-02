@@ -38,8 +38,8 @@ public:
     }
 
     bool pickFace(cv::Mat image, Rect2d roi);
-    void processAverageFace();
-    std::vector<Face> getFaces();
+    bool processAverageFace();
+    std::vector<Face>& getFaces();
     int getFaceCount();
 
     std::atomic<int> faceCount;

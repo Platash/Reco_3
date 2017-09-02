@@ -18,19 +18,21 @@ bool ImageProcessor::pickFace(cv::Mat image, cv::Rect2d roi) {
         }
         return false;
     }
-
+    return false;
 }
 
 
-
-void ImageProcessor::processAverageFace() {
-    for(auto face: faces) {
+bool ImageProcessor::processAverageFace() {
+    for(auto& face: faces) {
         averageFaceCreator.getLandmarks(face);
     }
-
+   std::cout << "peocess average1: " << faces.size() << std::endl;
+    std::cout << "peocess average2: " << faces.at(0).landmarks.size() << std::endl;
+    averageFace = averageFaceCreator.makeAverageFace(faces);
+    return true;
 }
 
-std::vector<Face> ImageProcessor::getFaces() {
+std::vector<Face> &ImageProcessor::getFaces() {
     return faces;
 }
 

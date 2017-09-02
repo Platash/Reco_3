@@ -33,7 +33,7 @@ public:
     }
 
     void init(std::string path);
-    void getLandmarks(Face face);
+    void getLandmarks(Face &face);
     cv::Mat makeAverageFace(std::vector<Face>& faces);
 
 private:

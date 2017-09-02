@@ -2,35 +2,44 @@
 
 void AverageFace::init(std::string path) {
     dlib::deserialize(path) >> shapePredictor;
+    isInitialized = true;
 }
 
-void AverageFace::getLandmarks(Face face) {
+void AverageFace::getLandmarks(Face& face) {
+    std::cout << "start getLandmarks" << std::endl;
     //array2d<rgb_pixel> img;
     if(!isInitialized) {
         init(LANDMARKS_PREDICTOR_PATH);
+
     }
     dlib::array2d<dlib::bgr_pixel> dlibImage;
     dlib::assign_image(dlibImage, dlib::cv_image<dlib::bgr_pixel>(face.face));
     dlib::rectangle rec(dlibImage.nc(), dlibImage.nr());
 
     dlib::full_object_detection shape = shapePredictor(dlibImage, rec);
-
+    std::cout << "shape.size: " << shape.num_parts() << std::endl;
     for(int i = 0; i < shape.num_parts(); ++i) {
+        //std::cout << i << " " << shape.part(i).x() << " " << shape.part(i).y()<< std::endl;
         face.landmarks.push_back(cv::Point2f(shape.part(i).x(), shape.part(i).y()));
     }
+    std::cout << "finish getLandmarks" <<face.landmarks.size() <<   std::endl;
 }
 
 cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
+    std::cout << "start makeAverageFace" << std::endl;
 
     int numImages = faces.size();
+    std::cout << "31" << std::endl;
 
     // Eye corners
     std::vector<cv::Point2f> eyecornerDst, eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f( 0.3*FACE_MAX_SIZE_W, FACE_MAX_SIZE_H/3));
-    eyecornerDst.push_back(cv::Point2f( 0.7*FACE_MAX_SIZE_W, FACE_MAX_SIZE_H/3));
+    eyecornerDst.push_back(cv::Point2f(0.3 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
+    eyecornerDst.push_back(cv::Point2f(0.7 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
 
-    eyecornerSrc.push_back(cv::Point2f(0,0));
-    eyecornerSrc.push_back(cv::Point2f(0,0));
+    eyecornerSrc.push_back(cv::Point2f(0, 0));
+    eyecornerSrc.push_back(cv::Point2f(0, 0));
+
+    std::cout << "41" << std::endl;
 
     // Space for normalized images and points.
     std::vector <cv::Mat> imagesNorm;
@@ -52,29 +61,37 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
     // Warp images and trasnform landmarks to output coordinate system,
     // and find average of transformed landmarks.
-
-    for(auto face: faces) {
+    std::cout << "63" << std::endl;
+    std::cout << "64: " << faces.at(0).landmarks.size() << std::endl;
+    for(auto& face: faces) {
         std::vector <cv::Point2f> points = face.landmarks;
+        std::cout << face.landmarks.size() <<std::endl;
         cv::Mat img_face = face.face;
+        std::cout << "68" << std::endl;
+
         img_face.convertTo(img_face, CV_32FC3, 1/255.0);
+        std::cout << "71" << std::endl;
         // The corners of the eyes are the landmarks number 36 and 45
         eyecornerSrc[0] = face.landmarks.at(36);
         eyecornerSrc[1] = face.landmarks.at(45);
 
         // Calculate similarity transform
         cv::Mat tform;
+        std::cout << "78" << std::endl;
         similarityTransform(eyecornerSrc, eyecornerDst, tform);
-
+        std::cout << "80" << std::endl;
         // Apply similarity transform to input image and landmarks
         cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
+        std::cout << "83" << std::endl;
         warpAffine(img_face, img, tform, img.size());
+        std::cout << "75" << std::endl;
         transform(points, points, tform);
-
+        std::cout << "87" << std::endl;
         // Calculate average landmark locations
         for (size_t j = 0; j < points.size(); j++) {
             pointsAvg[j] += points[j] * ( 1.0 / numImages);
         }
-
+        std::cout << "92" << std::endl;
         // Append boundary points. Will be used in Delaunay Triangulation
         for (size_t j = 0; j < boundaryPts.size(); j++) {
             points.push_back(boundaryPts[j]);
@@ -83,16 +100,23 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         pointsNorm.push_back(points);
         imagesNorm.push_back(img);
     }
+    std::cout << "103" << std::endl;
 
     // Append boundary points to average points.
     for ( size_t j = 0; j < boundaryPts.size(); j++) {
+        std::cout << "J: " << j <<std::endl;
+        std::cout << boundaryPts.size() << std::endl;
+        std::cout << pointsAvg.size() << std::endl;
+
         pointsAvg.push_back(boundaryPts[j]);
     }
+    std::cout << "109" << std::endl;
 
     // Calculate Delaunay triangles
     cv::Rect rect(0, 0, FACE_MAX_SIZE_W, FACE_MAX_SIZE_H);
     std::vector<std::vector<int>> dt;
     calculateDelaunayTriangles(rect, pointsAvg, dt);
+    std::cout << "115" << std::endl;
 
     // Space for output image
     cv::Mat output = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
@@ -111,21 +135,25 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
                 cv::Point2f pOut = pointsAvg[dt[j][k]];
                 constrainPoint(pOut,size);
+                std::cout << "134" << std::endl;
 
                 tin.push_back(pIn);
                 tout.push_back(pOut);
             }
+            std::cout << "139" << std::endl;
 
             warpTriangle(imagesNorm[i], img, tin, tout);
         }
 
         // Add image intensities for averaging
         output = output + img;
+        std::cout << "146" << std::endl;
 
     }
 
     // Divide by numImages to get average
     output = output / (double)numImages;
+    std::cout << "finish makeAverageFace" << std::endl;
     return output;
 }
 
@@ -148,6 +176,7 @@ void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::v
 
 void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Point2f> &points,
                                              std::vector<std::vector<int> > &delaunayTri) {
+    std::cout << "start delaunay" << std::endl;
     // Create an instance of Subdiv2D
     cv::Subdiv2D subdiv(rect);
 
@@ -178,6 +207,8 @@ void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Poin
             delaunayTri.push_back(ind);
         }
     }
+    std::cout << "finish delaunay" << std::endl;
+
 }
 
 void AverageFace::applyAffineTransform(cv::Mat &warpImage, cv::Mat &src, std::vector<cv::Point2f> &srcTri,

@@ -170,9 +170,7 @@ void VideoWindow::play() {
             //equalized = prep.equalize(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(&currentFrame)) {
-                //if(processor.pickFace(currentFrame, myTracker.getRoi())) {
-                    //updateSmallFaces(processor.getFaces());
-                //}
+                processor.pickFace(currentFrame, myTracker.getRoi());
             }
         } else {
             this->msleep(delay);
@@ -190,7 +188,9 @@ void VideoWindow::askForAverageFace() {
     msgBox.addButton(QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     if(msgBox.exec() == QMessageBox::Yes){
-        processor.processAverageFace();
+        if(processor.processAverageFace()) {
+            showRecoWindow(mat2Pixmap(processor.averageFace));
+        }
     }
 }
 
