@@ -71,7 +71,7 @@ void VideoWindow::on_b_stop_clicked() {
     updateImage();
     isTracking = false;
     if(processor.getFaceCount() > 0) {
-            askForAverageFace();
+        askForAverageFace();
     }
 }
 
@@ -160,6 +160,7 @@ void VideoWindow::play() {
     int delay = (1000/frameRate);
     // cv::Mat equalized;
     // cv::Mat equalized_color;
+    cv::Rect2d bestRoi;
     while (state == State::PLAYING) {
         (*capture) >> currentFrame;
         if(currentFrame.rows==0 || currentFrame.cols==0) {
@@ -169,8 +170,9 @@ void VideoWindow::play() {
         if(isTracking) {
             //equalized = prep.equalize(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
-            if(myTracker.track(&currentFrame)) {
-                processor.pickFace(currentFrame, myTracker.getRoi());
+            if(myTracker.track(currentFrame)) {
+                processor.pickFace(currentFrame, myTracker.getRoi(), bestRoi);
+                rectangle(currentFrame, myTracker.getRoi(), cv::Scalar(255, 0, 0), 2, 1);
             }
         } else {
             this->msleep(delay);
@@ -189,6 +191,8 @@ void VideoWindow::askForAverageFace() {
     msgBox.setDefaultButton(QMessageBox::Yes);
     if(msgBox.exec() == QMessageBox::Yes){
         if(processor.processAverageFace()) {
+            std::cout << "askForAverageFace 192" << std::endl;
+
             showRecoWindow(mat2Pixmap(processor.averageFace));
         }
     }
@@ -213,6 +217,7 @@ void VideoWindow::askForAverageFace() {
 }*/
 
 void VideoWindow::showRecoWindow(QPixmap pixmap) {
+    std::cout << "showRecoWindow" << std::endl;
     if(recoWindow != nullptr) {
         delete recoWindow;
         recoWindow = nullptr;

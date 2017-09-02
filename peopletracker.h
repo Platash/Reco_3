@@ -22,10 +22,10 @@ public:
     void startTracking(std::string trackerType, cv::Mat* frame,
                        int p1_x_, int p1_y_, int p2_x_, int p2_y_);
     void stopTracking();
-    bool track(cv::Mat* frame);
+    bool track(cv::Mat frame);
     void modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_);
     void setRoi(cv::Rect2d roi_);
-    cv::Rect2d getRoi();
+    cv::Rect2d &getRoi();
 
     std::string trackerType = "KCF";
 

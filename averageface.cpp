@@ -28,8 +28,8 @@ void AverageFace::getLandmarks(Face& face) {
 cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     std::cout << "start makeAverageFace" << std::endl;
 
-    int numImages = faces.size();
-    std::cout << "31" << std::endl;
+    int faceCount = faces.size();
+    std::cout << "face count: " << faces.size() << std::endl;
 
     // Eye corners
     std::vector<cv::Point2f> eyecornerDst, eyecornerSrc;
@@ -46,7 +46,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     std::vector <std::vector<cv::Point2f>> pointsNorm;
 
     // Space for average landmark points
-    std::vector<cv::Point2f> pointsAvg(faces.size());
+    std::vector<cv::Point2f> pointsAvg(68);
 
     // 8 Boundary points for Delaunay Triangulation
     std::vector<cv::Point2f> boundaryPts;
@@ -61,16 +61,25 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
     // Warp images and trasnform landmarks to output coordinate system,
     // and find average of transformed landmarks.
-    std::cout << "63" << std::endl;
-    std::cout << "64: " << faces.at(0).landmarks.size() << std::endl;
+    int x = 0;
     for(auto& face: faces) {
+         std::cout << "finish getLandmarks" <<face.landmarks.size() << std::endl;
+        if(face.landmarks.size() != 68) {
+            --faceCount;
+            continue;
+        }
+         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_b" + std::to_string(x) +".jpg", face.face);
+         ++x;
         std::vector <cv::Point2f> points = face.landmarks;
         std::cout << face.landmarks.size() <<std::endl;
+        std::cout << points.size() <<std::endl;
         cv::Mat img_face = face.face;
-        std::cout << "68" << std::endl;
+       // std::cout << "68" << std::endl;
 
-        img_face.convertTo(img_face, CV_32FC3, 1/255.0);
-        std::cout << "71" << std::endl;
+        img_face.convertTo(img_face, CV_32FC3, 1);
+        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_c" + std::to_string(x) +".jpg", img_face);
+        ++x;
+        //std::cout << "71" << std::endl;
         // The corners of the eyes are the landmarks number 36 and 45
         eyecornerSrc[0] = face.landmarks.at(36);
         eyecornerSrc[1] = face.landmarks.at(45);
@@ -79,19 +88,17 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         cv::Mat tform;
         std::cout << "78" << std::endl;
         similarityTransform(eyecornerSrc, eyecornerDst, tform);
-        std::cout << "80" << std::endl;
+        //std::cout << "80" << std::endl;
         // Apply similarity transform to input image and landmarks
         cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
-        std::cout << "83" << std::endl;
         warpAffine(img_face, img, tform, img.size());
-        std::cout << "75" << std::endl;
+        //std::cout << "75" << std::endl;
         transform(points, points, tform);
-        std::cout << "87" << std::endl;
+        //std::cout << "87" << std::endl;
         // Calculate average landmark locations
         for (size_t j = 0; j < points.size(); j++) {
-            pointsAvg[j] += points[j] * ( 1.0 / numImages);
+            pointsAvg[j] += points[j] * ( 1.0 / faceCount);
         }
-        std::cout << "92" << std::endl;
         // Append boundary points. Will be used in Delaunay Triangulation
         for (size_t j = 0; j < boundaryPts.size(); j++) {
             points.push_back(boundaryPts[j]);
@@ -100,30 +107,21 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         pointsNorm.push_back(points);
         imagesNorm.push_back(img);
     }
-    std::cout << "103" << std::endl;
-
     // Append boundary points to average points.
     for ( size_t j = 0; j < boundaryPts.size(); j++) {
-        std::cout << "J: " << j <<std::endl;
-        std::cout << boundaryPts.size() << std::endl;
-        std::cout << pointsAvg.size() << std::endl;
-
         pointsAvg.push_back(boundaryPts[j]);
     }
-    std::cout << "109" << std::endl;
-
     // Calculate Delaunay triangles
     cv::Rect rect(0, 0, FACE_MAX_SIZE_W, FACE_MAX_SIZE_H);
     std::vector<std::vector<int>> dt;
     calculateDelaunayTriangles(rect, pointsAvg, dt);
-    std::cout << "115" << std::endl;
 
     // Space for output image
     cv::Mat output = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
     cv::Size size(FACE_MAX_SIZE_W,FACE_MAX_SIZE_H);
 
     // Warp input images to average image landmarks
-    for(size_t i = 0; i < numImages; i++) {
+    for(size_t i = 0; i < faceCount; i++) {
         cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
         // Transform triangles one by one
         for(size_t j = 0; j < dt.size(); j++) {
@@ -135,15 +133,13 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
                 cv::Point2f pOut = pointsAvg[dt[j][k]];
                 constrainPoint(pOut,size);
-                std::cout << "134" << std::endl;
 
                 tin.push_back(pIn);
                 tout.push_back(pOut);
             }
-            std::cout << "139" << std::endl;
-
             warpTriangle(imagesNorm[i], img, tin, tout);
         }
+        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_a" + std::to_string(i) +".jpg", img);
 
         // Add image intensities for averaging
         output = output + img;
@@ -152,7 +148,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     }
 
     // Divide by numImages to get average
-    output = output / (double)numImages;
+    output = output / (double)faceCount;
     std::cout << "finish makeAverageFace" << std::endl;
     return output;
 }

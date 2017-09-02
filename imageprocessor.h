@@ -37,7 +37,7 @@ public:
     ~ImageProcessor() {
     }
 
-    bool pickFace(cv::Mat image, Rect2d roi);
+    bool pickFace(cv::Mat image, Rect2d &roi, Rect2d &bestRoi);
     bool processAverageFace();
     std::vector<Face>& getFaces();
     int getFaceCount();

@@ -16,5 +16,7 @@ RecoWindow::~RecoWindow() {
 void RecoWindow::setLabel(QPixmap pixmap) {
     averageLabel = new QLabel;
     averageLabel->setPixmap(pixmap);
+    QLayout* la = this->layout();
+    dynamic_cast<QGridLayout*>(la)->addWidget(averageLabel, 0, 0);
 }
 

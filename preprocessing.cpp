@@ -1,22 +1,19 @@
 #include "preprocessing.h"
 
 Mat Preprocessing::equalize(const Mat &src) {
-    string source_window = "Source image";
-    string equalized_window = "Equalized Image";
-    string equalized_window_cl = "Equalized Image Clahe";
-
     Mat im_gray;
     cvtColor(src,im_gray,CV_RGB2GRAY);
 
-    Mat dst_eq;
+   // Mat dst_eq;
     Mat dst_clahe;
-    equalizeHist(im_gray, dst_eq);
+    Mat dst_color;
+    //equalizeHist(im_gray, dst_eq);
 
     Ptr<CLAHE> clahe = createCLAHE();
     clahe->setClipLimit(2);
     clahe->apply(im_gray,dst_clahe);
-    cvtColor(dst_clahe,dst_clahe, CV_GRAY2RGB);
-    return dst_clahe;
+    cvtColor(dst_clahe,dst_color, CV_GRAY2RGB);
+    return dst_color;
 }
 
 Mat Preprocessing::rescale(Mat& src) {

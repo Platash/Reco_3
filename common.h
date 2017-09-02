@@ -28,6 +28,7 @@
 #define CROP_THRESHOLDx2 20
 #define SOURCE_IMAGE_MAX_SIZE 800
 
+
 #define CASCADE_PATH "/home/siobhan/UJ/Masters/Cascades/"
 #define LANDMARKS_PREDICTOR_PATH "/home/siobhan/UJ/Masters_stuff/shape_predictor_68_face_landmarks.dat"
 
@@ -35,6 +36,7 @@
 #define CROP_THRESHOLDx2 20
 
 static int SMALL_FACE_SIZE = 50;
+static int LANDMARKS_COUNT = 68;
 
 static int FACE_MAX_SIZE_W = 400;
 static int FACE_MAX_SIZE_H = 400;
