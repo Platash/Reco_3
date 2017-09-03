@@ -24,6 +24,7 @@ public:
     int predict();
     void prepareImages(std::string pathSrc, std::string pathDst);
 
+    void prepareDatabase(std::string path);
 private:
     int vectorsCount = 10;
     double threshold = 10.0;

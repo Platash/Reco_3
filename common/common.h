@@ -46,6 +46,7 @@ static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/
 
 //===================IO methods =======================
 int readFileNames(std::vector<std::string> &filenames, const std::string &directory);
+int readSubdirNames(std::vector<std::string> &subdirnames, const std::string &directory);
 void readImages(std::string& directory, std::vector<cv::Mat>& images);
 void writeImages(std::vector<cv::Mat> &images, std::string path);
 void writeShapeToFile(dlib::full_object_detection shape, std::string path);
