@@ -23,8 +23,8 @@
 #include <vector>
 #include <iostream>
 
-#include "face.h"
-#include "common.h"
+#include "common/face.h"
+#include "common/common.h"
 
 class AverageFace {
 public:
@@ -36,17 +36,22 @@ public:
     void getLandmarks(Face &face);
     cv::Mat makeAverageFace(std::vector<Face>& faces);
 
+    bool alignFace(Face& faceSrc, Face& faceDst, std::vector<cv::Point2f>& eyecornerSrc,
+                      std::vector<cv::Point2f>& eyecornerDst);
+
 private:
     void similarityTransform(std::vector<cv::Point2f>& inPoints, std::vector<cv::Point2f>& outPoints, cv::Mat &tform);
     void calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Point2f> &points, std::vector<std::vector<int>> &delaunayTri);
     void applyAffineTransform(cv::Mat &warpImage, cv::Mat &src, std::vector<cv::Point2f> &srcTri, std::vector<cv::Point2f> &dstTri);
     void warpTriangle(cv::Mat &img1, cv::Mat &img2, std::vector<cv::Point2f> t1, std::vector<cv::Point2f> t2);
     void constrainPoint(cv::Point2f &p, cv::Size sz);
+    void setBoundaryPoints(std::vector<cv::Point2f> &boundaryPts);
 
     dlib::shape_predictor shapePredictor;
     bool isInitialized;
     float s60 = sin(60 * M_PI / 180.0);
     float c60 = cos(60 * M_PI / 180.0);
+
 };
 
 #endif // AVERAGEFACE_H

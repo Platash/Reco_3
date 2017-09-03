@@ -1,8 +1,6 @@
 #ifndef PREPROCESSING_H
 #define PREPROCESSING_H
 
-#include "common.h"
-
 //#include <dirent.h> // for linux systems
 //#include <sys/stat.h> // for linux systems
 //#include <algorithm>    // std::sort
@@ -15,7 +13,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 
-#include "common.h"
+#include "common/common.h"
 
 using namespace std;
 using namespace cv;

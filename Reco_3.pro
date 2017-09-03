@@ -44,37 +44,37 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    videowindow.cpp \
     preprocessing.cpp \
-    videolabel.cpp \
     facedetector.cpp \
-    facerecognition.cpp \
     qualityassessment.cpp \
-    face.cpp \
-    common.cpp \
     imageprocessor.cpp \
     averageface.cpp \
     ../../../UJ/Masters/Libs/dlib-19.4/dlib/all/source.cpp \
     peopletracker.cpp \
-    recowindow.cpp
+    common/common.cpp \
+    gui/mainwindow.cpp \
+    gui/videolabel.cpp \
+    gui/videowindow.cpp \
+    gui/recowindow.cpp \
+    common/face.cpp \
+    reco/facerecognition.cpp
 
 
 
 HEADERS += \
-        mainwindow.h \
-    videowindow.h \
     preprocessing.h \
-    common.h \
     facedetector.h \
-    facerecognition.h \
     qualityassessment.h \
-    face.h \
     imageprocessor.h \
     averageface.h \
     peopletracker.h \
-    videolabel.h \
-    recowindow.h
+    common/common.h \
+    gui/videolabel.h \
+    gui/videowindow.h \
+    gui/recowindow.h \
+    gui/mainwindow.h \
+    common/face.h \
+    reco/facerecognition.h
 
 
 

@@ -37,13 +37,14 @@ bool FaceDetector::getBestFace(cv::Mat& frame, cv::Rect2d& roi, cv::Rect& bestFa
 
 }
 
-void FaceDetector::prepareFaces(std::string directory) {
+std::vector<cv::Mat> FaceDetector::detectAndCropFaces(std::string directory) {
     std::vector<cv::Mat> images;
     readImages(directory, images);
     for(size_t i = 0; i < images.size(); ++i) {
         cv::Mat image;
         detectAndCropFace(images[i], image);
     }
+    return images;
 }
 
 bool FaceDetector::detectAndCropFace(const cv::Mat& src, cv::Mat& dst) {

@@ -9,7 +9,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "opencv2/opencv.hpp"
 
-#include "common.h"
+#include "common/common.h"
 
 class FaceDetector
 {
@@ -18,7 +18,7 @@ public:
 
     bool getBestFace(cv::Mat& frame, cv::Rect2d& roi, cv::Rect &bestFaceRoi);
 
-    void prepareFaces(std::string directory);
+    std::vector<cv::Mat> detectAndCropFaces(std::string directory);
     bool detectAndCropFace(const cv::Mat &src, cv::Mat& dst);
 private:
     cv::CascadeClassifier face_cascade;

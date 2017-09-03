@@ -24,7 +24,7 @@
 #include "peopletracker.h"
 #include "facedetector.h"
 #include "preprocessing.h"
-#include "common.h"
+#include "common/common.h"
 #include "imageprocessor.h"
 #include "recowindow.h"
 

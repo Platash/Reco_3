@@ -10,7 +10,7 @@
 #include <opencv2/objdetect.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
-
+#include "facedetector.h"
 
 
 class FaceRecognition
@@ -22,12 +22,14 @@ public:
 
     void train(std::string path);
     int predict();
-
-
+    void prepareImages(std::string pathSrc, std::string pathDst);
+    
+    void prepareDatabase(std::string path);
 private:
     int vectorsCount = 10;
     double threshold = 10.0;
     cv::Ptr<cv::face::FaceRecognizer> model = cv::face::createEigenFaceRecognizer(vectorsCount, threshold);
+    FaceDetector faceDetector;
 };
 
 #endif // FACERECOGNITION_H

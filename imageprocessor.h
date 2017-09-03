@@ -21,10 +21,10 @@
 
 #include "peopletracker.h"
 #include "facedetector.h"
-#include "facerecognition.h"
+#include "reco/facerecognition.h"
 #include "qualityassessment.h"
-#include "common.h"
-#include "face.h"
+#include "common/common.h"
+#include "common/face.h"
 #include "preprocessing.h"
 #include "averageface.h"
 
