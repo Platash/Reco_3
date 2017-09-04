@@ -2,6 +2,8 @@
 
 using namespace std;
 
+typedef struct stat Stat;
+
 //======================= IO methods ==================================================
 
 int readFileNames(vector<string> &filenames, const string &directory) {
@@ -100,20 +102,20 @@ int readSubdirNames(std::vector<string> &subdirnames, const string &directory) {
 
         if (is_directory) {
             subdirnames.push_back(file_name);
-                    //        filenames.push_back(full_file_name);
+            //        filenames.push_back(full_file_name);
         }
 
     }
     closedir(dir);
 #endif
-    std::sort (filenames.begin(), filenames.end()); //optional, sort the filenames
-    return(filenames.size()); //Return how many we found
+    std::sort (subdirnames.begin(), subdirnames.end()); //optional, sort the filenames
+    return(subdirnames.size()); //Return how many we found
 }
 
 
 void readImages(std::string& directory, std::vector<cv::Mat>& images) {
     vector<string> fileNames;
-
+    std::cout << "starting readImages " << directory << std::endl;
     int num_files = readFileNames(fileNames, directory);
     cout << "Number of files = " << num_files << endl;
     for (size_t i = 0; i < fileNames.size(); ++i) {
@@ -128,9 +130,22 @@ void readImages(std::string& directory, std::vector<cv::Mat>& images) {
     }
 }
 
+void mkdir(std::string path) {
+    struct stat st = {0};
+
+    if (stat(path.c_str(), &st) == -1) {
+        mkdir(path.c_str(), 0777);
+    }
+}
+
 void writeImages(std::vector<cv::Mat> &images, std::string path) {
+    std::cout << "Start: writeImages: " << path << " " << images.size() << std::endl;
+
+    mkdir(path);
+
     for(size_t i = 0; i < images.size(); ++i) {
-        cv::imwrite(path + "BW/img_"+ to_string(i) + ".jpg", images.at(i));
+        std::cout << i << std::endl;
+        cv::imwrite(path + "img_"+ to_string(i) + ".jpg", images.at(i));
     }
 }
 

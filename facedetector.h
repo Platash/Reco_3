@@ -18,7 +18,7 @@ public:
 
     bool getBestFace(cv::Mat& frame, cv::Rect2d& roi, cv::Rect &bestFaceRoi);
 
-    std::vector<cv::Mat> detectAndCropFaces(std::string directory);
+    bool detectAndCropFaces(std::string directory, std::vector<cv::Mat> & faces);
     bool detectAndCropFace(const cv::Mat &src, cv::Mat& dst);
 private:
     cv::CascadeClassifier face_cascade;

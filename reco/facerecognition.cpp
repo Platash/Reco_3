@@ -10,20 +10,25 @@ int FaceRecognition::predict() {
 
 }
 
-void FaceRecognition::prepareDatabase(std::string path) {
+void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst) {
+    prepareImages(pathSrc, pathDst);
 
 }
 
 void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
-    std::vector<std::string> subdirnames;
+    std::vector<std::string> subdirnames ;
     int subdirCount = readSubdirNames(subdirnames, pathSrc);
     std::cout << subdirCount << std::endl;
-    std::vector<cv::Mat> images;
+    std::cout << pathSrc << std::endl;
+
     for(auto subdirname: subdirnames) {
         std::cout << subdirname << std::endl;
-        //images = faceDetector.detectAndCropFaces(pathSrc);
+        std::vector<cv::Mat> images;
+        if(faceDetector.detectAndCropFaces(pathSrc + "/" + subdirname + "/", images)) {
+            std::string path = pathDst + "/" + subdirname + "/";
+            writeImages(images, path);
+        }
 
-       // writeImages(images, pathDst + subdirname);
     }
 
 }
