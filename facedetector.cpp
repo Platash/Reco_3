@@ -67,13 +67,35 @@ bool FaceDetector::detectAndCropFace(const cv::Mat& src, cv::Mat& dst) {
     }
 
     std::cout << "continue detectAndCropFace " << std::endl;
+    int magic = 20;
+    int magic2 = 40;
 
-//    detected_faces[0].x = std::max(detected_faces[0].x - 20, 0);
-//    detected_faces[0].width = std::min(detected_faces[0].x + detected_faces[0].width + 20, src.cols);
-//    detected_faces[0].y = std::max(detected_faces[0].y - 20, 0);
-//    detected_faces[0].height = std::min(detected_faces[0].y + detected_faces[0].height + 20, src.rows);
+    int a = src.cols - (detected_faces[0].x + detected_faces[0].width + 40);
+    int b = detected_faces[0].x - 20;
+    int c = src.rows - (detected_faces[0].y + detected_faces[0].height + 40);
+    int d = detected_faces[0].y - 20;
 
-    std::cout << "continue detectAndCropFace2 " << std::endl;
+    if(a >=0 && b >= 0) {
+        detected_faces[0].x -= 20;
+        detected_faces[0].width += 40;
+    } else {
+        int e = std::min(a, b);
+        int f = 20 + e;
+        detected_faces[0].x -= f;
+        detected_faces[0].width += 2 * f;
+    }
+
+    if(c >=0 && d >= 0) {
+        detected_faces[0].y -= 20;
+        detected_faces[0].height += 40;
+    } else {
+        int e = std::min(c, d);
+        int f = 20 + e;
+        detected_faces[0].y -= f;
+        detected_faces[0].height += 2 * f;
+    }
+
+
 
     std::cout << "continue detectAndCropFace3 " << std::endl;
 
