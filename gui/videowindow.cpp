@@ -173,6 +173,7 @@ void VideoWindow::play() {
             if(myTracker.track(currentFrame)) {
                 processor.pickFace(currentFrame, myTracker.getRoi(), bestRoi);
                 rectangle(currentFrame, myTracker.getRoi(), cv::Scalar(255, 0, 0), 2, 1);
+                rectangle(currentFrame, bestRoi, cv::Scalar(255, 255, 0), 2, 1);
             }
         } else {
             this->msleep(delay);

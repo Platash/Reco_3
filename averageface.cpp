@@ -36,12 +36,19 @@ void AverageFace::setBoundaryPoints(std::vector<cv::Point2f>& boundaryPts) {
     boundaryPts.push_back(cv::Point2f(0, FACE_MAX_SIZE_H / 2));
 }
 
-bool AverageFace::alignFace(Face& faceSrc, Face& faceDst, std::vector<cv::Point2f>& eyecornerSrc,
-                               std::vector<cv::Point2f>& eyecornerDst) {
+bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
     std::cout << "start alignFace " <<faceSrc.landmarks.size() << std::endl;
     if(faceSrc.landmarks.size() != 68) {
         return false;
     }
+    std::vector<cv::Point2f> eyecornerDst;
+    std::vector<cv::Point2f> eyecornerSrc;
+    eyecornerDst.push_back(cv::Point2f(0.3 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
+    eyecornerDst.push_back(cv::Point2f(0.7 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
+
+    eyecornerSrc.push_back(cv::Point2f(0, 0));
+    eyecornerSrc.push_back(cv::Point2f(0, 0));
+
     std::vector <cv::Point2f> points = faceSrc.landmarks;
     std::cout << faceSrc.landmarks.size() <<std::endl;
     std::cout << points.size() <<std::endl;
@@ -57,7 +64,7 @@ bool AverageFace::alignFace(Face& faceSrc, Face& faceDst, std::vector<cv::Point2
     cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
     warpAffine(img_face, img, tform, img.size());
     transform(points, points, tform);
-    faceDst.face = img;
+    faceDst = img;
     std::cout << "finish alignFace " <<faceSrc.landmarks.size() << std::endl;
     return true;
 }

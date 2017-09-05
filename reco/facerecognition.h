@@ -11,7 +11,8 @@
 #include <opencv2/xfeatures2d.hpp>
 
 #include "facedetector.h"
-
+#include "common/face.h"
+#include "../averageface.h"
 
 class FaceRecognition
 {
@@ -30,6 +31,7 @@ private:
     double threshold = 10.0;
     cv::Ptr<cv::face::FaceRecognizer> model = cv::face::createEigenFaceRecognizer(vectorsCount, threshold);
     FaceDetector faceDetector;
+    AverageFace averageFace;
 };
 
 #endif // FACERECOGNITION_H

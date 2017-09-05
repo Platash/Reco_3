@@ -24,7 +24,13 @@ void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
     for(auto subdirname: subdirnames) {
         std::cout << subdirname << std::endl;
         std::vector<cv::Mat> images;
+
         if(faceDetector.detectAndCropFaces(pathSrc + "/" + subdirname + "/", images)) {
+            for(auto& image: images) {
+                Face face(image, 0);
+                averageFace.getLandmarks(face);
+                averageFace.alignFace(face, image);
+            }
             std::string path = pathDst + "/" + subdirname + "/";
             writeImages(images, path);
         }

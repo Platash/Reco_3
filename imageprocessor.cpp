@@ -1,20 +1,26 @@
 #include "imageprocessor.h"
-
+#include "common/common.h"
 
 bool ImageProcessor::pickFace(cv::Mat image, cv::Rect2d& roi, cv::Rect2d& bestRoi) {
     cv::Rect bestFaceRoi;
     if(faceDetector.getBestFace(image, roi, bestFaceRoi)) {
+        write_log("got best fase ");
         cv::Mat crop = image(bestFaceRoi);
+        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
+
+        bestRoi = bestFaceRoi;
         //if (crop.empty()) return false;
         //cv::Mat equalized = prep.equalize(crop);
         int score = qualityAssessment.getScore(crop);
         if(faces.size() < faceCount) {
             faces.push_back(Face(crop, score));
-            //rectangle(image, bestFaceRoi, cv::Scalar(255, 255, 0), 2, 1);
+            cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img1_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
             return true;
+
         } else if(score > worstScore) {
             std::sort(faces.begin(), faces.end());
             faces.at(faceCount - 1) = Face(crop, score);
+            cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img2_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
 
             return true;
         }

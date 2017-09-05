@@ -175,6 +175,13 @@ void writeShapeToFile(dlib::full_object_detection shape, string path) {
     }
     dst.close();
 }
+#define LOGGING
+
+void write_log(std::string text) {
+#ifdef LOGGING
+    std::cout << text << endl;
+#endif
+}
 
 //========================= Image processing ============================================
 

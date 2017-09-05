@@ -36,8 +36,7 @@ public:
     void getLandmarks(Face &face);
     cv::Mat makeAverageFace(std::vector<Face>& faces);
 
-    bool alignFace(Face& faceSrc, Face& faceDst, std::vector<cv::Point2f>& eyecornerSrc,
-                      std::vector<cv::Point2f>& eyecornerDst);
+    bool alignFace(Face& faceSrc, cv::Mat &faceDst);
 
 private:
     void similarityTransform(std::vector<cv::Point2f>& inPoints, std::vector<cv::Point2f>& outPoints, cv::Mat &tform);

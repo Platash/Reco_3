@@ -35,6 +35,8 @@
 #define CROP_THRESHOLD 10
 #define CROP_THRESHOLDx2 20
 
+#define LOGGING
+
 static int SMALL_FACE_SIZE = 50;
 static int LANDMARKS_COUNT = 68;
 
@@ -51,6 +53,7 @@ void readImages(std::string& directory, std::vector<cv::Mat>& images);
 void writeImages(std::vector<cv::Mat> &images, std::string path);
 void writeShapeToFile(dlib::full_object_detection shape, std::string path);
 void read_csv(const std::string& filename, std::vector<cv::Mat>& images, std::vector<int>& labels, char separator = ';');
+void write_log(std::string text);
 
 //==================Image processing =================
 QPixmap mat2Pixmap(cv::Mat matImg);

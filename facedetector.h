@@ -10,18 +10,20 @@
 #include "opencv2/opencv.hpp"
 
 #include "common/common.h"
+#include "preprocessing.h"
 
 class FaceDetector
 {
 public:
     FaceDetector();
 
-    bool getBestFace(cv::Mat& frame, cv::Rect2d& roi, cv::Rect &bestFaceRoi);
+    bool getBestFace(const Mat &frame, cv::Rect2d& roi, cv::Rect &bestFaceRoi);
 
     bool detectAndCropFaces(std::string directory, std::vector<cv::Mat> & faces);
-    bool detectAndCropFace(const cv::Mat &src, cv::Mat& dst);
+    bool detectAndCropFace(Mat &src, cv::Mat& dst);
 private:
     cv::CascadeClassifier face_cascade;
+    Preprocessing preprocessor;
 
 };
 

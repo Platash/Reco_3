@@ -6,7 +6,8 @@ FaceDetector::FaceDetector() {
     }
 }
 
-bool FaceDetector::getBestFace(cv::Mat& frame, cv::Rect2d& roi, cv::Rect& bestFaceRoi) {
+bool FaceDetector::getBestFace(const cv::Mat& frame, cv::Rect2d& roi, cv::Rect& bestFaceRoi) {
+    std::cout << "start: getBestFace " << std::endl;
     std::vector<cv::Rect> detected_faces;
     cv::Rect roi_(roi);
     bool result = false;
@@ -18,6 +19,7 @@ bool FaceDetector::getBestFace(cv::Mat& frame, cv::Rect2d& roi, cv::Rect& bestFa
         return false;
     }
     for(int i = 0; i < detected_faces.size(); ++i) {
+        write_log("detect faces: " + to_string(i));
         cv::Rect intersection = roi_ & detected_faces[i];
         //rectangle(*frame_p, intersection, cv::Scalar(255, 255, 0), 2, 1);
         areaTemp = intersection.area();
@@ -31,7 +33,7 @@ bool FaceDetector::getBestFace(cv::Mat& frame, cv::Rect2d& roi, cv::Rect& bestFa
         }
     }
     if(result) {
-        bestFaceRoi = detected_faces[index];
+        bestFaceRoi = detected_faces.at(index);
     }
     return result;
 
@@ -54,12 +56,14 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
     return faces.size() > 0;
 }
 
-bool FaceDetector::detectAndCropFace(const cv::Mat& src, cv::Mat& dst) {
+bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
     std::cout << "Start: detectAndCropFace " << std::endl;
     std::vector<cv::Rect> detected_faces;
-    cv::Mat frame_gray;
-    cvtColor(src, frame_gray, cv::COLOR_BGR2GRAY);
 
+
+   // cv::Mat equalized = preprocessor.equalize(src);
+
+    //src = equalized;
     face_cascade.detectMultiScale(src, detected_faces);
     if(detected_faces.size() != 1) {
         std::cout << "End false: detectAndCropFace " << std::endl;
