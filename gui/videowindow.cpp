@@ -159,7 +159,7 @@ void VideoWindow::setFailedScreen()
 
 void VideoWindow::play() {
     int delay = (1000/frameRate);
-    // cv::Mat equalized;
+    cv::Mat equalized;
     // cv::Mat equalized_color;
     cv::Rect2d bestRoi;
     while (state == State::PLAYING) {
@@ -169,12 +169,13 @@ void VideoWindow::play() {
             return;
         };
         if(isTracking) {
-            //equalized = prep.equalize(currentFrame);
+            equalized = prep.equalize(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
-            if(myTracker.track(currentFrame)) {
-                processor.pickFace(currentFrame.clone(), myTracker.getRoi(), bestRoi);
+            if(myTracker.track(equalized)) {
+                if(processor.pickFace(equalized.clone(), myTracker.getRoi(), bestRoi)) {
+                    rectangle(currentFrame, bestRoi, cv::Scalar(255, 255, 0), 2, 1);
+                }
                 rectangle(currentFrame, myTracker.getRoi(), cv::Scalar(255, 0, 0), 2, 1);
-                rectangle(currentFrame, bestRoi, cv::Scalar(255, 255, 0), 2, 1);
             }
         } else {
             this->msleep(delay);
@@ -193,8 +194,6 @@ void VideoWindow::askForAverageFace() {
     msgBox.setDefaultButton(QMessageBox::Yes);
     if(msgBox.exec() == QMessageBox::Yes){
         if(processor.processAverageFace()) {
-            std::cout << "askForAverageFace 192" << std::endl;
-
             showRecoWindow(mat2Pixmap(processor.averageFace));
         }
     }

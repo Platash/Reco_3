@@ -21,7 +21,6 @@ bool FaceDetector::getBestFace(const cv::Mat& frame, cv::Rect2d& roi, cv::Rect& 
     for(int i = 0; i < detected_faces.size(); ++i) {
         write_log("detect faces: " + to_string(i));
         cv::Rect intersection = roi_ & detected_faces[i];
-        //rectangle(*frame_p, intersection, cv::Scalar(255, 255, 0), 2, 1);
         areaTemp = intersection.area();
         if(areaTemp <= 0) {
             continue;
@@ -43,7 +42,6 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
     std::cout << "start detectAndCropFaces " << std::endl;
     std::vector<cv::Mat> images;
     readImages(directory, images);
-    std::cout << images.size() << std::endl;
     for(size_t i = 0; i < images.size(); ++i) {
         cv::Mat image;
 
@@ -69,10 +67,6 @@ bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
         std::cout << "End false: detectAndCropFace " << std::endl;
         return false;
     }
-
-    std::cout << "continue detectAndCropFace " << std::endl;
-    int magic = 20;
-    int magic2 = 40;
 
     int a = src.cols - (detected_faces[0].x + detected_faces[0].width + 40);
     int b = detected_faces[0].x - 20;

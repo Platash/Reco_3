@@ -9,9 +9,8 @@ bool ImageProcessor::pickFace(cv::Mat image, cv::Rect2d& roi, cv::Rect2d& bestRo
         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
 
         bestRoi = bestFaceRoi;
-        //if (crop.empty()) return false;
-        //cv::Mat equalized = prep.equalize(crop);
-        int score = qualityAssessment.getScore(crop);
+        double score = qualityAssessment.getScore(crop);
+        write_log("quality: " + std::to_string(score));
         if(faces.size() < faceCount) {
             faces.push_back(Face(crop, score));
             cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img1_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
@@ -21,10 +20,9 @@ bool ImageProcessor::pickFace(cv::Mat image, cv::Rect2d& roi, cv::Rect2d& bestRo
             std::sort(faces.begin(), faces.end());
             faces.at(faceCount - 1) = Face(crop, score);
             cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img2_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
-
             return true;
         }
-        return false;
+        return true;
     }
     return false;
 }

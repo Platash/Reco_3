@@ -25,7 +25,7 @@ void PeopleTracker::startTracking(std::string trackerType, cv::Mat frame_p,
 }
 
 void PeopleTracker::modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
-    std::cout << "modify tracking" << std::endl;
+    write_log( "modify tracking" );
     p1_x = p1_x_;
     p1_x = p1_x_;
     p1_y = p1_y_;
@@ -46,7 +46,7 @@ void PeopleTracker::setRoi(cv::Rect2d roi_) {
 
 bool PeopleTracker::track(cv::Mat frame) {
     if(roiChanged) {
-        std::cout << "roi changed" << std::endl;
+        write_log("roi changed");
         roi = cv::Rect2d(cv::Point(p1_x, p1_y), cv::Point(p2_x, p2_y));
         tracker = cv::Tracker::create(trackerType);
         tracker->init(frame, roi);

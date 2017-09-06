@@ -144,7 +144,6 @@ void writeImages(std::vector<cv::Mat> &images, std::string path) {
     mkdir(path);
 
     for(size_t i = 0; i < images.size(); ++i) {
-        std::cout << i << std::endl;
         cv::imwrite(path + "img_"+ to_string(i) + ".jpg", images.at(i));
     }
 }

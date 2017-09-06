@@ -6,8 +6,7 @@ void AverageFace::init(std::string path) {
 }
 
 void AverageFace::getLandmarks(Face& face) {
-    std::cout << "start getLandmarks" << std::endl;
-    //array2d<rgb_pixel> img;
+    write_log("start getLandmarks");
     if(!isInitialized) {
         init(LANDMARKS_PREDICTOR_PATH);
 
@@ -17,12 +16,10 @@ void AverageFace::getLandmarks(Face& face) {
     dlib::rectangle rec(dlibImage.nc(), dlibImage.nr());
 
     dlib::full_object_detection shape = shapePredictor(dlibImage, rec);
-    std::cout << "shape.size: " << shape.num_parts() << std::endl;
     for(int i = 0; i < shape.num_parts(); ++i) {
-        //std::cout << i << " " << shape.part(i).x() << " " << shape.part(i).y()<< std::endl;
         face.landmarks.push_back(cv::Point2f(shape.part(i).x(), shape.part(i).y()));
     }
-    std::cout << "finish getLandmarks" <<face.landmarks.size() <<   std::endl;
+    write_log( "finish getLandmarks" + std::to_string(face.landmarks.size()));
 }
 
 void AverageFace::setBoundaryPoints(std::vector<cv::Point2f>& boundaryPts) {
@@ -37,7 +34,7 @@ void AverageFace::setBoundaryPoints(std::vector<cv::Point2f>& boundaryPts) {
 }
 
 bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
-    std::cout << "start alignFace " <<faceSrc.landmarks.size() << std::endl;
+    write_log("start alignFace " + std::to_string(faceSrc.landmarks.size()));
     if(faceSrc.landmarks.size() != 68) {
         return false;
     }
@@ -50,8 +47,6 @@ bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
     eyecornerSrc.push_back(cv::Point2f(0, 0));
 
     std::vector <cv::Point2f> points = faceSrc.landmarks;
-    std::cout << faceSrc.landmarks.size() <<std::endl;
-    std::cout << points.size() <<std::endl;
     cv::Mat img_face = faceSrc.face;
 
     img_face.convertTo(img_face, CV_32FC2, 1);
@@ -122,10 +117,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         // Apply similarity transform to input image and landmarks
         cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
         cv::warpAffine(img_face, img, tform, img.size());
-        //std::cout << "75" << std::endl;
         cv::transform(points, points, tform);
-        //std::cout << "87" << std::endl;
-        // Calculate average landmark locations
         for (size_t j = 0; j < points.size(); j++) {
             pointsAvg[j] += points[j] * ( 1.0 / faceCount);
         }
@@ -173,12 +165,10 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
         // Add image intensities for averaging
         output = output + img;
-        std::cout << "146" << std::endl;
-
     }
     // Divide by numImages to get average
     output = output / (double)faceCount;
-    std::cout << "finish makeAverageFace" << std::endl;
+    write_log("finish makeAverageFace");
     return output;
 }
 
@@ -201,11 +191,9 @@ void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::v
 
 void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Point2f> &points,
                                              std::vector<std::vector<int> > &delaunayTri) {
-    std::cout << "start delaunay" << std::endl;
-    // Create an instance of Subdiv2D
-    cv::Subdiv2D subdiv(rect);
+    write_log( "start delaunay" );
 
-    // Insert points into subdiv
+    cv::Subdiv2D subdiv(rect);
     for(std::vector<cv::Point2f>::iterator it = points.begin(); it != points.end(); it++) {
         subdiv.insert(*it);
     }

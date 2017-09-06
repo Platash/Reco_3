@@ -47,7 +47,7 @@ public:
 
 private:
 
-    int worstScore;
+    double worstScore;
     FaceDetector faceDetector;
     FaceRecognition faceRecognition;
     QualityAssessment qualityAssessment;
