@@ -1,10 +1,11 @@
 #include "videowindow.h"
 #include "ui_videowindow.h"
+#include "common/common.h"
 
 VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_) {
     capture = new cv::VideoCapture(fileName_);
-    capture->set(CV_CAP_PROP_FRAME_WIDTH, 640);
-    capture->set(CV_CAP_PROP_FRAME_HEIGHT, 480);
+    //capture->set(CV_CAP_PROP_FRAME_WIDTH, 640);
+    // capture->set(CV_CAP_PROP_FRAME_HEIGHT, 480);
     ui->setupUi(this);
     setIcons();
     l_video = new VideoLabel();
@@ -118,7 +119,7 @@ void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
     p2.y = p2_.y();
     if(!isTracking) {
         isTracking = true;
-        myTracker.startTracking("BOOSTING", &currentFrame,
+        myTracker.startTracking("BOOSTING", currentFrame,
                                 p1_.x(), p1_.y(), p2_.x(), p2_.y());
     } else {
         myTracker.modifyTracking(p1_.x(), p1_.y(), p2_.x(), p2_.y());
@@ -171,7 +172,7 @@ void VideoWindow::play() {
             //equalized = prep.equalize(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(currentFrame)) {
-                processor.pickFace(currentFrame, myTracker.getRoi(), bestRoi);
+                processor.pickFace(currentFrame.clone(), myTracker.getRoi(), bestRoi);
                 rectangle(currentFrame, myTracker.getRoi(), cv::Scalar(255, 0, 0), 2, 1);
                 rectangle(currentFrame, bestRoi, cv::Scalar(255, 255, 0), 2, 1);
             }
@@ -229,7 +230,28 @@ void VideoWindow::showRecoWindow(QPixmap pixmap) {
 }
 
 void VideoWindow::updateImage() {
-    QPixmap pixmap = mat2Pixmap(currentFrame);
+    //cv::Mat dst;
+    QPixmap pixmap;
+    //    if(currentFrame.rows > FACE_MAX_SIZE_H || currentFrame.cols > FACE_MAX_SIZE_W) {
+    //        if(currentFrame.rows > currentFrame.cols) {
+    //            int scale = currentFrame.rows / FACE_MAX_SIZE_H;
+    //            int newWidth = currentFrame.cols * scale;
+    //            cv::Size size(newWidth, FACE_MAX_SIZE_H);
+    //            cv::resize(currentFrame,dst, size,  0, 0, CV_INTER_LINEAR);
+    //            //cv::resize(currentFrame, dst, cv::Size(inImg.cols * 0.75,inImg.rows * 0.75), 0, 0, CV_INTER_LINEAR);
+    //            pixmap = mat2Pixmap(dst);
+
+    //        } else {
+    //            int scale = currentFrame.cols / FACE_MAX_SIZE_W;
+    //            int newWidth = currentFrame.rows / scale;
+    //            cv::Size size(FACE_MAX_SIZE_W, newWidth);
+    //            cv::resize(currentFrame,dst,size,  0, 0, CV_INTER_LINEAR);
+    //            pixmap = mat2Pixmap(dst);
+    //        }
+
+    //   } else {
+
+    pixmap = mat2Pixmap(currentFrame);
     if(!pixmap.isNull()) {
         l_video->setPixmap(pixmap);
     }

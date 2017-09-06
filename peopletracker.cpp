@@ -10,7 +10,7 @@ PeopleTracker::PeopleTracker() {
 }
 
 
-void PeopleTracker::startTracking(std::string trackerType, cv::Mat* frame_p,
+void PeopleTracker::startTracking(std::string trackerType, cv::Mat frame_p,
                               int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
     fileNameIndex = 0;
     frameCount = 0;
@@ -21,7 +21,7 @@ void PeopleTracker::startTracking(std::string trackerType, cv::Mat* frame_p,
     roi = cv::Rect2d(cv::Point(p1_x, p1_y), cv::Point(p2_x, p2_y));
     roiChanged = false;
     tracker = cv::Tracker::create(trackerType);
-    tracker->init(*frame_p, roi);
+    tracker->init(frame_p, roi);
 }
 
 void PeopleTracker::modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_) {

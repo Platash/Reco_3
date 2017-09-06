@@ -37,11 +37,11 @@
 
 #define LOGGING
 
-static int SMALL_FACE_SIZE = 50;
-static int LANDMARKS_COUNT = 68;
+#define SMALL_FACE_SIZE = 50
+#define LANDMARKS_COUNT = 68
 
-static int FACE_MAX_SIZE_W = 400;
-static int FACE_MAX_SIZE_H = 400;
+#define FACE_MAX_SIZE_W 400
+#define FACE_MAX_SIZE_H 400
 
 static const std::string FACE_RESULT_PATH = "/home/siobhan/UJ/Masters_stuff/results/tracked_faces/";
 static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/haarcascade_frontalface_alt_tree.xml";

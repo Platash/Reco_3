@@ -54,14 +54,14 @@ bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
     std::cout << points.size() <<std::endl;
     cv::Mat img_face = faceSrc.face;
 
-    img_face.convertTo(img_face, CV_32FC3, 1);
+    img_face.convertTo(img_face, CV_32FC2, 1);
     // The corners of the eyes are the landmarks number 36 and 45
     eyecornerSrc[0] = faceSrc.landmarks.at(36);
     eyecornerSrc[1] = faceSrc.landmarks.at(45);
 
     cv::Mat tform;
     similarityTransform(eyecornerSrc, eyecornerDst, tform);
-    cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
+    cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC2);
     warpAffine(img_face, img, tform, img.size());
     transform(points, points, tform);
     faceDst = img;
@@ -70,10 +70,10 @@ bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
 }
 
 cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
-    std::cout << "start makeAverageFace" << std::endl;
+     write_log("start makeAverageFace");
 
     int faceCount = faces.size();
-    std::cout << "face count: " << faces.size() << std::endl;
+    write_log("face count: " + std::to_string(faces.size()));
     // Eye corners
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
@@ -105,10 +105,9 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_b" + std::to_string(x) +".jpg", face.face);
         ++x;
         std::vector <cv::Point2f> points = face.landmarks;
-        std::cout << face.landmarks.size() <<std::endl;
-        std::cout << points.size() <<std::endl;
-        cv::Mat img_face = face.face;
-        // std::cout << "68" << std::endl;
+        write_log("landmarks count " + std::to_string(face.landmarks.size()));
+
+        cv::Mat img_face = face.face.clone();
 
         img_face.convertTo(img_face, CV_32FC3, 1);
         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_c" + std::to_string(x) +".jpg", img_face);
@@ -122,9 +121,9 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         similarityTransform(eyecornerSrc, eyecornerDst, tform);
         // Apply similarity transform to input image and landmarks
         cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
-        warpAffine(img_face, img, tform, img.size());
+        cv::warpAffine(img_face, img, tform, img.size());
         //std::cout << "75" << std::endl;
-        transform(points, points, tform);
+        cv::transform(points, points, tform);
         //std::cout << "87" << std::endl;
         // Calculate average landmark locations
         for (size_t j = 0; j < points.size(); j++) {
@@ -184,7 +183,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 }
 
 void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,
-                                      cv::Mat &tform) {
+                                      cv::Mat& tform) {
     std::vector <cv::Point2f> inPts = inPoints;
     std::vector <cv::Point2f> outPts = outPoints;
 
@@ -237,7 +236,7 @@ void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Poin
 
 }
 
-void AverageFace::applyAffineTransform(cv::Mat &warpImage, cv::Mat &src, std::vector<cv::Point2f> &srcTri,
+void AverageFace::applyAffineTransform(cv::Mat& warpImage, cv::Mat& src, std::vector<cv::Point2f> &srcTri,
                                        std::vector<cv::Point2f> &dstTri) {
     // Given a pair of triangles, find the affine transform.
     cv::Mat warpMat = getAffineTransform(srcTri, dstTri);
@@ -246,7 +245,7 @@ void AverageFace::applyAffineTransform(cv::Mat &warpImage, cv::Mat &src, std::ve
     warpAffine(src, warpImage, warpMat, warpImage.size(), cv::INTER_LINEAR, cv::BORDER_REFLECT_101);
 }
 
-void AverageFace::warpTriangle(cv::Mat &img1, cv::Mat &img2, std::vector<cv::Point2f> t1,
+void AverageFace::warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Point2f> t1,
                                std::vector<cv::Point2f> t2) {
     // Find bounding rectangle for each triangle
     cv::Rect r1 = boundingRect(t1);
