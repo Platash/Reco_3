@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include <QFileDialog>
 
+#include <thread>
+#include <atomic>
+//#include <time.h>
+
 #include "videowindow.h"
 #include "reco/facerecognition.h"
 
@@ -20,7 +24,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_actionOpen_Video_triggered();
 
     void on_b_open_video_clicked();
 
@@ -33,6 +36,8 @@ private:
 
     VideoWindow* videoWindow;
     FaceRecognition recognizer;
+    std::thread* prepareDBThread;
+    std::thread* trainModelThread;
 };
 
 #endif // MAINWINDOW_H

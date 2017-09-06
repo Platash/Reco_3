@@ -23,6 +23,8 @@ int FaceRecognition::predict(cv::Mat face) {
 
 }
 
+
+
 void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst) {
     prepareImages(pathSrc, pathDst);
 

@@ -90,7 +90,7 @@ private:
     void setFailedScreen();
     void askForAverageFace();
     void updateSmallFaces(std::vector<Face>& faces);
-    void showRecoWindow(QPixmap pixmap);
+    void showRecoWindow(QImage qimage);
 
     Ui::VideoWindow *ui;
     std::string fileName;

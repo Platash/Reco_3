@@ -112,7 +112,7 @@ void VideoWindow::on_b_unselect_clicked() {
 }
 
 void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
-    std::cout << "set selection" << std::endl;
+    write_log("set selection");
     p1.x = p1_.x();
     p1.y = p1_.y();
     p2.x = p2_.x();
@@ -160,7 +160,6 @@ void VideoWindow::setFailedScreen()
 void VideoWindow::play() {
     int delay = (1000/frameRate);
     cv::Mat equalized;
-    // cv::Mat equalized_color;
     cv::Rect2d bestRoi;
     while (state == State::PLAYING) {
         (*capture) >> currentFrame;
@@ -194,7 +193,7 @@ void VideoWindow::askForAverageFace() {
     msgBox.setDefaultButton(QMessageBox::Yes);
     if(msgBox.exec() == QMessageBox::Yes){
         if(processor.processAverageFace()) {
-            showRecoWindow(mat2Pixmap(processor.averageFace));
+            showRecoWindow(Mat2QImage(processor.averageFace));
         }
     }
 }
@@ -217,39 +216,19 @@ void VideoWindow::askForAverageFace() {
     }
 }*/
 
-void VideoWindow::showRecoWindow(QPixmap pixmap) {
-    std::cout << "showRecoWindow" << std::endl;
+void VideoWindow::showRecoWindow(QImage qimage) {
+    write_log("showRecoWindow");
     if(recoWindow != nullptr) {
         delete recoWindow;
         recoWindow = nullptr;
     }
     recoWindow = new RecoWindow();
-    recoWindow->setLabel(pixmap);
+    recoWindow->setLabel(QPixmap::fromImage(qimage));
     recoWindow->show();
 }
 
 void VideoWindow::updateImage() {
-    //cv::Mat dst;
     QPixmap pixmap;
-    //    if(currentFrame.rows > FACE_MAX_SIZE_H || currentFrame.cols > FACE_MAX_SIZE_W) {
-    //        if(currentFrame.rows > currentFrame.cols) {
-    //            int scale = currentFrame.rows / FACE_MAX_SIZE_H;
-    //            int newWidth = currentFrame.cols * scale;
-    //            cv::Size size(newWidth, FACE_MAX_SIZE_H);
-    //            cv::resize(currentFrame,dst, size,  0, 0, CV_INTER_LINEAR);
-    //            //cv::resize(currentFrame, dst, cv::Size(inImg.cols * 0.75,inImg.rows * 0.75), 0, 0, CV_INTER_LINEAR);
-    //            pixmap = mat2Pixmap(dst);
-
-    //        } else {
-    //            int scale = currentFrame.cols / FACE_MAX_SIZE_W;
-    //            int newWidth = currentFrame.rows / scale;
-    //            cv::Size size(FACE_MAX_SIZE_W, newWidth);
-    //            cv::resize(currentFrame,dst,size,  0, 0, CV_INTER_LINEAR);
-    //            pixmap = mat2Pixmap(dst);
-    //        }
-
-    //   } else {
-
     pixmap = mat2Pixmap(currentFrame);
     if(!pixmap.isNull()) {
         l_video->setPixmap(pixmap);

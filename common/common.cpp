@@ -113,7 +113,7 @@ int readSubdirNames(std::vector<string> &subdirnames, const string &directory) {
 }
 
 
-void readImages(std::string& directory, std::vector<cv::Mat>& images) {
+void readImages(std::string directory, std::vector<cv::Mat>& images) {
     vector<string> fileNames;
     std::cout << "starting readImages " << directory << std::endl;
     int num_files = readFileNames(fileNames, directory);
@@ -194,6 +194,14 @@ QPixmap mat2Pixmap(cv::Mat matImg) {
         img = QImage((const unsigned char*)(matImg.data), matImg.cols, matImg.rows, QImage::Format_Indexed8);
     }
     return QPixmap::fromImage(img);
+}
+
+QImage Mat2QImage(cv::Mat const& src) {
+     cv::Mat temp;
+     cvtColor(src, temp,CV_BGR2RGB);
+     QImage dest((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
+     dest.bits();
+     return dest;
 }
 
 cv::Mat norm_0_255(cv::InputArray _src) {

@@ -22,9 +22,10 @@ public:
     }
 
     void train(std::string path);
-    int predict();
+    int predict(Mat face);
     void prepareImages(std::string pathSrc, std::string pathDst);
-
+    void readModelFromFile();
+    void saveModel();
     void prepareDatabase(std::string pathSrc, std::string pathDst);
 private:
     int vectorsCount = 10;

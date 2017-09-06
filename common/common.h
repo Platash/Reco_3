@@ -49,7 +49,7 @@ static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/
 //===================IO methods =======================
 int readFileNames(std::vector<std::string> &filenames, const std::string &directory);
 int readSubdirNames(std::vector<std::string> &subdirnames, const std::string &directory);
-void readImages(std::string& directory, std::vector<cv::Mat>& images);
+void readImages(std::string directory, std::vector<cv::Mat>& images);
 void writeImages(std::vector<cv::Mat> &images, std::string path);
 void writeShapeToFile(dlib::full_object_detection shape, std::string path);
 void read_csv(const std::string& filename, std::vector<cv::Mat>& images, std::vector<int>& labels, char separator = ';');
@@ -57,6 +57,6 @@ void write_log(std::string text);
 
 //==================Image processing =================
 QPixmap mat2Pixmap(cv::Mat matImg);
-
+QImage Mat2QImage(cv::Mat const& src);
 
 #endif // COMMON_H

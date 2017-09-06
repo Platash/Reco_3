@@ -42,13 +42,12 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
     std::cout << "start detectAndCropFaces " << std::endl;
     std::vector<cv::Mat> images;
     readImages(directory, images);
-    for(size_t i = 0; i < images.size(); ++i) {
-        cv::Mat image;
-
-        if(detectAndCropFace(images[i], image)) {
-            faces.push_back(image);
+    for(auto& image: images) {
+        cv::Mat face;
+        if(detectAndCropFace(image, face)) {
+            cv::Mat equalized = preprocessor.equalize(face);
+            faces.push_back(equalized.clone());
         }
-
     }
     std::cout << "end: detectAndCropFaces " << "faces size: " << faces.size() << std::endl;
     return faces.size() > 0;
@@ -92,10 +91,6 @@ bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
         detected_faces[0].y -= f;
         detected_faces[0].height += 2 * f;
     }
-
-
-
-    std::cout << "continue detectAndCropFace3 " << std::endl;
 
     dst = src(detected_faces[0]);
     std::cout << "End: detectAndCropFace " << std::endl;
