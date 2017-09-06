@@ -31,6 +31,10 @@ private slots:
 
     void on_b_train_reco_clicked();
 
+    void on_b_save_reco_clicked();
+
+    void on_b_load_reco_clicked();
+
 private:
     Ui::MainWindow *ui;
 

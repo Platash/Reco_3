@@ -196,17 +196,8 @@ QPixmap mat2Pixmap(cv::Mat matImg) {
     return QPixmap::fromImage(img);
 }
 
-QImage Mat2QImage(cv::Mat const& src) {
-     cv::Mat temp;
-     cvtColor(src, temp,CV_BGR2RGB);
-     QImage dest((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
-     dest.bits();
-     return dest;
-}
-
 cv::Mat norm_0_255(cv::InputArray _src) {
     cv::Mat src = _src.getMat();
-    // Create and return normalized image:
     cv::Mat dst;
     switch(src.channels()) {
     case 1:
@@ -221,5 +212,41 @@ cv::Mat norm_0_255(cv::InputArray _src) {
     }
     return dst;
 }
+
+QImage cvMat2qImage(cv::Mat mat) {
+
+    if(mat.type()==CV_8UC1) {
+        QVector<QRgb> colorTable;
+        for (int i=0; i<256; i++) {
+            colorTable.push_back(qRgb(i,i,i));
+        }
+        QImage img((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
+        img.setColorTable(colorTable);
+        return img;
+    } else if(mat.type()==CV_8UC3) {
+        QImage img((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+        return img;
+    } else if(mat.type()==CV_16UC1) {
+        mat.convertTo(mat, CV_8UC1, 1.0/256.0);
+        return cvMat2qImage(mat);
+    } else if(mat.type()==CV_16UC3) {
+        mat.convertTo(mat, CV_8UC3, 1.0/256.0);
+        return cvMat2qImage(mat);
+    } else if(mat.type()==CV_32FC1) {
+        cv::Mat rgb(mat.size(), CV_32FC3);
+        rgb.addref();
+        cv::cvtColor(mat, rgb, cv::COLOR_GRAY2RGB);
+        QImage img((const uchar*)rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB32);
+        rgb.release();
+        return img;
+    } else if(mat.type()==CV_32FC3) {
+        mat.convertTo(mat, CV_8UC3);
+        return cvMat2qImage(mat);
+    } else {
+        std::cerr << "SMVideoWidget: cv::Mat could not be converted to QImage!";
+        return QImage();
+    }
+}
+
 
 

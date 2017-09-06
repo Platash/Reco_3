@@ -24,8 +24,8 @@ public:
     void train(std::string path);
     int predict(Mat face);
     void prepareImages(std::string pathSrc, std::string pathDst);
-    void readModelFromFile();
-    void saveModel();
+    void readModelFromFile(std::string path);
+    void saveModel(std::string path);
     void prepareDatabase(std::string pathSrc, std::string pathDst);
 private:
     int vectorsCount = 10;

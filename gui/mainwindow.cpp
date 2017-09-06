@@ -15,8 +15,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete videoWindow;
-    delete prepareDBThread;
-    delete trainModelThread;
 }
 
 void MainWindow::on_b_open_video_clicked() {
@@ -35,17 +33,39 @@ void MainWindow::on_b_open_video_clicked() {
 
 void MainWindow::on_b_prepare_db_clicked() {
     QString pathSrc = QFileDialog::getExistingDirectory(this, tr("Choose Source Directory"), "/home/siobhan/UJ/Masters_stuff/db",
-                                                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
     QString pathDst = QFileDialog::getExistingDirectory(this, tr("Choose Destination Directory"), "/home/siobhan/UJ/Masters_stuff/db",
-                                                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
 
-    prepareDBThread = new std::thread(&FaceRecognition::prepareDatabase, recognizer, pathSrc.toStdString(), pathDst.toStdString());
-    //recognizer.prepareDatabase(pathSrc.toStdString(), pathDst.toStdString());
+    QLabel* info = findChild<QLabel*>("l_info");
+    info->setText("Prepearing the database...");
+    info->repaint();
+    recognizer.prepareDatabase(pathSrc.toStdString(), pathDst.toStdString());
+    info->setText("DB is ready");
+    //prepareDBThread = new std::thread(&FaceRecognition::prepareDatabase, recognizer, pathSrc.toStdString(), pathDst.toStdString());
+
 }
 
 
 void MainWindow::on_b_train_reco_clicked() {
-    QString pathSrc = QFileDialog::getExistingDirectory(this, tr("Choose Sourse Directory"), "/home/siobhan/UJ/Masters_stuff/db",
-                                                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    trainModelThread = new std::thread(&FaceRecognition::train, recognizer, pathSrc.toStdString());
+    QString pathSrc = QFileDialog::getExistingDirectory(this, tr("Choose Sourse Directory"),
+                                                        "/home/siobhan/UJ/Masters_stuff/db",
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QLabel* info = findChild<QLabel*>("l_info");
+    info->setText("Training the model...");
+    info->repaint();
+    recognizer.train(pathSrc.toStdString());
+    info->setText("Model is ready");
+}
+
+void MainWindow::on_b_save_reco_clicked() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Open Video File"),
+                                                    "/home/siobhan/UJ/Masters_stuff/db");
+    recognizer.saveModel(fileName.toStdString());
+}
+
+void MainWindow::on_b_load_reco_clicked() {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Video File"),
+                                                    "/home/siobhan/UJ/Masters_stuff/db");
+    recognizer.readModelFromFile(fileName.toStdString());
 }

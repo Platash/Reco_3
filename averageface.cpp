@@ -49,7 +49,7 @@ bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
     std::vector <cv::Point2f> points = faceSrc.landmarks;
     cv::Mat img_face = faceSrc.face;
 
-    img_face.convertTo(img_face, CV_32FC2, 1);
+    img_face.convertTo(img_face, CV_32FC3, 1);
     // The corners of the eyes are the landmarks number 36 and 45
     eyecornerSrc[0] = faceSrc.landmarks.at(36);
     eyecornerSrc[1] = faceSrc.landmarks.at(45);
@@ -169,7 +169,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     // Divide by numImages to get average
     output = output / (double)faceCount;
     write_log("finish makeAverageFace");
-    return output;
+    return output.clone();
 }
 
 void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,

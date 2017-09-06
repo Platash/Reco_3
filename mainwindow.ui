@@ -20,7 +20,7 @@
       <x>20</x>
       <y>10</y>
       <width>123</width>
-      <height>141</height>
+      <height>151</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -45,7 +45,34 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="b_save_reco">
+       <property name="text">
+        <string>Save Recognizer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="b_load_reco">
+       <property name="text">
+        <string>Load Recognizer</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="l_info">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>20</y>
+      <width>221</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

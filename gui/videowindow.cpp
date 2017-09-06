@@ -4,6 +4,7 @@
 
 VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_) {
     capture = new cv::VideoCapture(fileName_);
+    recoWindow = nullptr;
     //capture->set(CV_CAP_PROP_FRAME_WIDTH, 640);
     // capture->set(CV_CAP_PROP_FRAME_HEIGHT, 480);
     ui->setupUi(this);
@@ -24,6 +25,9 @@ VideoWindow::~VideoWindow()
     delete ui;
     capture -> release();
     delete capture;
+    if(recoWindow != nullptr) {
+        delete recoWindow;
+    }
 }
 
 void VideoWindow::setLabel() {
@@ -193,7 +197,10 @@ void VideoWindow::askForAverageFace() {
     msgBox.setDefaultButton(QMessageBox::Yes);
     if(msgBox.exec() == QMessageBox::Yes){
         if(processor.processAverageFace()) {
-            showRecoWindow(Mat2QImage(processor.averageFace));
+            cv::Mat average = processor.averageFace;
+            cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best_best.jpg", average);
+
+            showRecoWindow(cvMat2qImage(average));
         }
     }
 }
@@ -218,7 +225,8 @@ void VideoWindow::askForAverageFace() {
 
 void VideoWindow::showRecoWindow(QImage qimage) {
     write_log("showRecoWindow");
-    if(recoWindow != nullptr) {
+
+    if(recoWindow != nullptr && recoWindow != NULL) {
         delete recoWindow;
         recoWindow = nullptr;
     }

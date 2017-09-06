@@ -58,5 +58,6 @@ void write_log(std::string text);
 //==================Image processing =================
 QPixmap mat2Pixmap(cv::Mat matImg);
 QImage Mat2QImage(cv::Mat const& src);
+QImage cvMat2qImage(cv::Mat mat);
 
 #endif // COMMON_H

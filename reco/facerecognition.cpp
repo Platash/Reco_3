@@ -20,8 +20,10 @@ void FaceRecognition::train(std::string path) {
 }
 
 int FaceRecognition::predict(cv::Mat face) {
-
+    return model->predict(face);
 }
+
+
 
 void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst) {
     prepareImages(pathSrc, pathDst);
@@ -50,4 +52,12 @@ void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
 
     }
 
+}
+
+void FaceRecognition::readModelFromFile(std::string path) {
+    model->load(path);
+}
+
+void FaceRecognition::saveModel(std::string path) {
+    model->save(path);
 }
