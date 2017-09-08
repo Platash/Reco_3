@@ -249,9 +249,21 @@ QImage cvMat2qImage(cv::Mat mat) {
 }
 
 
-cv::Mat drawMask(cv::Mat src, cv::Point2f left, cv::Point2f right, cv::Point2f down) {
-    cv::Mat mask = cv::Mat::zeros(src.rows, src.cols, src.type());
-    cv::Point2f center = right - left;
-    cv::Size2f size;
-    cv::RotatedRect rect = cv::RotatedRect(center, size, 0);
+void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right,
+                 cv::Point2f center, cv::Point2f down) {
+
+    cv::Mat mask (src.rows, src.cols, CV_8U);
+    cv::Mat blurredMask;
+    cv::Mat output = src.clone();
+    cv::Point2f topLeft (left.x - 20 , (left.y - down.y) - 20);
+    cv::Point2f downLeft (left.x - 20, down.y + 20);
+    cv::Point2f downRight (right.x + 20, down.y + 20);
+   // cv::Point2f center = right - left;
+    cv::RotatedRect rect = cv::RotatedRect(topLeft, downLeft, downRight);
+    cv::ellipse(mask, rect, cv::Scalar(255,255,255), CV_FILLED);
+
+    blur(mask, blurredMask, cv::Size(10, 10));
+    src.copyTo(output, blurredMask);
+    src = output;
+
 }

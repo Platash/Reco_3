@@ -168,6 +168,10 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     }
     // Divide by numImages to get average
     output = output / (double)faceCount;
+    cv::Mat masked = output.clone();
+    drawMask(masked, pointsAvg.at(0), pointsAvg.at(16), pointsAvg.at(28), pointsAvg.at(8));
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", masked);
+
     write_log("finish makeAverageFace");
     return output.clone();
 }
