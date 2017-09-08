@@ -17,11 +17,15 @@ public:
     explicit RecoWindow(QWidget *parent = 0);
     ~RecoWindow();
 
-    void setLabel(QPixmap pixmap);
+    void setAverageFaceLabel(QPixmap pixmap);
+    void addIdNameLabel(int id);
+    void addIdFaceLabel(QPixmap pixmap);
 
 private:
     Ui::RecoWindow *ui;
-    QLabel* averageLabel;
+    QLabel* averageFaceLabel;
+    QLabel* idNameLabel;
+    QLabel* idFaceLabel;
     std::vector<QLabel*> similars;
 };
 

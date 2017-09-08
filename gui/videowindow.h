@@ -27,6 +27,7 @@
 #include "common/common.h"
 #include "imageprocessor.h"
 #include "recowindow.h"
+#include "reco/facerecognition.h"
 
 namespace Ui {
 class VideoWindow;
@@ -43,12 +44,11 @@ enum class State:uint8_t {
     REWINDING_B = 4,
 };
 
-class VideoWindow : public QWidget
-{
+class VideoWindow : public QWidget {
     Q_OBJECT
 
 public:
-    explicit VideoWindow(std::string fileName = "", QWidget *parent = 0);
+    explicit VideoWindow(std::string fileName, FaceRecognition* reco_, QWidget *parent = 0);
     ~VideoWindow();
 
     void setLabel();
@@ -88,9 +88,9 @@ private:
 
     void setIcons();
     void setFailedScreen();
-    void askForAverageFace();
+    bool askForAverageFace();
     void updateSmallFaces(std::vector<Face>& faces);
-    void showRecoWindow(QImage qimage);
+    void showRecoWindow(QImage qimage, int id);
 
     Ui::VideoWindow *ui;
     std::string fileName;
@@ -111,6 +111,7 @@ private:
     Preprocessing prep;
     ImageProcessor processor;
     std::vector<QLabel> smallFaces;
+    FaceRecognition* reco;
 
 };
 

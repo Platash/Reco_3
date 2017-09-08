@@ -120,7 +120,7 @@ void readImages(std::string directory, std::vector<cv::Mat>& images) {
     cout << "Number of files = " << num_files << endl;
     for (size_t i = 0; i < fileNames.size(); ++i) {
         cout << directory + fileNames[i] << " #" << i << endl;
-        cv::Mat src = cv::imread(directory + fileNames[i]);
+        cv::Mat src = cv::imread(directory + fileNames[i], CV_LOAD_IMAGE_GRAYSCALE);
 
         if (!src.data) { //Protect against no file
             cerr << directory + fileNames[i] << ", file #" << i << ", is not an image" << endl;
@@ -249,4 +249,9 @@ QImage cvMat2qImage(cv::Mat mat) {
 }
 
 
-
+cv::Mat drawMask(cv::Mat src, cv::Point2f left, cv::Point2f right, cv::Point2f down) {
+    cv::Mat mask = cv::Mat::zeros(src.rows, src.cols, src.type());
+    cv::Point2f center = right - left;
+    cv::Size2f size;
+    cv::RotatedRect rect = cv::RotatedRect(center, size, 0);
+}

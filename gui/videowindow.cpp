@@ -2,7 +2,9 @@
 #include "ui_videowindow.h"
 #include "common/common.h"
 
-VideoWindow::VideoWindow(std::string fileName_, QWidget *parent):QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_) {
+VideoWindow::VideoWindow(std::string fileName_, FaceRecognition* reco_, QWidget* parent):
+    QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_), reco(reco_) {
+
     capture = new cv::VideoCapture(fileName_);
     recoWindow = nullptr;
     //capture->set(CV_CAP_PROP_FRAME_WIDTH, 640);
@@ -76,7 +78,15 @@ void VideoWindow::on_b_stop_clicked() {
     updateImage();
     isTracking = false;
     if(processor.getFaceCount() > 0) {
-        askForAverageFace();
+        if(askForAverageFace()) {
+            if(processor.processAverageFace()) {
+                cv::Mat greyAverage;
+                cv::cvtColor(processor.averageFace, greyAverage, CV_BGR2GRAY);
+                cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best_best.jpg", greyAverage);
+                int id = reco->predict(greyAverage);
+                showRecoWindow(cvMat2qImage(processor.averageFace), id);
+            }
+        }
     }
 }
 
@@ -187,7 +197,7 @@ void VideoWindow::play() {
     }
 }
 
-void VideoWindow::askForAverageFace() {
+bool VideoWindow::askForAverageFace() {
     QMessageBox msgBox;
     msgBox.setWindowTitle("Average Face");
     msgBox.setText("Create Average Face from picked face images?");
@@ -195,14 +205,9 @@ void VideoWindow::askForAverageFace() {
     msgBox.setStandardButtons(QMessageBox::Yes);
     msgBox.addButton(QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
-    if(msgBox.exec() == QMessageBox::Yes){
-        if(processor.processAverageFace()) {
-            cv::Mat average = processor.averageFace;
-            cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best_best.jpg", average);
 
-            showRecoWindow(cvMat2qImage(average));
-        }
-    }
+    return(msgBox.exec() == QMessageBox::Yes);
+
 }
 
 /*void VideoWindow::updateSmallFaces(std::vector<Face> &faces) {
@@ -223,7 +228,7 @@ void VideoWindow::askForAverageFace() {
     }
 }*/
 
-void VideoWindow::showRecoWindow(QImage qimage) {
+void VideoWindow::showRecoWindow(QImage qimage, int id) {
     write_log("showRecoWindow");
 
     if(recoWindow != nullptr && recoWindow != NULL) {
@@ -231,7 +236,8 @@ void VideoWindow::showRecoWindow(QImage qimage) {
         recoWindow = nullptr;
     }
     recoWindow = new RecoWindow();
-    recoWindow->setLabel(QPixmap::fromImage(qimage));
+    recoWindow->setAverageFaceLabel(QPixmap::fromImage(qimage));
+    recoWindow->addIdNameLabel(id);
     recoWindow->show();
 }
 

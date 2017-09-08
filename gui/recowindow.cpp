@@ -3,7 +3,9 @@
 
 RecoWindow::RecoWindow(QWidget *parent):QWidget(parent), ui(new Ui::RecoWindow) {
     ui->setupUi(this);
-    averageLabel = nullptr;
+    averageFaceLabel = nullptr;
+    idFaceLabel = nullptr;
+    idNameLabel = nullptr;
 }
 
 RecoWindow::~RecoWindow() {
@@ -11,12 +13,32 @@ RecoWindow::~RecoWindow() {
     for(auto similar: similars) {
         delete similar;
     }
+    delete averageFaceLabel;
+    delete idFaceLabel;
+    delete idNameLabel;
+    averageFaceLabel = nullptr;
+    idFaceLabel = nullptr;
+    idNameLabel = nullptr;
 }
 
-void RecoWindow::setLabel(QPixmap pixmap) {
-    averageLabel = new QLabel;
-    averageLabel->setPixmap(pixmap);
+void RecoWindow::setAverageFaceLabel(QPixmap pixmap) {
+    averageFaceLabel = new QLabel;
+    averageFaceLabel->setPixmap(pixmap);
     QLayout* la = this->layout();
-    dynamic_cast<QGridLayout*>(la)->addWidget(averageLabel, 0, 0);
+    dynamic_cast<QGridLayout*>(la)->addWidget(averageFaceLabel, 0, 0);
+}
+
+void RecoWindow::addIdNameLabel(int id) {
+    idNameLabel = new QLabel;
+    idNameLabel->setText(QString::number(id));
+    QLayout* la = this->layout();
+    dynamic_cast<QGridLayout*>(la)->addWidget(idNameLabel, 0, 1);
+}
+
+void RecoWindow::addIdFaceLabel(QPixmap pixmap) {
+    idFaceLabel = new QLabel;
+    idFaceLabel->setPixmap(pixmap);
+    QLayout* la = this->layout();
+    dynamic_cast<QGridLayout*>(la)->addWidget(idFaceLabel, 1, 1);
 }
 

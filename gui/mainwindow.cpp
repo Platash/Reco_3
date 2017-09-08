@@ -25,7 +25,7 @@ void MainWindow::on_b_open_video_clicked() {
         delete videoWindow;
         videoWindow = nullptr;
     }
-    videoWindow = new VideoWindow(fileName.toStdString());
+    videoWindow = new VideoWindow(fileName.toStdString(), &recognizer);
     videoWindow->setLabel();
     videoWindow->show();
 }

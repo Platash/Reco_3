@@ -28,9 +28,9 @@ public:
     void saveModel(std::string path);
     void prepareDatabase(std::string pathSrc, std::string pathDst);
 private:
-    int vectorsCount = 10;
-    double threshold = 10.0;
-    cv::Ptr<cv::face::FaceRecognizer> model = cv::face::createEigenFaceRecognizer(vectorsCount, threshold);
+    int vectorsCount = 100;
+    double threshold = 5.0;
+    cv::Ptr<cv::face::FaceRecognizer> model = cv::face::createEigenFaceRecognizer();
     FaceDetector faceDetector;
     AverageFace averageFace;
 };
