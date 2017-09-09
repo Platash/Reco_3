@@ -14,7 +14,6 @@ void AverageFace::getLandmarks(Face& face) {
     dlib::array2d<dlib::bgr_pixel> dlibImage;
     dlib::assign_image(dlibImage, dlib::cv_image<dlib::bgr_pixel>(face.face));
     dlib::rectangle rec(dlibImage.nc(), dlibImage.nr());
-
     dlib::full_object_detection shape = shapePredictor(dlibImage, rec);
     for(int i = 0; i < shape.num_parts(); ++i) {
         face.landmarks.push_back(cv::Point2f(shape.part(i).x(), shape.part(i).y()));
@@ -56,16 +55,18 @@ bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
 
     cv::Mat tform;
     similarityTransform(eyecornerSrc, eyecornerDst, tform);
-    cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC2);
-    warpAffine(img_face, img, tform, img.size());
+    cv::Mat img (FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC2, cv::Scalar(255,255,255));
+    warpAffine(img_face, img, tform, img.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
     transform(points, points, tform);
     faceDst = img;
+
+    drawMask(faceDst, points.at(0), points.at(16), points.at(8));
     std::cout << "finish alignFace " <<faceSrc.landmarks.size() << std::endl;
     return true;
 }
 
 cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
-     write_log("start makeAverageFace");
+    write_log("start makeAverageFace");
 
     int faceCount = faces.size();
     write_log("face count: " + std::to_string(faces.size()));
@@ -116,7 +117,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         similarityTransform(eyecornerSrc, eyecornerDst, tform);
         // Apply similarity transform to input image and landmarks
         cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
-        cv::warpAffine(img_face, img, tform, img.size());
+        cv::warpAffine(img_face, img, tform, img.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
         cv::transform(points, points, tform);
         for (size_t j = 0; j < points.size(); j++) {
             pointsAvg[j] += points[j] * ( 1.0 / faceCount);
@@ -139,7 +140,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     calculateDelaunayTriangles(rect, pointsAvg, dt);
 
     // Space for output image
-    cv::Mat output = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
+    cv::Mat output = cv::Mat::ones(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
     cv::Size size(FACE_MAX_SIZE_W,FACE_MAX_SIZE_H);
 
     // Warp input images to average image landmarks

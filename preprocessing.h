@@ -30,10 +30,10 @@ public:
 
     }
 
-    Mat equalize(const Mat& src);
+    Mat equalizeBW(const Mat& src);
+    Mat equalizeColor(const Mat &src);
     Mat rescale(Mat& src);
     //Mat alignFace(Mat& face) const;
-
 
 
 

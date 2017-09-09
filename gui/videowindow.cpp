@@ -205,7 +205,7 @@ void VideoWindow::play() {
             return;
         };
         if(isTracking) {
-            equalized = prep.equalize(currentFrame);
+            equalized = prep.equalizeBW(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(equalized)) {
                 if(processor.pickFace(equalized.clone(), myTracker.getRoi(), bestRoi)) {

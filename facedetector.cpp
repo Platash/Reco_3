@@ -42,10 +42,13 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
     std::cout << "start detectAndCropFaces " << std::endl;
     std::vector<cv::Mat> images;
     readImages(directory, images);
+    int i = 0;
     for(auto& image: images) {
+        write_log("img number: " + std::to_string(i));
+        i++;
         cv::Mat face;
         if(detectAndCropFace(image, face)) {
-            cv::Mat equalized = preprocessor.equalize(face);
+            cv::Mat equalized = preprocessor.equalizeColor(face);
             faces.push_back(equalized.clone());
         }
     }
@@ -54,7 +57,7 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
 }
 
 bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
-    std::cout << "Start: detectAndCropFace " << std::endl;
+    write_log("Start: detectAndCropFace ");
     std::vector<cv::Rect> detected_faces;
 
 
@@ -63,7 +66,7 @@ bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
     //src = equalized;
     face_cascade.detectMultiScale(src, detected_faces);
     if(detected_faces.size() != 1) {
-        std::cout << "End false: detectAndCropFace " << std::endl;
+        write_log("End false: detectAndCropFace ");
         return false;
     }
 
@@ -93,6 +96,6 @@ bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
     }
 
     dst = src(detected_faces[0]);
-    std::cout << "End: detectAndCropFace " << std::endl;
+    write_log("End: detectAndCropFace ");
     return true;
 }

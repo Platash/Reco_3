@@ -120,7 +120,7 @@ void readImages(std::string directory, std::vector<cv::Mat>& images) {
     cout << "Number of files = " << num_files << endl;
     for (size_t i = 0; i < fileNames.size(); ++i) {
         cout << directory + fileNames[i] << " #" << i << endl;
-        cv::Mat src = cv::imread(directory + fileNames[i], CV_LOAD_IMAGE_GRAYSCALE);
+        cv::Mat src = cv::imread(directory + fileNames[i]);
 
         if (!src.data) { //Protect against no file
             cerr << directory + fileNames[i] << ", file #" << i << ", is not an image" << endl;
