@@ -12,6 +12,7 @@ VideoWindow::VideoWindow(std::string fileName_, FaceRecognition* reco_, QWidget*
     ui->setupUi(this);
     setIcons();
     l_video = new VideoLabel();
+    setInfo("");
     if(capture->isOpened()) {
         frameRate = (int) capture->get(CV_CAP_PROP_FPS);
         state = State::STOPPED;
@@ -43,6 +44,10 @@ void VideoWindow::setLabel() {
             this, &VideoWindow::setSelection);
     (*capture) >> currentFrame;
     updateImage();
+}
+
+void VideoWindow::setInfo(std::string text) {
+    ui->l_info->setText(QString::fromStdString(text));
 }
 
 //=================================================================
@@ -79,27 +84,29 @@ void VideoWindow::on_b_stop_clicked() {
     isTracking = false;
     if(processor.getFaceCount() > 0) {
         if(askForAverageFace()) {
+            setInfo("Creating Average Face...");
             if(processor.processAverageFace()) {
                 cv::Mat greyAverage;
                 cv::cvtColor(processor.averageFace, greyAverage, CV_BGR2GRAY);
                 cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best_best.jpg", greyAverage);
-                int id = reco->predict(greyAverage);
-                showRecoWindow(cvMat2qImage(processor.averageFace), id);
+                 setInfo("");
+                if(reco->isTrained) {
+                    int id = reco->predict(greyAverage);
+                    showRecoWindow(cvMat2qImage(processor.averageFace), id);
+                } else {
+                    setInfo("Recognizer is not trained. Train it or load from a file.");
+                }
             }
         }
     }
+    processor.resetFaces();
 }
 
-void VideoWindow::on_b_previous_clicked() {
-    if(state == State::PAUSED || state == State::STOPPED) {
-
-    }
-}
 
 void VideoWindow::on_b_play_clicked() {
     state = State::PLAYING;
     playThread = new std::thread(&VideoWindow::play, this);
-
+    setInfo("");
 }
 
 void VideoWindow::on_b_pause_clicked() {
@@ -107,11 +114,6 @@ void VideoWindow::on_b_pause_clicked() {
 
 }
 
-void VideoWindow::on_b_next_clicked() {
-    if(state == State::PAUSED || state == State::STOPPED) {
-
-    }
-}
 
 
 //==================================================================
@@ -131,9 +133,34 @@ void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
     p1.y = p1_.y();
     p2.x = p2_.x();
     p2.y = p2_.y();
+    TrackerType trackerType;
+    QList<QRadioButton *> allButtons = ui->gb_tracker_type->findChildren<QRadioButton *>();
+    for(auto button: allButtons) {
+        if(button->isChecked()) {
+            QString name = button->objectName();
+
+            if(name == "KCF") {
+                trackerType = TrackerType::KCF;
+            } else if(name == "GOTURN") {
+                trackerType = TrackerType::GOTURN;
+            } else if(name == "TLD") {
+                trackerType = TrackerType::TLD;
+            } else if(name == "MEDIANFLOW") {
+                trackerType = TrackerType::MEDIANFLOW;
+            } else if(name == "MIL") {
+                trackerType = TrackerType::MIL;
+            } else if(name == "BOOSTING") {
+                trackerType = TrackerType::BOOSTING;
+            } else {
+                trackerType = TrackerType::KCF;
+            }
+            break;
+        }
+    }
+
     if(!isTracking) {
         isTracking = true;
-        myTracker.startTracking("BOOSTING", currentFrame,
+        myTracker.startTracking(trackerType, currentFrame,
                                 p1_.x(), p1_.y(), p2_.x(), p2_.y());
     } else {
         myTracker.modifyTracking(p1_.x(), p1_.y(), p2_.x(), p2_.y());
@@ -152,8 +179,6 @@ void VideoWindow::setIcons()
 {
     ui->b_rewind_b->setIcon(QIcon(":/icons/rewind_b"));
     ui->b_rewind_f->setIcon(QIcon(":/icons/rewind_f"));
-    ui->b_previous->setIcon(QIcon(":/icons/previous"));
-    ui->b_next->setIcon(QIcon(":/icons/next"));
     ui->b_stop->setIcon(QIcon(":/icons/stop"));
     ui->b_play->setIcon(QIcon(":/icons/play"));
     ui->b_pause->setIcon(QIcon(":/icons/pause"));
@@ -163,8 +188,6 @@ void VideoWindow::setFailedScreen()
 {
     ui->b_rewind_b->setEnabled(false);
     ui->b_rewind_f->setEnabled(false);
-    ui->b_previous->setEnabled(false);
-    ui->b_next->setEnabled(false);
     ui->b_stop->setEnabled(false);
     ui->b_play->setEnabled(false);
     ui->b_pause->setEnabled(false);
@@ -255,5 +278,6 @@ void VideoWindow::msleep(int ms) {
 }
 
 
-
-
+void VideoWindow::on_b_stop_tracking_clicked() {
+    isTracking = false;
+}

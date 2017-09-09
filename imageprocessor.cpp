@@ -49,3 +49,7 @@ std::vector<Face> &ImageProcessor::getFaces() {
 int ImageProcessor::getFaceCount() {
     return faces.size();
 }
+
+void ImageProcessor::resetFaces() {
+    faces.clear();
+}

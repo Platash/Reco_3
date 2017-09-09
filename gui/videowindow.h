@@ -52,7 +52,7 @@ public:
     ~VideoWindow();
 
     void setLabel();
-
+    void setInfo(string text);
     friend class VideoLabel;
 
 public slots:
@@ -65,19 +65,17 @@ private slots:
 
     void on_b_stop_clicked();
 
-    void on_b_previous_clicked();
-
     void on_b_play_clicked();
 
     void on_b_pause_clicked();
-
-    void on_b_next_clicked();
 
     void on_b_unselect_clicked();
 
     void on_b_rewind_f_pressed();
 
     void on_b_rewind_f_released();
+
+    void on_b_stop_tracking_clicked();
 
 private:
 

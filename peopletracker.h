@@ -14,12 +14,20 @@
 #include "common/common.h"
 //#include "facedetector.h"
 
+enum class TrackerType {
+    MIL,
+    BOOSTING,
+    MEDIANFLOW,
+    TLD,
+    KCF,
+    GOTURN
+};
 
-class PeopleTracker
-{
+
+class PeopleTracker{
 public:
     PeopleTracker();
-    void startTracking(std::string trackerType, cv::Mat frame,
+    void startTracking(TrackerType trackerType, cv::Mat frame,
                        int p1_x_, int p1_y_, int p2_x_, int p2_y_);
     void stopTracking();
     bool track(cv::Mat frame);

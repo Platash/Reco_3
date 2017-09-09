@@ -249,21 +249,21 @@ QImage cvMat2qImage(cv::Mat mat) {
 }
 
 
-void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right,
-                 cv::Point2f center, cv::Point2f down) {
+void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right, cv::Point2f down) {
 
-    cv::Mat mask (src.rows, src.cols, CV_8U);
+    cv::Mat mask(src.rows, src.cols, src.type(), cv::Scalar(255,255,255));
     cv::Mat blurredMask;
-    cv::Mat output = src.clone();
-    cv::Point2f topLeft (left.x - 20 , (left.y - down.y) - 20);
-    cv::Point2f downLeft (left.x - 20, down.y + 20);
-    cv::Point2f downRight (right.x + 20, down.y + 20);
-   // cv::Point2f center = right - left;
-    cv::RotatedRect rect = cv::RotatedRect(topLeft, downLeft, downRight);
-    cv::ellipse(mask, rect, cv::Scalar(255,255,255), CV_FILLED);
+    cv::Point2f topLeft(left.x - 20 , (left.y - down.y) - 20);
+    cv::Point2f downLeft(left.x - 20, down.y + 20);
+    cv::Point2f downRight(right.x + 20, down.y + 20);
 
-    blur(mask, blurredMask, cv::Size(10, 10));
-    src.copyTo(output, blurredMask);
-    src = output;
+    cv::RotatedRect rect = cv::RotatedRect(topLeft, downLeft, downRight);
+    cv::ellipse(mask, rect, cv::Scalar(0,0,0), CV_FILLED);
+    blur(mask, blurredMask, cv::Size(40, 40));
+    src = src + blurredMask;
+
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_MASK.jpg", mask);
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_MASK.jpg", blurredMask);
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_MASK_output.jpg", src);
 
 }

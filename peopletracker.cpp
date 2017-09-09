@@ -1,17 +1,37 @@
 #include "peopletracker.h"
 #include "common/common.h"
 
-enum class TrackerType {
-
-};
-
 PeopleTracker::PeopleTracker() {
     roiChanged = false;
 }
 
 
-void PeopleTracker::startTracking(std::string trackerType, cv::Mat frame_p,
-                              int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
+void PeopleTracker::startTracking(TrackerType trackerType, cv::Mat frame_p,
+                                  int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
+    switch(trackerType) {
+    case(TrackerType::KCF) :
+        tracker = cv::Tracker::create("KCF");
+        break;
+    case(TrackerType::MIL) :
+        tracker = cv::Tracker::create("MIL");
+        break;
+    case(TrackerType::BOOSTING) :
+        tracker = cv::Tracker::create("BOOSTING");
+        break;
+    case(TrackerType::MEDIANFLOW) :
+        tracker = cv::Tracker::create("MEDIANFLOW");
+        break;
+    case(TrackerType::TLD) :
+        tracker = cv::Tracker::create("TLD");
+        break;
+    case(TrackerType::GOTURN) :
+        tracker = cv::Tracker::create("GOTURN");
+        break;
+    default:
+        tracker = cv::Tracker::create("KCF");
+        break;
+    }
+
     fileNameIndex = 0;
     frameCount = 0;
     p1_x = p1_x_;
@@ -20,7 +40,7 @@ void PeopleTracker::startTracking(std::string trackerType, cv::Mat frame_p,
     p2_y = p2_y_;
     roi = cv::Rect2d(cv::Point(p1_x, p1_y), cv::Point(p2_x, p2_y));
     roiChanged = false;
-    tracker = cv::Tracker::create(trackerType);
+
     tracker->init(frame_p, roi);
 }
 

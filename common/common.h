@@ -59,6 +59,7 @@ void write_log(std::string text);
 QPixmap mat2Pixmap(cv::Mat matImg);
 QImage Mat2QImage(cv::Mat const& src);
 QImage cvMat2qImage(cv::Mat mat);
-void drawMask(cv::Mat &src, cv::Point2f left, cv::Point2f right, cv::Point2f center, cv::Point2f down);
+void drawMask(cv::Mat &src, cv::Point2f left, cv::Point2f right, cv::Point2f down);
+bool applyBlurredMask(cv::Mat src, cv::Mat mask, cv::Mat &dst, double sigma, double maskRadius);
 
 #endif // COMMON_H

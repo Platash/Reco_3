@@ -17,6 +17,7 @@ void FaceRecognition::train(std::string path) {
         }
     }
     model->train(faces, labels);
+    isTrained = true;
 }
 
 int FaceRecognition::predict(cv::Mat face) {
@@ -56,6 +57,7 @@ void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
 
 void FaceRecognition::readModelFromFile(std::string path) {
     model->load(path);
+    isTrained = true;
 }
 
 void FaceRecognition::saveModel(std::string path) {

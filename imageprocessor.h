@@ -41,6 +41,7 @@ public:
     bool processAverageFace();
     std::vector<Face>& getFaces();
     int getFaceCount();
+    void resetFaces();
 
     std::atomic<int> faceCount;
     cv::Mat averageFace;

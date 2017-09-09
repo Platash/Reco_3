@@ -27,6 +27,8 @@ public:
     void readModelFromFile(std::string path);
     void saveModel(std::string path);
     void prepareDatabase(std::string pathSrc, std::string pathDst);
+
+    bool isTrained = false;
 private:
     int vectorsCount = 100;
     double threshold = 5.0;
