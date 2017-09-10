@@ -227,13 +227,13 @@ void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right, cv::Point2f dow
 
     cv::Mat mask(src.rows, src.cols, src.type(), cv::Scalar(255,255,255));
     cv::Mat blurredMask;
-    cv::Point2f topLeft(left.x - 20 , (left.y - down.y) - 20);
-    cv::Point2f downLeft(left.x - 20, down.y + 20);
-    cv::Point2f downRight(right.x + 20, down.y + 20);
+    cv::Point2f topLeft(left.x - 26 , (left.y - down.y) - 26);
+    cv::Point2f downLeft(left.x - 26, down.y + 26);
+    cv::Point2f downRight(right.x + 26, down.y + 26);
 
     cv::RotatedRect rect = cv::RotatedRect(topLeft, downLeft, downRight);
     cv::ellipse(mask, rect, cv::Scalar(0,0,0), CV_FILLED);
-    blur(mask, blurredMask, cv::Size(40, 40));
+    blur(mask, blurredMask, cv::Size(50, 50));
     src = src + blurredMask;
 
     cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_mask.jpg", mask);

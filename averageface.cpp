@@ -32,15 +32,15 @@ void AverageFace::setBoundaryPoints(std::vector<cv::Point2f>& boundaryPts) {
     boundaryPts.push_back(cv::Point2f(0, FACE_MAX_SIZE_H / 2));
 }
 
-bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
+bool AverageFace::alignAndMaskFace(Face& faceSrc, cv::Mat& faceDst) {
     write_log("start alignFace " + std::to_string(faceSrc.landmarks.size()));
     if(faceSrc.landmarks.size() != 68) {
         return false;
     }
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f(0.3 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
-    eyecornerDst.push_back(cv::Point2f(0.7 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
+    eyecornerDst.push_back(cv::Point2f(0.2 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
+    eyecornerDst.push_back(cv::Point2f(0.8 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
 
     eyecornerSrc.push_back(cv::Point2f(0, 0));
     eyecornerSrc.push_back(cv::Point2f(0, 0));
@@ -61,7 +61,7 @@ bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
     transform(points, points, tform);
     faceDst = img;
 
-    //drawMask(faceDst, points.at(0), points.at(16), points.at(8));
+    drawMask(faceDst, points.at(0), points.at(16), points.at(8));
     std::cout << "finish alignFace " <<faceSrc.landmarks.size() << std::endl;
     return true;
 }
@@ -74,8 +74,8 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     // Eye corners
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f(0.3 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
-    eyecornerDst.push_back(cv::Point2f(0.7 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 3));
+    eyecornerDst.push_back(cv::Point2f(0.25 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
+    eyecornerDst.push_back(cv::Point2f(0.75 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
 
     eyecornerSrc.push_back(cv::Point2f(0, 0));
     eyecornerSrc.push_back(cv::Point2f(0, 0));
@@ -171,8 +171,8 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     // Divide by numImages to get average
     output = output / (double)faceCount;
     cv::Mat masked = output.clone();
-    //drawMask(masked, pointsAvg.at(0), pointsAvg.at(16), pointsAvg.at(8));
-    //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", masked);
+    drawMask(masked, pointsAvg.at(0), pointsAvg.at(16), pointsAvg.at(8));
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", masked);
 
     write_log("finish makeAverageFace");
     return masked.clone();

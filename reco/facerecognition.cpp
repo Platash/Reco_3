@@ -60,7 +60,7 @@ void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
             for(auto& image: images) {
                 Face face(image, 0);
                 averageFace.getLandmarks(face);
-                averageFace.alignFace(face, image);
+                averageFace.alignAndMaskFace(face, image);
 
                 //drawMask(face.face, face.landmarks.at(0), face.landmarks.at(16), face.landmarks.at(8));
                 results.push_back(image.clone());
