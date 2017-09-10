@@ -7,29 +7,7 @@ typedef struct stat Stat;
 //======================= IO methods ==================================================
 
 int readFileNames(vector<string> &filenames, const string &directory) {
-#ifdef WINDOWS
-    HANDLE dir;
-    WIN32_FIND_DATA file_data;
 
-    if ((dir = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
-        return; /* No files found */
-
-    do {
-        const string file_name = file_data.cFileName;
-        const string full_file_name = directory + "/" + file_name;
-        const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-
-        if (file_name[0] == '.')
-            continue;
-
-        if (is_directory)
-            continue;
-
-        filenames.push_back(full_file_name);
-    } while (FindNextFile(dir, &file_data));
-
-    FindClose(dir);
-#else
     DIR *dir;
     class dirent *ent;
     class stat st;
@@ -54,35 +32,13 @@ int readFileNames(vector<string> &filenames, const string &directory) {
         filenames.push_back(file_name); // returns just filename
     }
     closedir(dir);
-#endif
+
     std::sort (filenames.begin(), filenames.end()); //optional, sort the filenames
     return(filenames.size()); //Return how many we found
 }
 
 int readSubdirNames(std::vector<string> &subdirnames, const string &directory) {
-#ifdef WINDOWS
-    HANDLE dir;
-    WIN32_FIND_DATA file_data;
 
-    if ((dir = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
-        return; /* No files found */
-
-    do {
-        const string file_name = file_data.cFileName;
-        const string full_file_name = directory + "/" + file_name;
-        const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-
-        if (file_name[0] == '.') {
-            continue;
-        }
-        if (is_directory) {
-            subdirnames.push_back(full_file_name);
-        }
-
-    } while (FindNextFile(dir, &file_data));
-
-    FindClose(dir);
-#else
     DIR *dir;
     class dirent *ent;
     class stat st;
@@ -107,7 +63,7 @@ int readSubdirNames(std::vector<string> &subdirnames, const string &directory) {
 
     }
     closedir(dir);
-#endif
+
     std::sort (subdirnames.begin(), subdirnames.end()); //optional, sort the filenames
     return(subdirnames.size()); //Return how many we found
 }
@@ -183,6 +139,24 @@ void write_log(std::string text) {
 }
 
 //========================= Image processing ============================================
+
+cv::Mat normalize(cv::InputArray _src) {
+    cv::Mat src = _src.getMat();
+    cv::Mat dst;
+    switch(src.channels()) {
+    case 1:
+        cv::normalize(_src, dst, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+        break;
+    case 3:
+        cv::normalize(_src, dst, 0, 255, cv::NORM_MINMAX, CV_8UC3);
+        break;
+    default:
+        src.copyTo(dst);
+        break;
+    }
+    return dst;
+}
+
 
 QPixmap mat2Pixmap(cv::Mat matImg) {
     QImage img;
@@ -262,8 +236,8 @@ void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right, cv::Point2f dow
     blur(mask, blurredMask, cv::Size(40, 40));
     src = src + blurredMask;
 
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_MASK.jpg", mask);
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_MASK.jpg", blurredMask);
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_MASK_output.jpg", src);
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_mask.jpg", mask);
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_blurred_mask.jpg", blurredMask);
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked_face.jpg", src);
 
 }

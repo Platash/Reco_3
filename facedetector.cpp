@@ -56,6 +56,12 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
     return faces.size() > 0;
 }
 
+bool FaceDetector::cropFace(cv::Mat& src, cv::Mat dst) {
+    std::vector<cv::Rect> detected_faces;
+    face_cascade.detectMultiScale(src, detected_faces);
+    dst = src(detected_faces[0]).clone();
+}
+
 bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
     write_log("Start: detectAndCropFace ");
     std::vector<cv::Rect> detected_faces;

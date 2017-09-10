@@ -21,6 +21,7 @@ public:
 
     bool detectAndCropFaces(std::string directory, std::vector<cv::Mat> & faces);
     bool detectAndCropFace(Mat &src, cv::Mat& dst);
+    bool cropFace(cv::Mat &src, cv::Mat dst);
 private:
     cv::CascadeClassifier face_cascade;
     Preprocessing preprocessor;

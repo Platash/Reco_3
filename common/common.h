@@ -56,6 +56,7 @@ void read_csv(const std::string& filename, std::vector<cv::Mat>& images, std::ve
 void write_log(std::string text);
 
 //==================Image processing =================
+cv::Mat normalize(cv::InputArray _src);
 QPixmap mat2Pixmap(cv::Mat matImg);
 QImage Mat2QImage(cv::Mat const& src);
 QImage cvMat2qImage(cv::Mat mat);

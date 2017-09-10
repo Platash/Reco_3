@@ -86,12 +86,9 @@ void VideoWindow::on_b_stop_clicked() {
         if(askForAverageFace()) {
             setInfo("Creating Average Face...");
             if(processor.processAverageFace()) {
-                cv::Mat greyAverage;
-                cv::cvtColor(processor.averageFace, greyAverage, CV_BGR2GRAY);
-                cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best_best.jpg", greyAverage);
-                 setInfo("");
+                setInfo("");
                 if(reco->isTrained) {
-                    int id = reco->predict(greyAverage);
+                    int id = reco->predict(processor.averageFace);
                     showRecoWindow(cvMat2qImage(processor.averageFace), id);
                 } else {
                     setInfo("Recognizer is not trained. Train it or load from a file.");
@@ -114,6 +111,9 @@ void VideoWindow::on_b_pause_clicked() {
 
 }
 
+void VideoWindow::on_b_stop_tracking_clicked() {
+    isTracking = false;
+}
 
 
 //==================================================================
@@ -121,11 +121,6 @@ void VideoWindow::on_b_pause_clicked() {
 //          SELECTION
 
 //==================================================================
-
-
-void VideoWindow::on_b_unselect_clicked() {
-    isTracking = false;
-}
 
 void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
     write_log("set selection");
@@ -205,7 +200,7 @@ void VideoWindow::play() {
             return;
         };
         if(isTracking) {
-            equalized = prep.equalizeBW(currentFrame);
+            equalized = prep.equalizeColor(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(equalized)) {
                 if(processor.pickFace(equalized.clone(), myTracker.getRoi(), bestRoi)) {
@@ -275,9 +270,4 @@ void VideoWindow::updateImage() {
 void VideoWindow::msleep(int ms) {
     struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
     nanosleep(&ts, NULL);
-}
-
-
-void VideoWindow::on_b_stop_tracking_clicked() {
-    isTracking = false;
 }

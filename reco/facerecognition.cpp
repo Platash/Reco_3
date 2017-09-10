@@ -11,9 +11,12 @@ void FaceRecognition::train(std::string path) {
     for(auto subdirname: subdirnames) {
         std::vector<cv::Mat> facesTemp;
         readImages(path + "/" + subdirname + "/", facesTemp);
-        for(auto face: facesTemp) {
-            faces.push_back(face);
+        for(auto& face: facesTemp) {
+            cv::Mat grey;
+            cv::cvtColor(face, grey, CV_BGR2GRAY);
+            faces.push_back(normalize(grey));
             labels.push_back(std::stoi(subdirname));
+            write_log(std::to_string(std::stoi(subdirname)));
         }
     }
     model->train(faces, labels);
@@ -21,7 +24,17 @@ void FaceRecognition::train(std::string path) {
 }
 
 int FaceRecognition::predict(cv::Mat face) {
-    return model->predict(face);
+    cv::Mat grey;
+    //drawMask();
+    int result;
+    if(face.channels() == 3) {
+        cv::cvtColor(face, grey, CV_BGR2GRAY);
+        result = model->predict(normalize(grey));
+    } else {
+        result = model->predict(normalize(face));
+    }
+
+    return result;
 }
 
 
@@ -32,6 +45,7 @@ void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst) 
 }
 
 void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
+    write_log("PrepareImages() ");
     std::vector<std::string> subdirnames ;
     int subdirCount = readSubdirNames(subdirnames, pathSrc);
     std::cout << subdirCount << std::endl;
@@ -40,18 +54,20 @@ void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
     for(auto subdirname: subdirnames) {
         write_log(subdirname);
         std::vector<cv::Mat> images;
+        std::vector<cv::Mat> results;
 
         if(faceDetector.detectAndCropFaces(pathSrc + "/" + subdirname + "/", images)) {
             for(auto& image: images) {
                 Face face(image, 0);
                 averageFace.getLandmarks(face);
                 averageFace.alignFace(face, image);
-                drawMask(face.face, face.landmarks.at(0), face.landmarks.at(16),
-                         face.landmarks.at(8));
+
+                //drawMask(face.face, face.landmarks.at(0), face.landmarks.at(16), face.landmarks.at(8));
+                results.push_back(image.clone());
 
             }
             std::string path = pathDst + "/" + subdirname + "/";
-            writeImages(images, path);
+            writeImages(results, path);
         }
 
     }

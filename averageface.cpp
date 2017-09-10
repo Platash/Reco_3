@@ -57,10 +57,11 @@ bool AverageFace::alignFace(Face& faceSrc, cv::Mat& faceDst) {
     similarityTransform(eyecornerSrc, eyecornerDst, tform);
     cv::Mat img (FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC2, cv::Scalar(255,255,255));
     warpAffine(img_face, img, tform, img.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
+
     transform(points, points, tform);
     faceDst = img;
 
-    drawMask(faceDst, points.at(0), points.at(16), points.at(8));
+    //drawMask(faceDst, points.at(0), points.at(16), points.at(8));
     std::cout << "finish alignFace " <<faceSrc.landmarks.size() << std::endl;
     return true;
 }
@@ -170,11 +171,11 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     // Divide by numImages to get average
     output = output / (double)faceCount;
     cv::Mat masked = output.clone();
-    drawMask(masked, pointsAvg.at(0), pointsAvg.at(16), pointsAvg.at(8));
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", masked);
+    //drawMask(masked, pointsAvg.at(0), pointsAvg.at(16), pointsAvg.at(8));
+    //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", masked);
 
     write_log("finish makeAverageFace");
-    return output.clone();
+    return masked.clone();
 }
 
 void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,

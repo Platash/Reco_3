@@ -69,8 +69,6 @@ private slots:
 
     void on_b_pause_clicked();
 
-    void on_b_unselect_clicked();
-
     void on_b_rewind_f_pressed();
 
     void on_b_rewind_f_released();
