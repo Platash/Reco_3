@@ -40,11 +40,11 @@
 #define SMALL_FACE_SIZE = 50
 #define LANDMARKS_COUNT = 68
 
-#define FACE_SIZE_W 200
-#define FACE_SIZE_H 200
+#define FACE_SIZE_W 220
+#define FACE_SIZE_H 220
 
-#define FACE_SIZE_WE 400
-#define FACE_SIZE_HE 400
+#define FACE_SIZE_WE 440
+#define FACE_SIZE_HE 440
 
 static const std::string FACE_RESULT_PATH = "/home/siobhan/UJ/Masters_stuff/results/tracked_faces/";
 static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/haarcascade_frontalface_alt_tree.xml";

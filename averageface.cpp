@@ -39,8 +39,8 @@ bool AverageFace::alignAndMaskFace(Face& faceSrc, cv::Mat& faceDst) {
     }
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f(0.2 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
-    eyecornerDst.push_back(cv::Point2f(0.8 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
+    eyecornerDst.push_back(cv::Point2f(0.3 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
+    eyecornerDst.push_back(cv::Point2f(0.7 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
 
     eyecornerSrc.push_back(cv::Point2f(0, 0));
     eyecornerSrc.push_back(cv::Point2f(0, 0));
@@ -72,10 +72,10 @@ cv::Mat AverageFace::cropFace(cv::Mat img) {
     resize(img, scaled, size);
 
     cv::Rect roi;
-    roi.x = 30;
-    roi.y = 10;
-    roi.width = scaled.size().width - 60;
-    roi.height = scaled.size().height - 40;
+    roi.x = 50;
+    roi.y = 20;
+    roi.width = scaled.size().width - 100;
+    roi.height = scaled.size().height - 80;
 
     cv::Mat cropped = scaled(roi);
 
@@ -90,8 +90,8 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
     // Eye corners
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f(0.25 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
-    eyecornerDst.push_back(cv::Point2f(0.75 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
+    eyecornerDst.push_back(cv::Point2f(0.3 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
+    eyecornerDst.push_back(cv::Point2f(0.7 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
 
     eyecornerSrc.push_back(cv::Point2f(0, 0));
     eyecornerSrc.push_back(cv::Point2f(0, 0));
