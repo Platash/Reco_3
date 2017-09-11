@@ -94,6 +94,11 @@ void mkdir(std::string path) {
     }
 }
 
+void writeImage(cv::Mat image, std::string path, std::string name) {
+    mkdir(path);
+    cv::imwrite(path + name + ".jpg", image);
+}
+
 void writeImages(std::vector<cv::Mat> &images, std::string path) {
     std::cout << "Start: writeImages: " << path << " " << images.size() << std::endl;
 

@@ -49,6 +49,8 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
         cv::Mat face;
         if(detectAndCropFace(image, face)) {
             cv::Mat equalized = preprocessor.equalizeColor(face);
+            cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(i) + ".jpg", equalized);
+
             faces.push_back(equalized.clone());
         }
     }
@@ -66,10 +68,6 @@ bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {
     write_log("Start: detectAndCropFace ");
     std::vector<cv::Rect> detected_faces;
 
-
-   // cv::Mat equalized = preprocessor.equalize(src);
-
-    //src = equalized;
     face_cascade.detectMultiScale(src, detected_faces);
     if(detected_faces.size() != 1) {
         write_log("End false: detectAndCropFace ");

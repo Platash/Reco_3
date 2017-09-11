@@ -40,8 +40,11 @@
 #define SMALL_FACE_SIZE = 50
 #define LANDMARKS_COUNT = 68
 
-#define FACE_MAX_SIZE_W 400
-#define FACE_MAX_SIZE_H 400
+#define FACE_SIZE_W 200
+#define FACE_SIZE_H 200
+
+#define FACE_SIZE_WE 400
+#define FACE_SIZE_HE 400
 
 static const std::string FACE_RESULT_PATH = "/home/siobhan/UJ/Masters_stuff/results/tracked_faces/";
 static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/haarcascade_frontalface_alt_tree.xml";
@@ -50,6 +53,7 @@ static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/
 int readFileNames(std::vector<std::string> &filenames, const std::string &directory);
 int readSubdirNames(std::vector<std::string> &subdirnames, const std::string &directory);
 void readImages(std::string directory, std::vector<cv::Mat>& images);
+void writeImage(cv::Mat image, std::string path, std::string name);
 void writeImages(std::vector<cv::Mat> &images, std::string path);
 void writeShapeToFile(dlib::full_object_detection shape, std::string path);
 void read_csv(const std::string& filename, std::vector<cv::Mat>& images, std::vector<int>& labels, char separator = ';');

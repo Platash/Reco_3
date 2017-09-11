@@ -247,7 +247,7 @@ bool VideoWindow::askForAverageFace() {
 }*/
 
 void VideoWindow::showRecoWindow(QImage qimage, int id) {
-    write_log("showRecoWindow");
+    write_log("showRecoWindow, id: " + std::to_string(id));
 
     if(recoWindow != nullptr && recoWindow != NULL) {
         delete recoWindow;

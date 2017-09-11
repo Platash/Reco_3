@@ -26,17 +26,17 @@ Mat Preprocessing::rescale(Mat& src) {
     int height = src.rows;
 
     int max_dim = (width >= height) ? width : height;
-    float scale = ((float) FACE_MAX_SIZE_H) / max_dim;
+    float scale = ((float) FACE_SIZE_HE) / max_dim;
     Rect roi;
     if (width >= height)     {
-        roi.width = FACE_MAX_SIZE_W;
+        roi.width = FACE_SIZE_WE;
         roi.x = 0;
         roi.y = 0;
         roi.height = height * scale;
     } else {
         roi.y = 0;
         roi.x = 0;
-        roi.height = FACE_MAX_SIZE_H;
+        roi.height = FACE_SIZE_HE;
         roi.width = width * scale;
     }
     Mat dst;

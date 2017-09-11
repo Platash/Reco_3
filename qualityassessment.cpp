@@ -29,7 +29,7 @@ double QualityAssessment::getScore(cv::Mat& image) {
         result += contrastCoef * getContrast(image);
     }
     if(measuringSize) {
-        double sizeScore = sizeCoef * ((double)(image.rows) / FACE_MAX_SIZE_W);
+        double sizeScore = sizeCoef * ((double)(image.rows) / FACE_SIZE_WE);
         write_log("size score: " + std::to_string(sizeScore));
         result += sizeScore;
     }

@@ -30,9 +30,9 @@ public:
 
     bool isTrained = false;
 private:
-    int vectorsCount = 100;
+    int vectorsCount = 200;
     double threshold = 5.0;
-    cv::Ptr<cv::face::FaceRecognizer> model = cv::face::createEigenFaceRecognizer();
+    cv::Ptr<cv::face::FaceRecognizer> model = cv::face::createEigenFaceRecognizer(vectorsCount);
     FaceDetector faceDetector;
     AverageFace averageFace;
 };

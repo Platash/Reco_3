@@ -22,14 +22,14 @@ void AverageFace::getLandmarks(Face& face) {
 }
 
 void AverageFace::setBoundaryPoints(std::vector<cv::Point2f>& boundaryPts) {
-    boundaryPts.push_back(cv::Point2f(0,0));
-    boundaryPts.push_back(cv::Point2f(FACE_MAX_SIZE_W / 2, 0));
-    boundaryPts.push_back(cv::Point2f(FACE_MAX_SIZE_W - 1,0));
-    boundaryPts.push_back(cv::Point2f(FACE_MAX_SIZE_W - 1, FACE_MAX_SIZE_H / 2));
-    boundaryPts.push_back(cv::Point2f(FACE_MAX_SIZE_W - 1, FACE_MAX_SIZE_H - 1));
-    boundaryPts.push_back(cv::Point2f(FACE_MAX_SIZE_W / 2, FACE_MAX_SIZE_H - 1));
-    boundaryPts.push_back(cv::Point2f(0, FACE_MAX_SIZE_H - 1));
-    boundaryPts.push_back(cv::Point2f(0, FACE_MAX_SIZE_H / 2));
+    boundaryPts.push_back(cv::Point2f(0, 0));
+    boundaryPts.push_back(cv::Point2f(FACE_SIZE_WE / 2, 0));
+    boundaryPts.push_back(cv::Point2f(FACE_SIZE_WE - 1, 0));
+    boundaryPts.push_back(cv::Point2f(FACE_SIZE_WE - 1, FACE_SIZE_HE / 2));
+    boundaryPts.push_back(cv::Point2f(FACE_SIZE_WE - 1, FACE_SIZE_HE - 1));
+    boundaryPts.push_back(cv::Point2f(FACE_SIZE_WE / 2, FACE_SIZE_HE - 1));
+    boundaryPts.push_back(cv::Point2f(0, FACE_SIZE_HE - 1));
+    boundaryPts.push_back(cv::Point2f(0, FACE_SIZE_HE / 2));
 }
 
 bool AverageFace::alignAndMaskFace(Face& faceSrc, cv::Mat& faceDst) {
@@ -39,8 +39,8 @@ bool AverageFace::alignAndMaskFace(Face& faceSrc, cv::Mat& faceDst) {
     }
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f(0.2 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
-    eyecornerDst.push_back(cv::Point2f(0.8 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
+    eyecornerDst.push_back(cv::Point2f(0.2 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
+    eyecornerDst.push_back(cv::Point2f(0.8 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
 
     eyecornerSrc.push_back(cv::Point2f(0, 0));
     eyecornerSrc.push_back(cv::Point2f(0, 0));
@@ -55,18 +55,34 @@ bool AverageFace::alignAndMaskFace(Face& faceSrc, cv::Mat& faceDst) {
 
     cv::Mat tform;
     similarityTransform(eyecornerSrc, eyecornerDst, tform);
-    cv::Mat img (FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC2, cv::Scalar(255,255,255));
+    cv::Mat img (FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC2, cv::Scalar(255,255,255));
     warpAffine(img_face, img, tform, img.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
 
     transform(points, points, tform);
     faceDst = img;
 
-    drawMask(faceDst, points.at(0), points.at(16), points.at(8));
+    //drawMask(faceDst, points.at(0), points.at(16), points.at(8));
     std::cout << "finish alignFace " <<faceSrc.landmarks.size() << std::endl;
     return true;
 }
 
-cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
+cv::Mat AverageFace::cropFace(cv::Mat img) {
+    cv::Size size(FACE_SIZE_H, FACE_SIZE_W);
+    cv::Mat scaled;
+    resize(img, scaled, size);
+
+    cv::Rect roi;
+    roi.x = 30;
+    roi.y = 10;
+    roi.width = scaled.size().width - 60;
+    roi.height = scaled.size().height - 40;
+
+    cv::Mat cropped = scaled(roi);
+
+    return cropped.clone();
+}
+
+cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std::string path) {
     write_log("start makeAverageFace");
 
     int faceCount = faces.size();
@@ -74,8 +90,8 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     // Eye corners
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f(0.25 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
-    eyecornerDst.push_back(cv::Point2f(0.75 * FACE_MAX_SIZE_W, FACE_MAX_SIZE_H / 4));
+    eyecornerDst.push_back(cv::Point2f(0.25 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
+    eyecornerDst.push_back(cv::Point2f(0.75 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
 
     eyecornerSrc.push_back(cv::Point2f(0, 0));
     eyecornerSrc.push_back(cv::Point2f(0, 0));
@@ -93,22 +109,18 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
 
     // Warp images and trasnform landmarks to output coordinate system,
     // and find average of transformed landmarks.
-    int x = 0;
+    int i = 0;
     for(auto& face: faces) {
         if(face.landmarks.size() != 68) {
             --faceCount;
             continue;
         }
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_b" + std::to_string(x) +".jpg", face.face);
-        ++x;
         std::vector <cv::Point2f> points = face.landmarks;
         write_log("landmarks count " + std::to_string(face.landmarks.size()));
 
         cv::Mat img_face = face.face.clone();
 
         img_face.convertTo(img_face, CV_32FC3, 1);
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_c" + std::to_string(x) +".jpg", img_face);
-        ++x;
         // The corners of the eyes are the landmarks number 36 and 45
         eyecornerSrc[0] = face.landmarks.at(36);
         eyecornerSrc[1] = face.landmarks.at(45);
@@ -117,8 +129,16 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         cv::Mat tform;
         similarityTransform(eyecornerSrc, eyecornerDst, tform);
         // Apply similarity transform to input image and landmarks
-        cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
+        cv::Mat img = cv::Mat::zeros(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
         cv::warpAffine(img_face, img, tform, img.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
+
+        if(toWrite) {
+            write_log("Writing to: " + path);
+            cv::Mat cropped = cropFace(img.clone());
+            writeImage(cropped, path, std::to_string(i));
+            ++i;
+        }
+        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_weird.jpg", img);
         cv::transform(points, points, tform);
         for (size_t j = 0; j < points.size(); j++) {
             pointsAvg[j] += points[j] * ( 1.0 / faceCount);
@@ -136,17 +156,17 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
         pointsAvg.push_back(boundaryPts[j]);
     }
     // Calculate Delaunay triangles
-    cv::Rect rect(0, 0, FACE_MAX_SIZE_W, FACE_MAX_SIZE_H);
+    cv::Rect rect(0, 0, FACE_SIZE_WE, FACE_SIZE_HE);
     std::vector<std::vector<int>> dt;
     calculateDelaunayTriangles(rect, pointsAvg, dt);
 
     // Space for output image
-    cv::Mat output = cv::Mat::ones(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
-    cv::Size size(FACE_MAX_SIZE_W,FACE_MAX_SIZE_H);
+    cv::Mat output = cv::Mat::ones(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
+    cv::Size size(FACE_SIZE_WE,FACE_SIZE_HE);
 
     // Warp input images to average image landmarks
     for(size_t i = 0; i < faceCount; i++) {
-        cv::Mat img = cv::Mat::zeros(FACE_MAX_SIZE_H, FACE_MAX_SIZE_W, CV_32FC3);
+        cv::Mat img = cv::Mat::zeros(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
         // Transform triangles one by one
         for(size_t j = 0; j < dt.size(); j++) {
             // Input and output points corresponding to jth triangle
@@ -164,18 +184,20 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
             warpTriangle(imagesNorm[i], img, tin, tout);
         }
         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_a" + std::to_string(i) +".jpg", img);
-
-        // Add image intensities for averaging
         output = output + img;
     }
-    // Divide by numImages to get average
-    output = output / (double)faceCount;
-    cv::Mat masked = output.clone();
-    drawMask(masked, pointsAvg.at(0), pointsAvg.at(16), pointsAvg.at(8));
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", masked);
 
+    output = output / (double)faceCount;
+    cv::Mat cropped = cropFace(output);
+    if(toWrite) {
+        write_log("Writing to: " + path);
+        writeImage(cropped, path, "average");
+
+    } else {
+        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", cropped);
+    }
     write_log("finish makeAverageFace");
-    return masked.clone();
+    return cropped.clone();
 }
 
 void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,

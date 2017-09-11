@@ -34,7 +34,7 @@ public:
 
     void init(std::string path);
     void getLandmarks(Face &face);
-    cv::Mat makeAverageFace(std::vector<Face>& faces);
+    cv::Mat makeAverageFace(std::vector<Face>& faces, bool toWrite=false, std::string path="");
     bool alignAndMaskFace(Face& faceSrc, cv::Mat &faceDst);
 
 private:
@@ -50,6 +50,7 @@ private:
     float s60 = sin(60 * M_PI / 180.0);
     float c60 = cos(60 * M_PI / 180.0);
 
+    cv::Mat cropFace(cv::Mat img);
 };
 
 #endif // AVERAGEFACE_H
