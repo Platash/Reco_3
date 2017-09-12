@@ -82,21 +82,21 @@ void VideoWindow::on_b_stop_clicked() {
     (*capture) >> currentFrame;
     updateImage();
     isTracking = false;
-    if(processor.getFaceCount() > 0) {
+    if(faces.size() > 0) {
         if(askForAverageFace()) {
             setInfo("Creating Average Face...");
-            if(processor.processAverageFace()) {
+            if(processAverageFace()) {
                 setInfo("");
                 if(reco->isTrained) {
-                    int id = reco->predict(processor.averageFace);
-                    showRecoWindow(cvMat2qImage(processor.averageFace), id);
+                    int id = reco->predict(averageFace);
+                    showRecoWindow(cvMat2qImage(averageFace), id);
                 } else {
                     setInfo("Recognizer is not trained. Train it or load from a file.");
                 }
             }
         }
     }
-    processor.resetFaces();
+    faces.clear();
 }
 
 
@@ -203,7 +203,7 @@ void VideoWindow::play() {
             equalized = prep.equalizeColor(currentFrame);
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(equalized)) {
-                if(processor.pickFace(equalized.clone(), myTracker.getRoi(), bestRoi)) {
+                if(pickFace(equalized.clone(), myTracker.getRoi(), bestRoi)) {
                     rectangle(currentFrame, bestRoi, cv::Scalar(255, 255, 0), 2, 1);
                 }
                 rectangle(currentFrame, myTracker.getRoi(), cv::Scalar(255, 0, 0), 2, 1);
@@ -213,6 +213,45 @@ void VideoWindow::play() {
         }
         updateImage();
     }
+}
+
+bool VideoWindow::pickFace(cv::Mat image, cv::Rect2d& roi, cv::Rect2d& bestRoi) {
+    cv::Rect bestFaceRoi;
+    if(faceDetector.getBestFace(image, roi, bestFaceRoi)) {
+        write_log("got best fase ");
+        cv::Mat crop = image(bestFaceRoi);
+       // cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
+
+        bestRoi = bestFaceRoi;
+        double score = qualityAssessment.getScore(crop);
+        write_log("quality: " + std::to_string(score));
+        if(faces.size() < faceCount) {
+            faces.push_back(Face(crop, score));
+            //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img1_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
+            return true;
+
+        } else if(score > worstScore) {
+            std::sort(faces.begin(), faces.end());
+            faces.at(faceCount - 1) = Face(crop, score);
+            //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img2_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
+            return true;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool VideoWindow::processAverageFace() {
+    int i = 0;
+    for(auto& face: faces) {
+        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_" + to_string(i) + ".jpg", face.face);
+        averageFaceCreator.getLandmarks(face);
+        ++i;
+    }
+    averageFace = averageFaceCreator.makeAverageFace(faces);
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best.jpg", averageFace);
+    std::cout << "finish processAverageFace" << std::endl;
+    return true;
 }
 
 bool VideoWindow::askForAverageFace() {

@@ -96,7 +96,6 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
     eyecornerSrc.push_back(cv::Point2f(0, 0));
     eyecornerSrc.push_back(cv::Point2f(0, 0));
 
-    // Space for normalized images and points.
     std::vector <cv::Mat> imagesNorm;
     std::vector <std::vector<cv::Point2f>> pointsNorm;
 
@@ -160,17 +159,20 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
     std::vector<std::vector<int>> dt;
     calculateDelaunayTriangles(rect, pointsAvg, dt);
 
-    // Space for output image
+    // Space for output images
     cv::Mat output = cv::Mat::ones(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
+    cv::Mat output2 = cv::Mat::ones(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
+    cv::Mat output3 = cv::Mat::ones(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
     cv::Size size(FACE_SIZE_WE,FACE_SIZE_HE);
-
+    write_log("Start averaging");
     // Warp input images to average image landmarks
     for(size_t i = 0; i < faceCount; i++) {
         cv::Mat img = cv::Mat::zeros(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
         // Transform triangles one by one
         for(size_t j = 0; j < dt.size(); j++) {
             // Input and output points corresponding to jth triangle
-            std::vector<cv::Point2f> tin, tout;
+            std::vector<cv::Point2f> tin;
+            std::vector<cv::Point2f> tout;
             for(int k = 0; k < 3; k++) {
                 cv::Point2f pIn = pointsNorm[i][dt[j][k]];
                 constrainPoint(pIn, size);
@@ -185,13 +187,29 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
         }
         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_a" + std::to_string(i) +".jpg", img);
         output = output + img;
+        if(toWrite && faceCount >= 4) {
+            write_log("starting towrite");
+            if(i == faceCount/2) {
+                output2 = output.clone() / (double)(i + 1);
+                cv::Mat cropped = prep.equalizeColor(cropFace(output2));
+                writeImage(cropped, path, "average2");
+            } else if(i > faceCount/2) {
+                output3 += img;
+            }
+        }
     }
 
     output = output / (double)faceCount;
-    cv::Mat cropped = cropFace(output);
+    cv::Mat cropped = prep.equalizeColor(cropFace(output));
+
     if(toWrite) {
         write_log("Writing to: " + path);
         writeImage(cropped, path, "average");
+        if(faceCount >= 4) {
+            output3 = output3 / (double) (faceCount - faceCount/2);
+            cv::Mat cropped3 = prep.equalizeColor(cropFace(output3));
+            writeImage(cropped3, path, "average3");
+        }
 
     } else {
         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", cropped);
@@ -199,6 +217,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
     write_log("finish makeAverageFace");
     return cropped.clone();
 }
+
 
 void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,
                                       cv::Mat& tform) {

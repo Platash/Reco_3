@@ -10,10 +10,15 @@ Mat Preprocessing::equalizeBW(const Mat &src) {
 
 Mat Preprocessing::equalizeColor(const Mat &src) {
     Mat im_gray;
-    cvtColor(src, im_gray, CV_RGB2GRAY);
+    cv::Mat temp;
+    if(src.type() == CV_32FC3) {
+        src.convertTo(temp, CV_8UC1, 1);
+        cvtColor(temp, im_gray, CV_RGB2GRAY);
+    } else {
+        cvtColor(src, im_gray, CV_RGB2GRAY);
+    }
     Mat dst_clahe;
     Mat dst_color;
-
     Ptr<CLAHE> clahe = createCLAHE();
     clahe->setClipLimit(2);
     clahe->apply(im_gray, dst_clahe);

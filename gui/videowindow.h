@@ -55,6 +55,9 @@ public:
     void setInfo(string text);
     friend class VideoLabel;
 
+    bool processAverageFace();
+    bool pickFace(cv::Mat image, cv::Rect2d &roi, cv::Rect2d &bestRoi);
+
 public slots:
     void setSelection(QPoint p1, QPoint p2);
 
@@ -89,25 +92,37 @@ private:
     void showRecoWindow(QImage qimage, int id);
 
     Ui::VideoWindow *ui;
-    std::string fileName;
-    cv::VideoCapture* capture;
-    std::atomic<State> state;
-    std::atomic<bool> isTracking;
-    PeopleTracker myTracker;
-    int frameRate;
-    std::thread* playThread;
-    cv::Mat currentFrame;
     QPixmap currentPixmap;
-    time_t start;
-    time_t end;
-    VideoLabel* l_video;
-    RecoWindow* recoWindow;
+
+    cv::VideoCapture* capture;
+    cv::Mat currentFrame;
     cv::Point p1;
     cv::Point p2;
-    Preprocessing prep;
-    ImageProcessor processor;
+    cv::Mat averageFace;
+
     std::vector<QLabel> smallFaces;
+
+    std::vector<Face> faces;
+    std::atomic<State> state;
+    std::atomic<bool> isTracking;
+    std::thread* playThread;
+    std::string fileName;
+    std::atomic<int> faceCount;
+    time_t start;
+    time_t end;
+    int frameRate;
+    double worstScore;
+
+    AverageFace averageFaceCreator;
+    Preprocessing prep;
+    //ImageProcessor processor;
     FaceRecognition* reco;
+    PeopleTracker myTracker;
+    FaceDetector faceDetector;
+    QualityAssessment qualityAssessment;
+    RecoWindow* recoWindow;
+    VideoLabel* l_video;
+
 
 };
 

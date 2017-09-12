@@ -13,7 +13,13 @@ void FaceRecognition::train(std::string path) {
         readImages(path + "/" + subdirname + "/", facesTemp);
         for(auto& face: facesTemp) {
             cv::Mat grey;
-            cv::cvtColor(face, grey, CV_BGR2GRAY);
+            if(face.type() != CV_8UC1) {
+                cv::Mat temp;
+                face.convertTo(temp, CV_8UC1, 1);
+                cv::cvtColor(temp, grey, CV_BGR2GRAY);
+            } else {
+                cv::cvtColor(face, grey, CV_BGR2GRAY);
+            }
             faces.push_back(grey);
             labels.push_back(std::stoi(subdirname));
             write_log(std::to_string(std::stoi(subdirname)));
@@ -25,14 +31,27 @@ void FaceRecognition::train(std::string path) {
 
 int FaceRecognition::predict(cv::Mat face) {
     cv::Mat grey;
+    cv::Mat temp;
     //drawMask();
     int result;
-    if(face.channels() == 3) {
-        cv::cvtColor(face, grey, CV_BGR2GRAY);
-        result = model->predict(grey);
+    if(face.type() != CV_8UC1) {
+        face.convertTo(temp, CV_8UC1, 1);
+        if(face.channels() == 3) {
+            cv::cvtColor(temp, grey, CV_BGR2GRAY);
+            result = model->predict(grey);
+        } else {
+            result = model->predict(temp);
+        }
+
     } else {
-        result = model->predict(face);
+        if(face.channels() == 3) {
+            cv::cvtColor(face, grey, CV_BGR2GRAY);
+            result = model->predict(grey);
+        } else {
+            result = model->predict(face);
+        }
     }
+
 
     return result;
 }
@@ -65,7 +84,7 @@ void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
             std::string path = pathDst + "/" + subdirname + "/";
             averageFace.makeAverageFace(faces, true, path);
 
-            //writeImages(results, path);
+
         }
 
     }

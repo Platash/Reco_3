@@ -54,7 +54,7 @@ private:
     QualityAssessment qualityAssessment;
 
     std::vector<Face> faces;
-    Preprocessing prep;
+    //Preprocessing prep;
     AverageFace averageFaceCreator;
 
 };

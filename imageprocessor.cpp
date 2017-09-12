@@ -35,7 +35,7 @@ bool ImageProcessor::processAverageFace() {
         averageFaceCreator.getLandmarks(face);
         ++i;
     }
-    averageFace = prep.equalizeColor(averageFaceCreator.makeAverageFace(faces));
+    averageFace = averageFaceCreator.makeAverageFace(faces);
 
     cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best.jpg", averageFace);
 

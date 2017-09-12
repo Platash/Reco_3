@@ -25,6 +25,7 @@
 
 #include "common/face.h"
 #include "common/common.h"
+#include "preprocessing.h"
 
 class AverageFace {
 public:
@@ -51,6 +52,7 @@ private:
     float c60 = cos(60 * M_PI / 180.0);
 
     cv::Mat cropFace(cv::Mat img);
+    Preprocessing prep;
 };
 
 #endif // AVERAGEFACE_H

@@ -143,6 +143,7 @@ void write_log(std::string text) {
 #endif
 }
 
+
 //========================= Image processing ============================================
 
 cv::Mat normalize(cv::InputArray _src) {
