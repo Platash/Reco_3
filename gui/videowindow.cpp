@@ -3,7 +3,8 @@
 #include "common/common.h"
 
 VideoWindow::VideoWindow(std::string fileName_, FaceRecognition* reco_, QWidget* parent):
-    QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_), reco(reco_) {
+    QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_), reco(reco_),
+    faceCount(20), worstScore(0){
 
     capture = new cv::VideoCapture(fileName_);
     recoWindow = nullptr;
@@ -220,7 +221,7 @@ bool VideoWindow::pickFace(cv::Mat image, cv::Rect2d& roi, cv::Rect2d& bestRoi) 
     if(faceDetector.getBestFace(image, roi, bestFaceRoi)) {
         write_log("got best fase ");
         cv::Mat crop = image(bestFaceRoi);
-       // cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
+        // cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
 
         bestRoi = bestFaceRoi;
         double score = qualityAssessment.getScore(crop);

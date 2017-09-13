@@ -28,6 +28,7 @@
 #include "imageprocessor.h"
 #include "recowindow.h"
 #include "reco/facerecognition.h"
+#include "qualityassessment.h"
 
 namespace Ui {
 class VideoWindow;

@@ -137,7 +137,6 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
             writeImage(cropped, path, std::to_string(i));
             ++i;
         }
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_weird.jpg", img);
         cv::transform(points, points, tform);
         for (size_t j = 0; j < points.size(); j++) {
             pointsAvg[j] += points[j] * ( 1.0 / faceCount);
@@ -185,7 +184,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
             }
             warpTriangle(imagesNorm[i], img, tin, tout);
         }
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_a" + std::to_string(i) +".jpg", img);
+        //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_a" + std::to_string(i) +".jpg", img);
         output = output + img;
         if(toWrite && faceCount >= 4) {
             write_log("starting towrite");
@@ -212,7 +211,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces, bool toWrite, std
         }
 
     } else {
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", cropped);
+        //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked.jpg", cropped);
     }
     write_log("finish makeAverageFace");
     return cropped.clone();

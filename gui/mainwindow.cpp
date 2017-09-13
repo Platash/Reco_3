@@ -18,7 +18,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_b_open_video_clicked() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Video File"), "/home/siobhan/UJ/Masters_stuff/video",
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Video File"), "/home/siobhan/UJ/Masters_stuff/db/vid",
                                                     tr("Video Files (*.mpeg4 *.mp4 *.avi *.3gp)"));
 
     if(!fileName.isEmpty() && !fileName.isNull()) {
