@@ -1,4 +1,7 @@
 #include "facedetector.h"
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/core/utility.hpp>
 
 FaceDetector::FaceDetector() {
     if(!face_cascade.load(FACE_CASCADE_PATH)) {

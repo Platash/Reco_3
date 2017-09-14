@@ -2,6 +2,10 @@
 #include "common/common.h"
 #include "facedetector.h"
 
+#include <opencv2/face/facerec.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
 void FaceRecognition::train(std::string path) {
     std::vector<std::string> subdirnames;
     int subdirCount = readSubdirNames(subdirnames, path);
@@ -58,7 +62,8 @@ int FaceRecognition::predict(cv::Mat face) {
 
 
 
-void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst) {
+void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst,
+                                      int image_count, int average_count) {
     prepareImages(pathSrc, pathDst);
 
 }

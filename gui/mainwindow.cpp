@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,6 +16,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete videoWindow;
+    delete dbWindow;
 }
 
 void MainWindow::on_b_open_video_clicked() {
@@ -33,20 +35,11 @@ void MainWindow::on_b_open_video_clicked() {
 }
 
 
-void MainWindow::on_b_prepare_db_clicked() {
-    QString pathSrc = QFileDialog::getExistingDirectory(this, tr("Choose Source Directory"), "/home/siobhan/UJ/Masters_stuff/db",
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
-    QString pathDst = QFileDialog::getExistingDirectory(this, tr("Choose Destination Directory"), "/home/siobhan/UJ/Masters_stuff/db",
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks | QFileDialog::DontUseNativeDialog);
+void MainWindow::on_b_prepare_db_clicked() {    
+    //delete dbWindow;
 
-    if(!pathSrc.isEmpty() && !pathSrc.isNull() && !pathDst.isEmpty() && !pathDst.isNull()) {
-        QLabel* info = findChild<QLabel*>("l_info");
-        info->setText("Prepearing the database...");
-        info->repaint();
-        recognizer.prepareDatabase(pathSrc.toStdString(), pathDst.toStdString());
-        info->setText("DB is ready");
-    }
-
+    dbWindow = new DBCreationWindow(&recognizer);
+    dbWindow->show();
 }
 
 

@@ -1,17 +1,14 @@
 #ifndef PREPROCESSING_H
 #define PREPROCESSING_H
 
-//#include <dirent.h> // for linux systems
-//#include <sys/stat.h> // for linux systems
-//#include <algorithm>    // std::sort
 #include <iostream>   //cout
 
-#include "opencv2/objdetect.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
+//#include "opencv2/objdetect.hpp"
+//#include "opencv2/highgui.hpp"
+//#include "opencv2/imgproc.hpp"
+//#include "opencv2/imgcodecs.hpp"
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/core/core.hpp>
 
 #include "common/common.h"
 
@@ -34,9 +31,7 @@ public:
     Mat equalizeColor(const Mat &src);
     Mat rescale(Mat& src);
     //Mat alignFace(Mat& face) const;
-
-
-
+    void sharpen(cv::Mat &img);
 };
 
 #endif // PREPROCESSING_H

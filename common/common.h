@@ -2,23 +2,12 @@
 #define COMMON_H
 
 #include <iostream>
-#include <dirent.h>     // for linux systems
-#include <sys/stat.h>   // for linux systems
-#include <algorithm>    // std::sort
 
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include <opencv2/opencv.hpp>
 
 #include <dlib/image_processing/frontal_face_detector.h>
-//#include <dlib/image_processing/render_face_detections.h>
-//#include <dlib/image_processing.h>
-//#include <dlib/gui_widgets.h>
-//#include <dlib/image_io.h>
-//#include <dlib/dnn.h>
-//#include <dlib/clustering.h>
-//#include <dlib/string.h>
-//#include <dlib/opencv.h>
 
 #include <QPixmap>
 #include <QImage>

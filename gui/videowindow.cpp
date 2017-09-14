@@ -2,6 +2,10 @@
 #include "ui_videowindow.h"
 #include "common/common.h"
 
+#include <QMessageBox>
+#include <QResource>
+#include <QIcon>
+
 VideoWindow::VideoWindow(std::string fileName_, FaceRecognition* reco_, QWidget* parent):
     QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_), reco(reco_),
     faceCount(20), worstScore(0){

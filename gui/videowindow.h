@@ -2,30 +2,20 @@
 #define VIDEOWINDOW_H
 
 #include <QWidget>
-#include <QResource>
-#include <QIcon>
 #include <QPixmap>
-#include <QMessageBox>
 
-//#include <opencv2/core/utility.hpp>
-//#include <opencv2/tracking.hpp>
 #include <opencv2/videoio.hpp>
-//#include <opencv2/highgui.hpp>
 #include <opencv2/core/core.hpp>
-//#include <opencv2/imgproc/imgproc.hpp>
-//#include "opencv2/opencv.hpp"
 
 #include <thread>
 #include <atomic>
 #include <time.h>
 
 #include "videolabel.h"
-#include "imageprocessor.h"
 #include "peopletracker.h"
 #include "facedetector.h"
 #include "preprocessing.h"
 #include "common/common.h"
-#include "imageprocessor.h"
 #include "recowindow.h"
 #include "reco/facerecognition.h"
 #include "qualityassessment.h"

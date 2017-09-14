@@ -4,11 +4,10 @@
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/face.hpp>
-#include <opencv2/face/facerec.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/objdetect.hpp>
-#include <opencv2/xfeatures2d.hpp>
+//#include <opencv2/face/facerec.hpp>
+//#include <opencv2/highgui.hpp>
+//#include <opencv2/imgproc.hpp>
+//#include <opencv2/objdetect.hpp>
 
 #include "facedetector.h"
 #include "common/face.h"
@@ -26,7 +25,8 @@ public:
     void prepareImages(std::string pathSrc, std::string pathDst);
     void readModelFromFile(std::string path);
     void saveModel(std::string path);
-    void prepareDatabase(std::string pathSrc, std::string pathDst);
+    void prepareDatabase(std::string pathSrc, std::string pathDst,
+                         int image_count, int average_count);
 
     bool isTrained = false;
 private:

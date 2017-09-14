@@ -1,5 +1,7 @@
 #include "peopletracker.h"
 #include "common/common.h"
+#include <opencv2/videoio.hpp>
+#include <opencv2/highgui.hpp>
 
 PeopleTracker::PeopleTracker() {
     roiChanged = false;

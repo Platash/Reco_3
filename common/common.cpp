@@ -1,5 +1,9 @@
 #include "common.h"
 
+#include <dirent.h>     // for linux systems
+#include <sys/stat.h>   // for linux systems
+#include <algorithm>    // std::sort
+
 using namespace std;
 
 typedef struct stat Stat;

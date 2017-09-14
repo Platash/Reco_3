@@ -2,14 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFileDialog>
 
 #include <thread>
 #include <atomic>
-//#include <time.h>
 
 #include "videowindow.h"
 #include "reco/facerecognition.h"
+#include "dbcreationwindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -39,9 +38,11 @@ private:
     Ui::MainWindow *ui;
 
     VideoWindow* videoWindow;
+    DBCreationWindow* dbWindow;
     FaceRecognition recognizer;
     std::thread* prepareDBThread;
     std::thread* trainModelThread;
+
 };
 
 #endif // MAINWINDOW_H

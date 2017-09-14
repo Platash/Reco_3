@@ -47,7 +47,6 @@ SOURCES += \
     preprocessing.cpp \
     facedetector.cpp \
     qualityassessment.cpp \
-    imageprocessor.cpp \
     averageface.cpp \
     ../../../UJ/Masters/Libs/dlib-19.4/dlib/all/source.cpp \
     peopletracker.cpp \
@@ -57,7 +56,8 @@ SOURCES += \
     gui/videowindow.cpp \
     gui/recowindow.cpp \
     common/face.cpp \
-    reco/facerecognition.cpp
+    reco/facerecognition.cpp \
+    gui/dbcreationwindow.cpp
 
 
 
@@ -65,7 +65,6 @@ HEADERS += \
     preprocessing.h \
     facedetector.h \
     qualityassessment.h \
-    imageprocessor.h \
     averageface.h \
     peopletracker.h \
     common/common.h \
@@ -74,14 +73,16 @@ HEADERS += \
     gui/recowindow.h \
     gui/mainwindow.h \
     common/face.h \
-    reco/facerecognition.h
+    reco/facerecognition.h \
+    gui/dbcreationwindow.h
 
 
 
 FORMS += \
         mainwindow.ui \
     videowindow.ui \
-    recowindow.ui
+    recowindow.ui \
+    dbcreationwindow.ui
 
 DISTFILES += \
     graphics/i_next.png \

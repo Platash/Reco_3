@@ -32,40 +32,6 @@ void AverageFace::setBoundaryPoints(std::vector<cv::Point2f>& boundaryPts) {
     boundaryPts.push_back(cv::Point2f(0, FACE_SIZE_HE / 2));
 }
 
-bool AverageFace::alignAndMaskFace(Face& faceSrc, cv::Mat& faceDst) {
-    write_log("start alignFace " + std::to_string(faceSrc.landmarks.size()));
-    if(faceSrc.landmarks.size() != 68) {
-        return false;
-    }
-    std::vector<cv::Point2f> eyecornerDst;
-    std::vector<cv::Point2f> eyecornerSrc;
-    eyecornerDst.push_back(cv::Point2f(0.3 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
-    eyecornerDst.push_back(cv::Point2f(0.7 * FACE_SIZE_WE, FACE_SIZE_HE / 4));
-
-    eyecornerSrc.push_back(cv::Point2f(0, 0));
-    eyecornerSrc.push_back(cv::Point2f(0, 0));
-
-    std::vector <cv::Point2f> points = faceSrc.landmarks;
-    cv::Mat img_face = faceSrc.face;
-
-    img_face.convertTo(img_face, CV_32FC3, 1);
-    // The corners of the eyes are the landmarks number 36 and 45
-    eyecornerSrc[0] = faceSrc.landmarks.at(36);
-    eyecornerSrc[1] = faceSrc.landmarks.at(45);
-
-    cv::Mat tform;
-    similarityTransform(eyecornerSrc, eyecornerDst, tform);
-    cv::Mat img (FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC2, cv::Scalar(255,255,255));
-    warpAffine(img_face, img, tform, img.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
-
-    transform(points, points, tform);
-    faceDst = img;
-
-    //drawMask(faceDst, points.at(0), points.at(16), points.at(8));
-    std::cout << "finish alignFace " <<faceSrc.landmarks.size() << std::endl;
-    return true;
-}
-
 cv::Mat AverageFace::cropFace(cv::Mat img) {
     cv::Size size(FACE_SIZE_H, FACE_SIZE_W);
     cv::Mat scaled;
