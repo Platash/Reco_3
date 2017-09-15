@@ -38,7 +38,7 @@ void MainWindow::on_b_open_video_clicked() {
 void MainWindow::on_b_prepare_db_clicked() {    
     //delete dbWindow;
 
-    dbWindow = new DBCreationWindow(&recognizer);
+    dbWindow = new DBCreationWindow();
     dbWindow->show();
 }
 

@@ -22,11 +22,11 @@ public:
 
     void train(std::string path);
     int predict(Mat face);
-    void prepareImages(std::string pathSrc, std::string pathDst);
+    //void prepareImages(std::string pathSrc, std::string pathDst);
     void readModelFromFile(std::string path);
     void saveModel(std::string path);
-    void prepareDatabase(std::string pathSrc, std::string pathDst,
-                         int image_count, int average_count);
+//    void prepareDatabase(std::string pathSrc, std::string pathDst,
+//                         int image_count, int average_count);
 
     bool isTrained = false;
 private:

@@ -1,10 +1,11 @@
 #include "dbcreationwindow.h"
 #include "ui_dbcreationwindow.h"
 #include <QFileDialog>
+#include "common/common.h"
 
-DBCreationWindow::DBCreationWindow(FaceRecognition *reco_, QWidget *parent) :
-    reco(reco_),QWidget(parent), ui(new Ui::DBCreationWindow) {
+DBCreationWindow::DBCreationWindow(QWidget *parent):QWidget(parent), ui(new Ui::DBCreationWindow) {
     ui->setupUi(this);
+    averageFace.init(LANDMARKS_PREDICTOR_PATH);
     dstChosen = false;
     srcChosen = false;
 }
@@ -17,12 +18,16 @@ void DBCreationWindow::on_b_create_db_clicked() {
     if(srcChosen && dstChosen) {
         ui->l_info->setText(QString::fromStdString("Preparing the database..."));
         repaint();
-        int average_count = ui->s_average_count->value();
-        int image_count = ui->s_image_count->value();
-        reco->prepareDatabase(pathSrc.toStdString(), pathDst.toStdString(),
-                              image_count, average_count);
+          int image_count = ui->s_image_count->value();
+        bool makeMainAverage = ui->c_create_average->isChecked();
+        bool makeAdditionalAverages = ui->c_create_averages->isChecked();
+        int coef = ui->s_average_count->value();
 
-        ui->l_info->setText("DB is ready");
+        if(prepareDatabase(image_count, makeMainAverage, makeAdditionalAverages, coef)){
+            ui->l_info->setText("DB is ready");
+        }
+
+        close();
     }
 }
 
@@ -49,4 +54,59 @@ void DBCreationWindow::on_b_choose_dst_clicked() {
         ui->l_dst->setText(pathDst);
         dstChosen = true;
     }
+}
+
+bool DBCreationWindow::prepareDatabase(u_int maxFaceCount, bool makeAverage,
+                                       bool makeAdditionalAverages, int coef) {
+    write_log("PrepareImages() ");
+    std::vector<std::string> subdirnames ;
+    int subdirCount = readSubdirNames(subdirnames, pathSrc.toStdString());
+    std::cout << subdirCount << std::endl;
+    std::cout << pathSrc.toStdString() << std::endl;
+
+    for(auto subdirname: subdirnames) {
+        write_log(subdirname);
+        std::vector<cv::Mat> images;
+
+        std::vector<Face> faces;
+        if(faceDetector.detectAndCropFaces(pathSrc.toStdString() + "/" + subdirname + "/", images)) {
+            for(auto& image: images) {
+                Face face(image, 0);
+                averageFace.getLandmarks(face);
+                averageFace.alignFace(face);
+                //averageFace.
+                faces.push_back(face);
+            }
+            std::string path = pathDst.toStdString() + "/" + subdirname + "/";
+            if(faces.size() <= maxFaceCount) {
+                writeImages(faces, path, "img");
+            } else {
+                std::vector<cv::Mat> images;
+                for(u_int i = 0; i < maxFaceCount; ++i) {
+                    images.push_back(faces.at(i).face);
+                }
+                writeImages(images, path, "img");
+            }
+            std::vector<cv::Mat> averages;
+            if(makeAverage) {
+                averages.push_back(averageFace.makeAverageFace(faces));
+            }
+
+            if(makeAdditionalAverages) {
+
+                std::vector<Face> tempFaces;
+                for(u_int i = 0; i < faces.size(); ++i) {
+                    tempFaces.push_back(faces.at(i));
+                    if(i > 0 && i % coef == 0) {
+                        averages.push_back(averageFace.makeAverageFace(tempFaces));
+                        tempFaces.clear();
+                    }
+                }
+            }
+            if(averages.size() > 0) {
+                writeImages(averages, path, "avg");
+            }
+        }
+    }
+    return true;
 }

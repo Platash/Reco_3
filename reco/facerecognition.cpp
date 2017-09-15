@@ -62,39 +62,39 @@ int FaceRecognition::predict(cv::Mat face) {
 
 
 
-void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst,
-                                      int image_count, int average_count) {
-    prepareImages(pathSrc, pathDst);
+//void FaceRecognition::prepareDatabase(std::string pathSrc, std::string pathDst,
+//                                      int image_count, int average_count) {
+//   // prepareImages(pathSrc, pathDst);
 
-}
+//}
 
-void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
-    write_log("PrepareImages() ");
-    std::vector<std::string> subdirnames ;
-    int subdirCount = readSubdirNames(subdirnames, pathSrc);
-    std::cout << subdirCount << std::endl;
-    std::cout << pathSrc << std::endl;
+//void FaceRecognition::prepareImages(std::string pathSrc, std::string pathDst) {
+//    write_log("PrepareImages() ");
+//    std::vector<std::string> subdirnames ;
+//    int subdirCount = readSubdirNames(subdirnames, pathSrc);
+//    std::cout << subdirCount << std::endl;
+//    std::cout << pathSrc << std::endl;
 
-    for(auto subdirname: subdirnames) {
-        write_log(subdirname);
-        std::vector<cv::Mat> images;
+//    for(auto subdirname: subdirnames) {
+//        write_log(subdirname);
+//        std::vector<cv::Mat> images;
 
-        std::vector<Face> faces;
-        if(faceDetector.detectAndCropFaces(pathSrc + "/" + subdirname + "/", images)) {
-            for(auto& image: images) {
-                Face face(image, 0);
-                averageFace.getLandmarks(face);
-                faces.push_back(face);
-            }
-            std::string path = pathDst + "/" + subdirname + "/";
-            averageFace.makeAverageFace(faces, true, path);
+//        std::vector<Face> faces;
+//        if(faceDetector.detectAndCropFaces(pathSrc + "/" + subdirname + "/", images)) {
+//            for(auto& image: images) {
+//                Face face(image, 0);
+//                averageFace.getLandmarks(face);
+//                faces.push_back(face);
+//            }
+//            std::string path = pathDst + "/" + subdirname + "/";
+//            averageFace.makeAverageFace(faces);
 
 
-        }
+//        }
 
-    }
+//    }
 
-}
+//}
 
 void FaceRecognition::readModelFromFile(std::string path) {
     model->load(path);

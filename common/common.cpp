@@ -103,13 +103,23 @@ void writeImage(cv::Mat image, std::string path, std::string name) {
     cv::imwrite(path + name + ".jpg", image);
 }
 
-void writeImages(std::vector<cv::Mat> &images, std::string path) {
+void writeImages(std::vector<cv::Mat> &images, std::string path, std::string name) {
     std::cout << "Start: writeImages: " << path << " " << images.size() << std::endl;
 
     mkdir(path);
 
     for(size_t i = 0; i < images.size(); ++i) {
-        cv::imwrite(path + "img_"+ to_string(i) + ".jpg", images.at(i));
+        cv::imwrite(path + name + to_string(i) + ".jpg", images.at(i));
+    }
+}
+
+void writeImages(std::vector<Face> &faces, std::string path, std::string name) {
+    std::cout << "Start: writeImages: " << path << " " << faces.size() << std::endl;
+
+    mkdir(path);
+
+    for(size_t i = 0; i < faces.size(); ++i) {
+        cv::imwrite(path + name + to_string(i) + ".jpg", faces.at(i).face);
     }
 }
 
@@ -250,4 +260,20 @@ void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right, cv::Point2f dow
     cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_blurred_mask.jpg", blurredMask);
     cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked_face.jpg", src);
 
+}
+
+cv::Mat cropFace(cv::Mat img) {
+    cv::Size size(FACE_SIZE_H, FACE_SIZE_W);
+    cv::Mat scaled;
+    resize(img, scaled, size);
+
+    cv::Rect roi;
+    roi.x = 50;
+    roi.y = 20;
+    roi.width = scaled.size().width - 100;
+    roi.height = scaled.size().height - 80;
+
+    cv::Mat cropped = scaled(roi);
+
+    return cropped.clone();
 }

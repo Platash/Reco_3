@@ -251,6 +251,7 @@ bool VideoWindow::processAverageFace() {
     for(auto& face: faces) {
         cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_" + to_string(i) + ".jpg", face.face);
         averageFaceCreator.getLandmarks(face);
+        averageFaceCreator.alignFace(face);
         ++i;
     }
     averageFace = averageFaceCreator.makeAverageFace(faces);

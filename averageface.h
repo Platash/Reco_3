@@ -25,7 +25,7 @@
 
 #include "common/face.h"
 #include "common/common.h"
-#include "preprocessing.h"
+//#include "preprocessing.h"
 
 class AverageFace {
 public:
@@ -35,8 +35,10 @@ public:
 
     void init(std::string path);
     void getLandmarks(Face &face);
-    cv::Mat makeAverageFace(std::vector<Face>& faces, bool toWrite=false, std::string path="");
+    cv::Mat makeAverageFace(std::vector<Face>& faces);
+    void setEyecornerPoints();
 
+    void alignFace(Face &face);
 
 private:
     void similarityTransform(std::vector<cv::Point2f>& inPoints, std::vector<cv::Point2f>& outPoints, cv::Mat &tform);
@@ -44,15 +46,23 @@ private:
     void applyAffineTransform(cv::Mat& warpImage, cv::Mat& src, std::vector<cv::Point2f> &srcTri, std::vector<cv::Point2f> &dstTri);
     void warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Point2f> t1, std::vector<cv::Point2f> t2);
     void constrainPoint(cv::Point2f &p,cv::Size sz);
-    void setBoundaryPoints(std::vector<cv::Point2f> &boundaryPts);
+    void setBoundaryPoints();
+    cv::Mat alignFaceForAveraging(Face face, int faceCount);
 
-    dlib::shape_predictor shapePredictor;
     bool isInitialized;
     float s60 = sin(60 * M_PI / 180.0);
     float c60 = cos(60 * M_PI / 180.0);
 
-    cv::Mat cropFace(cv::Mat img);
-    Preprocessing prep;
+    dlib::shape_predictor shapePredictor;
+
+    //Preprocessing prep;
+
+    std::vector<cv::Mat> imagesNorm;
+    std::vector<cv::Point2f> eyecornerDst;
+    std::vector<cv::Point2f> eyecornerSrc;
+    std::vector<cv::Point2f> boundaryPts;
+
+
 };
 
 #endif // AVERAGEFACE_H

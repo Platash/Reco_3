@@ -19,6 +19,7 @@ public:
     cv::Mat face;
     int score;
     std::vector<cv::Point2f> landmarks;
+    std::vector<cv::Point2f> boundaryPts;
 
 };
 
