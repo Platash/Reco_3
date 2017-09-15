@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     videoWindow = nullptr;
     prepareDBThread = nullptr;
     trainModelThread = nullptr;
+    pathToDB = QString::fromStdString(DEFAULT_DB);
+    ui->l_db->setText("Current DB:" + pathToDB);
 }
 
 MainWindow::~MainWindow()
@@ -28,7 +30,7 @@ void MainWindow::on_b_open_video_clicked() {
             delete videoWindow;
             videoWindow = nullptr;
         }
-        videoWindow = new VideoWindow(fileName.toStdString(), &recognizer);
+        videoWindow = new VideoWindow(fileName.toStdString(), &recognizer, pathToDB);
         videoWindow->setLabel();
         videoWindow->show();
     }
@@ -70,5 +72,15 @@ void MainWindow::on_b_load_reco_clicked() {
                                                     "/home/siobhan/UJ/Masters_stuff/db");
     if(!fileName.isEmpty() && !fileName.isNull()) {
         recognizer.readModelFromFile(fileName.toStdString());
+    }
+}
+
+void MainWindow::on_b_choose_db_clicked() {
+    QString pathSrc = QFileDialog::getExistingDirectory(this, tr("Choose Database Directory"),
+                                                        "/home/siobhan/UJ/Masters_stuff/db",
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if(!pathSrc.isEmpty() && !pathSrc.isNull()) {
+        pathToDB = pathSrc;
+        ui->l_db->setText("Current DB: " + pathToDB);
     }
 }

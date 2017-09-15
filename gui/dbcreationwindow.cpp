@@ -69,23 +69,25 @@ bool DBCreationWindow::prepareDatabase(u_int maxFaceCount, bool makeAverage,
         std::vector<cv::Mat> images;
 
         std::vector<Face> faces;
+        std::vector<cv::Mat> croppedFaces;
         if(faceDetector.detectAndCropFaces(pathSrc.toStdString() + "/" + subdirname + "/", images)) {
             for(auto& image: images) {
                 Face face(image, 0);
                 averageFace.getLandmarks(face);
                 averageFace.alignFace(face);
-                //averageFace.
+
                 faces.push_back(face);
+                croppedFaces.push_back(cropFace(face.face));
             }
             std::string path = pathDst.toStdString() + "/" + subdirname + "/";
-            if(faces.size() <= maxFaceCount) {
-                writeImages(faces, path, "img");
+            if(croppedFaces.size() <= maxFaceCount) {
+                writeImages(croppedFaces, path, "img");
             } else {
-                std::vector<cv::Mat> images;
+                std::vector<cv::Mat> selectedImages;
                 for(u_int i = 0; i < maxFaceCount; ++i) {
-                    images.push_back(faces.at(i).face);
+                    selectedImages.push_back(croppedFaces.at(i));
                 }
-                writeImages(images, path, "img");
+                writeImages(selectedImages, path, "img");
             }
             std::vector<cv::Mat> averages;
             if(makeAverage) {

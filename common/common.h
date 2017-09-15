@@ -37,7 +37,9 @@
 #define FACE_SIZE_WE 440
 #define FACE_SIZE_HE 440
 
-
+static const std::string DEFAULT_IMG_NAME = "img";
+static const std::string DEFULT_AVG_NAME = "avg";
+static const std::string DEFAULT_DB = "/home/siobhan/UJ/Masters_stuff/db/dst/";
 static const std::string FACE_RESULT_PATH = "/home/siobhan/UJ/Masters_stuff/results/tracked_faces/";
 static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/haarcascade_frontalface_alt_tree.xml";
 

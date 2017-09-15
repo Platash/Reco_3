@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QPixmap>
+#include <QString>
+#include <QLabel>
 
 #include <opencv2/videoio.hpp>
 #include <opencv2/core/core.hpp>
@@ -39,7 +41,8 @@ class VideoWindow : public QWidget {
     Q_OBJECT
 
 public:
-    explicit VideoWindow(std::string fileName, FaceRecognition* reco_, QWidget *parent = 0);
+    explicit VideoWindow(std::string fileName, FaceRecognition* reco_,
+                         QString pathToDB_, QWidget *parent = 0);
     ~VideoWindow();
 
     void setLabel();
@@ -84,7 +87,8 @@ private:
 
     Ui::VideoWindow *ui;
     QPixmap currentPixmap;
-
+    QString pathToDB;
+    QLabel faceFromDB;
     cv::VideoCapture* capture;
     cv::Mat currentFrame;
     cv::Point p1;

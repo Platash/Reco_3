@@ -6,9 +6,10 @@
 #include <QResource>
 #include <QIcon>
 
-VideoWindow::VideoWindow(std::string fileName_, FaceRecognition* reco_, QWidget* parent):
+VideoWindow::VideoWindow(std::string fileName_, FaceRecognition* reco_,
+                         QString pathToDB_, QWidget* parent):
     QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_), reco(reco_),
-    faceCount(20), worstScore(0){
+    pathToDB(pathToDB_), faceCount(20), worstScore(0){
 
     capture = new cv::VideoCapture(fileName_);
     recoWindow = nullptr;
@@ -298,9 +299,20 @@ void VideoWindow::showRecoWindow(QImage qimage, int id) {
         delete recoWindow;
         recoWindow = nullptr;
     }
+    write_log(pathToDB.toStdString() + std::to_string(id) + "/0.jpg");
+    QPixmap faceFromDB;
+    std::string fullPath = pathToDB.toStdString() + std::to_string(id) + "/0.jpg";
+    bool result = faceFromDB.load(QString::fromStdString(fullPath));
+    if(result) {
+        write_log("Loadede image");
+    } else {
+        write_log("NO image");
+    }
+
     recoWindow = new RecoWindow();
     recoWindow->setAverageFaceLabel(QPixmap::fromImage(qimage));
     recoWindow->addIdNameLabel(id);
+    recoWindow->addIdFaceLabel(faceFromDB);
     recoWindow->show();
 }
 

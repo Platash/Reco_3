@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QString>
 
 #include <thread>
 #include <atomic>
@@ -34,6 +35,8 @@ private slots:
 
     void on_b_load_reco_clicked();
 
+    void on_b_choose_db_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -42,6 +45,8 @@ private:
     FaceRecognition recognizer;
     std::thread* prepareDBThread;
     std::thread* trainModelThread;
+
+    QString pathToDB;
 
 };
 

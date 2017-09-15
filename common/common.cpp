@@ -275,5 +275,5 @@ cv::Mat cropFace(cv::Mat img) {
 
     cv::Mat cropped = scaled(roi);
 
-    return cropped.clone();
+    return cropped;
 }

@@ -26,7 +26,11 @@ private:
     QLabel* averageFaceLabel;
     QLabel* idNameLabel;
     QLabel* idFaceLabel;
+    QLabel* labelVideo;
+    QLabel* labelDB;
     std::vector<QLabel*> similars;
+
+    void setLabels();
 };
 
 #endif // RECOWINDOW_H
