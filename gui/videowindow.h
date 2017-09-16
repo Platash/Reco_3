@@ -84,6 +84,7 @@ private:
     bool askForAverageFace();
     void updateSmallFaces(std::vector<Face>& faces);
     void showRecoWindow(QImage qimage, int id);
+    int getPrediction(cv::Mat &faceToShow);
 
     Ui::VideoWindow *ui;
     QPixmap currentPixmap;
@@ -117,6 +118,7 @@ private:
     QualityAssessment qualityAssessment;
     RecoWindow* recoWindow;
     VideoLabel* l_video;
+
 
 
 };

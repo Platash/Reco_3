@@ -1,6 +1,7 @@
 #include "videowindow.h"
 #include "ui_videowindow.h"
 #include "common/common.h"
+#include "map"
 
 #include <QMessageBox>
 #include <QResource>
@@ -100,6 +101,14 @@ void VideoWindow::on_b_stop_clicked() {
                     setInfo("Recognizer is not trained. Train it or load from a file.");
                 }
             }
+        } else {
+            if(reco->isTrained) {
+                cv::Mat faceToShow;
+                int id = getPrediction(faceToShow);
+                showRecoWindow(cvMat2qImage(faceToShow), id);
+            } else {
+                setInfo("Recognizer is not trained. Train it or load from a file.");
+            }
         }
     }
     faces.clear();
@@ -174,6 +183,45 @@ void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
 //          PRIVATE METHODS
 
 //==================================================================
+
+int VideoWindow::getPrediction(cv::Mat& faceToShow) {
+    std::vector<cv::Mat> croppedFaces;
+    std::map<int, int> ids;
+    for(auto& face: faces) {
+        averageFaceCreator.getLandmarks(face);
+        averageFaceCreator.alignFace(face);
+        cv::Mat croppedFace = cropFace(face.face);
+        int id = reco->predict(croppedFace);
+        face.id = id;
+        write_log("getPredition: " + std::to_string(id));
+        croppedFaces.push_back(croppedFace);
+        std::map<int, int>::iterator it = ids.find(id);
+        if(it == ids.end()) {
+            ids.insert(std::pair<int, int>(id, 1));
+        } else {
+            it->second = it->second + 1;
+        }
+
+    }
+    int maxID = 0;
+    int maxCount = 0;
+    for(auto element: ids) {
+        if(element.second > maxCount) {
+            maxID = element.first;
+        }
+        write_log("second: " + std::to_string(element.second));
+        write_log("first: " + std::to_string(element.first));
+    }
+    for(auto face: faces) {
+        if(face.id == maxID) {
+            faceToShow = cropFace(face.face);
+            break;
+        }
+    }
+    write_log("max_id: " + std::to_string(maxID));
+    return maxID;
+}
+
 
 
 void VideoWindow::setIcons()
