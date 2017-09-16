@@ -23,9 +23,6 @@
 #define CASCADE_PATH "/home/siobhan/UJ/Masters/Cascades/"
 #define LANDMARKS_PREDICTOR_PATH "/home/siobhan/UJ/Masters_stuff/shape_predictor_68_face_landmarks.dat"
 
-#define CROP_THRESHOLD 10
-#define CROP_THRESHOLDx2 20
-
 #define LOGGING
 
 #define SMALL_FACE_SIZE 50

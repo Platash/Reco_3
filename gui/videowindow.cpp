@@ -208,6 +208,7 @@ int VideoWindow::getPrediction(cv::Mat& faceToShow) {
     for(auto element: ids) {
         if(element.second > maxCount) {
             maxID = element.first;
+            maxCount = element.second;
         }
         write_log("second: " + std::to_string(element.second));
         write_log("first: " + std::to_string(element.first));
@@ -347,9 +348,9 @@ void VideoWindow::showRecoWindow(QImage qimage, int id) {
         delete recoWindow;
         recoWindow = nullptr;
     }
-    write_log(pathToDB.toStdString() + std::to_string(id) + "/" + DEFAULT_IMG_NAME + "0.jpg");
     QPixmap faceFromDB;
-    std::string fullPath = pathToDB.toStdString()+std::to_string(id)+ "/" +DEFAULT_IMG_NAME+ "/0.jpg";
+    std::string fullPath = pathToDB.toStdString()+std::to_string(id)+ "/" +DEFAULT_IMG_NAME+ "0.jpg";
+    write_log(fullPath);
     bool result = faceFromDB.load(QString::fromStdString(fullPath));
     if(result) {
         write_log("Loadede image");
