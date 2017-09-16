@@ -347,9 +347,9 @@ void VideoWindow::showRecoWindow(QImage qimage, int id) {
         delete recoWindow;
         recoWindow = nullptr;
     }
-    write_log(pathToDB.toStdString() + std::to_string(id) + "/0.jpg");
+    write_log(pathToDB.toStdString() + std::to_string(id) + "/" + DEFAULT_IMG_NAME + "0.jpg");
     QPixmap faceFromDB;
-    std::string fullPath = pathToDB.toStdString() + std::to_string(id) + "/0.jpg";
+    std::string fullPath = pathToDB.toStdString()+std::to_string(id)+ "/" +DEFAULT_IMG_NAME+ "/0.jpg";
     bool result = faceFromDB.load(QString::fromStdString(fullPath));
     if(result) {
         write_log("Loadede image");

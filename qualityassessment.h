@@ -20,6 +20,7 @@ class QualityAssessment {
     double getContrast(cv::Mat& image);
     double getBlurriness(cv::Mat& image);
 
+
 public:
     QualityAssessment():measuringBlur(true), blurCoef(0.5), measuringSize(true), sizeCoef(0.5) {
 

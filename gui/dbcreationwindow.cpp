@@ -3,6 +3,9 @@
 #include <QFileDialog>
 #include "common/common.h"
 
+#include <algorithm>
+#include <random>
+
 DBCreationWindow::DBCreationWindow(QWidget *parent):QWidget(parent), ui(new Ui::DBCreationWindow) {
     ui->setupUi(this);
     averageFace.init(LANDMARKS_PREDICTOR_PATH);
@@ -18,7 +21,7 @@ void DBCreationWindow::on_b_create_db_clicked() {
     if(srcChosen && dstChosen) {
         ui->l_info->setText(QString::fromStdString("Preparing the database..."));
         repaint();
-          int image_count = ui->s_image_count->value();
+        int image_count = ui->s_image_count->value();
         bool makeMainAverage = ui->c_create_average->isChecked();
         bool makeAdditionalAverages = ui->c_create_averages->isChecked();
         int coef = ui->s_average_count->value();
@@ -70,9 +73,13 @@ bool DBCreationWindow::prepareDatabase(u_int maxFaceCount, bool makeAverage,
 
         std::vector<Face> faces;
         std::vector<cv::Mat> croppedFaces;
+        int max;
         if(faceDetector.detectAndCropFaces(pathSrc.toStdString() + "/" + subdirname + "/", images)) {
-            for(auto& image: images) {
-                Face face(image, 0);
+            auto rng = std::default_random_engine {};
+            std::shuffle(std::begin(images), std::end(images), rng);
+            max = images.size() > maxFaceCount ? maxFaceCount : images.size();
+            for(u_int i = 0; i < max; ++i) {
+                Face face(images.at(i), 0);
                 averageFace.getLandmarks(face);
                 averageFace.alignFace(face);
 
@@ -80,26 +87,19 @@ bool DBCreationWindow::prepareDatabase(u_int maxFaceCount, bool makeAverage,
                 croppedFaces.push_back(cropFace(face.face));
             }
             std::string path = pathDst.toStdString() + "/" + subdirname + "/";
-            if(croppedFaces.size() <= maxFaceCount) {
-                writeImages(croppedFaces, path, "img");
-            } else {
-                std::vector<cv::Mat> selectedImages;
-                for(u_int i = 0; i < maxFaceCount; ++i) {
-                    selectedImages.push_back(croppedFaces.at(i));
-                }
-                writeImages(selectedImages, path, "img");
-            }
+            writeImages(croppedFaces, path, "img");
             std::vector<cv::Mat> averages;
             if(makeAverage) {
                 averages.push_back(averageFace.makeAverageFace(faces));
             }
+            write_log("Done common average");
 
             if(makeAdditionalAverages) {
-
                 std::vector<Face> tempFaces;
                 for(u_int i = 0; i < faces.size(); ++i) {
                     tempFaces.push_back(faces.at(i));
-                    if(i > 0 && i % coef == 0) {
+                    write_log("weird");
+                    if((i > 0) && (i % coef == 0)) {
                         averages.push_back(averageFace.makeAverageFace(tempFaces));
                         tempFaces.clear();
                     }
