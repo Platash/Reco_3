@@ -123,24 +123,6 @@ void writeImages(std::vector<Face> &faces, std::string path, std::string name) {
     }
 }
 
-void read_csv(const string& filename, vector<cv::Mat>& images, vector<int>& labels, char separator) {
-    std::ifstream file(filename.c_str(), ifstream::in);
-    if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
-        CV_Error(cv::Error::StsBadArg, error_message);
-    }
-    string line, path, classlabel;
-    while (getline(file, line)) {
-        stringstream liness(line);
-        getline(liness, path, separator);
-        getline(liness, classlabel);
-        if(!path.empty() && !classlabel.empty()) {
-            images.push_back(cv::imread(path, 0));
-            labels.push_back(atoi(classlabel.c_str()));
-        }
-    }
-}
-
 void writeShapeToFile(dlib::full_object_detection shape, string path) {
     ofstream dst;
     dst.open(path);

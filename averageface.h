@@ -30,14 +30,11 @@
 class AverageFace {
 public:
     AverageFace():isInitialized(false) {
-
     }
 
     void init(std::string path);
     void getLandmarks(Face &face);
     cv::Mat makeAverageFace(std::vector<Face>& faces);
-    void setEyecornerPoints();
-
     void alignFace(Face &face);
 
 private:
@@ -47,6 +44,7 @@ private:
     void warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Point2f> t1, std::vector<cv::Point2f> t2);
     void constrainPoint(cv::Point2f &p,cv::Size sz);
     void setBoundaryPoints();
+    void setEyecornerPoints();
     cv::Mat alignFaceForAveraging(Face face, int faceCount);
 
     bool isInitialized;

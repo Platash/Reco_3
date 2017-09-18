@@ -12,8 +12,7 @@ namespace Ui {
 class DBCreationWindow;
 }
 
-class DBCreationWindow : public QWidget
-{
+class DBCreationWindow : public QWidget {
     Q_OBJECT
 
 public:

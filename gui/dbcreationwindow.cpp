@@ -99,7 +99,7 @@ bool DBCreationWindow::prepareDatabase(u_int maxFaceCount, bool makeAverage,
                 for(u_int i = 0; i < faces.size(); ++i) {
                     tempFaces.push_back(faces.at(i));
                     write_log("weird");
-                    if((i > 0) && (i % coef == 0)) {
+                    if((i > 0) && ((i+1) % coef == 0)) {
                         averages.push_back(averageFace.makeAverageFace(tempFaces));
                         tempFaces.clear();
                     }

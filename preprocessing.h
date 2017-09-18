@@ -30,8 +30,7 @@ public:
     Mat equalizeBW(const Mat& src);
     Mat equalizeColor(const Mat &src);
     Mat rescale(Mat& src);
-    //Mat alignFace(Mat& face) const;
-    void sharpen(cv::Mat &img);
+    Mat sharpen(Mat &src);
 };
 
 #endif // PREPROCESSING_H

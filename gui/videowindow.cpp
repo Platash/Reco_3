@@ -10,7 +10,7 @@
 VideoWindow::VideoWindow(std::string fileName_, FaceRecognition* reco_,
                          QString pathToDB_, QWidget* parent):
     QWidget(parent), ui(new Ui::VideoWindow), fileName(fileName_), reco(reco_),
-    pathToDB(pathToDB_), faceCount(20), worstScore(0){
+    pathToDB(pathToDB_), faceCount(10), worstScore(0){
 
     capture = new cv::VideoCapture(fileName_);
     recoWindow = nullptr;

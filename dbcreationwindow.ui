@@ -129,7 +129,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>/home/siobhan/UJ/Masters_stuff/db/src</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="l_dst">
@@ -142,15 +142,15 @@
     </rect>
    </property>
    <property name="text">
-    <string>/home/siobhan/UJ/Masters_stuff/db/dst</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="l_info">
    <property name="geometry">
     <rect>
-     <x>360</x>
-     <y>120</y>
-     <width>261</width>
+     <x>40</x>
+     <y>280</y>
+     <width>311</width>
      <height>51</height>
     </rect>
    </property>

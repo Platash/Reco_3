@@ -50,12 +50,12 @@ Mat Preprocessing::rescale(Mat& src) {
 
 }
 
-void Preprocessing::sharpen(cv::Mat& img) {
+Mat Preprocessing::sharpen(cv::Mat& src) {
     cv::Mat imgLaplacian;
     cv::Mat imgResult;
 
-    cv::Laplacian(img, imgLaplacian, CV_8UC1);
-    imgLaplacian = cv::Mat::zeros(img.size(), CV_32F);
+    cv::Laplacian(src, imgLaplacian, CV_8UC1);
+    imgLaplacian = cv::Mat::zeros(src.size(), CV_32F);
     imgLaplacian.convertTo(imgLaplacian, CV_8U);
 
     cv::Mat kernel = (cv::Mat_<float>(3,3) <<
@@ -63,13 +63,13 @@ void Preprocessing::sharpen(cv::Mat& img) {
               1, -4, 1,
               0,  1, 0);
 
-    cv::filter2D(img, imgLaplacian, CV_32F, kernel);
-    img.convertTo(img, CV_32F);
-    imgResult = img - imgLaplacian;
+    cv::filter2D(src, imgLaplacian, CV_32F, kernel);
+    src.convertTo(src, CV_32F);
+    imgResult = src - imgLaplacian;
 
     // convert back to 8bits gray scale
     imgResult.convertTo(imgResult, CV_8U);
     imgLaplacian.convertTo(imgLaplacian, CV_8U);
-
+    return imgResult;
 }\
 
