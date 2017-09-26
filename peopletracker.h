@@ -4,8 +4,6 @@
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/tracking.hpp>
-//#include <opencv2/videoio.hpp>
-//#include <opencv2/highgui.hpp>
 
 #include <thread>
 #include <atomic>
@@ -48,6 +46,7 @@ private:
      std::atomic<int> p2_y;
      std::atomic<bool> roiChanged;
 
+     void validatePoints(int &p1_x, int &p1_y, int &p2_x, int &p2_y);
 };
 
 #endif // TRACKER_H

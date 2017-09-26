@@ -1,6 +1,6 @@
 #include "videolabel.h"
 
-VideoLabel::VideoLabel(QWidget* parent, Qt::WindowFlags f):QLabel(parent) {
+VideoLabel::VideoLabel(QWidget* parent):QLabel(parent) {
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 }

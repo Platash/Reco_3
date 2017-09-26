@@ -25,7 +25,6 @@
 
 #include "common/face.h"
 #include "common/common.h"
-//#include "preprocessing.h"
 
 class AverageFace {
 public:
@@ -38,10 +37,20 @@ public:
     void alignFace(Face &face);
 
 private:
-    void similarityTransform(std::vector<cv::Point2f>& inPoints, std::vector<cv::Point2f>& outPoints, cv::Mat &tform);
-    void calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Point2f> &points, std::vector<std::vector<int>> &delaunayTri);
-    void applyAffineTransform(cv::Mat& warpImage, cv::Mat& src, std::vector<cv::Point2f> &srcTri, std::vector<cv::Point2f> &dstTri);
-    void warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Point2f> t1, std::vector<cv::Point2f> t2);
+    void similarityTransform(std::vector<cv::Point2f>& inPoints,
+                             std::vector<cv::Point2f>& outPoints, cv::Mat &tform);
+
+    void calculateDelaunayTriangles(cv::Rect rect,
+                                    std::vector<cv::Point2f> &points,
+                                    std::vector<std::vector<int>> &delaunayTri);
+
+    void applyAffineTransform(cv::Mat& warpImage, cv::Mat& src,
+                              std::vector<cv::Point2f> &srcTri,
+                              std::vector<cv::Point2f> &dstTri);
+
+    void warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Point2f> t1,
+                      std::vector<cv::Point2f> t2);
+
     void constrainPoint(cv::Point2f &p,cv::Size sz);
     void setBoundaryPoints();
     void setEyecornerPoints();
@@ -53,13 +62,10 @@ private:
 
     dlib::shape_predictor shapePredictor;
 
-    //Preprocessing prep;
-
     std::vector<cv::Mat> imagesNorm;
     std::vector<cv::Point2f> eyecornerDst;
     std::vector<cv::Point2f> eyecornerSrc;
     std::vector<cv::Point2f> boundaryPts;
-
 
 };
 

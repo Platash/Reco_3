@@ -98,7 +98,7 @@ void VideoWindow::on_b_stop_clicked() {
                     int id = reco->predict(averageFace);
                     showRecoWindow(cvMat2qImage(averageFace), id);
                 } else {
-                    setInfo("Recognizer is not trained. Train it or load from a file.");
+                    setInfo("Recognizer isn't trained. Train it or load from file.");
                 }
             }
         } else {
@@ -107,7 +107,7 @@ void VideoWindow::on_b_stop_clicked() {
                 int id = getPrediction(faceToShow);
                 showRecoWindow(cvMat2qImage(faceToShow), id);
             } else {
-                setInfo("Recognizer is not trained. Train it or load from a file.");
+                setInfo("Recognizer isn't trained. Train it or load from a file.");
             }
         }
     }
@@ -144,7 +144,9 @@ void VideoWindow::setSelection(QPoint p1_, QPoint p2_) {
     p2.x = p2_.x();
     p2.y = p2_.y();
     TrackerType trackerType;
-    QList<QRadioButton *> allButtons = ui->gb_tracker_type->findChildren<QRadioButton *>();
+    QList<QRadioButton *> allButtons = ui->gb_tracker_type->
+            findChildren<QRadioButton *>();
+
     for(auto button: allButtons) {
         if(button->isChecked()) {
             QString name = button->objectName();
@@ -259,9 +261,11 @@ void VideoWindow::play() {
             //cvtColor(equalized, equalized_color,CV_GRAY2RGB);
             if(myTracker.track(equalized)) {
                 if(pickFace(equalized.clone(), myTracker.getRoi(), bestRoi)) {
-                    rectangle(currentFrame, bestRoi, cv::Scalar(255, 255, 0), 2, 1);
+                    rectangle(currentFrame, bestRoi, cv::Scalar(255, 255, 0),
+                              2, 1);
                 }
-                rectangle(currentFrame, myTracker.getRoi(), cv::Scalar(255, 0, 0), 2, 1);
+                rectangle(currentFrame, myTracker.getRoi(),
+                          cv::Scalar(255, 0, 0), 2, 1);
             }
         } else {
             this->msleep(delay);
@@ -275,20 +279,17 @@ bool VideoWindow::pickFace(cv::Mat image, cv::Rect2d& roi, cv::Rect2d& bestRoi) 
     if(faceDetector.getBestFace(image, roi, bestFaceRoi)) {
         write_log("got best fase ");
         cv::Mat crop = image(bestFaceRoi);
-        // cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
 
         bestRoi = bestFaceRoi;
         double score = qualityAssessment.getScore(crop);
         write_log("quality: " + std::to_string(score));
         if(faces.size() < faceCount) {
             faces.push_back(Face(crop, score));
-            //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img1_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
             return true;
 
         } else if(score > worstScore) {
             std::sort(faces.begin(), faces.end());
             faces.at(faceCount - 1) = Face(crop, score);
-            //cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img2_" + to_string(rand() % 300 + 19850) + ".jpg", crop);
             return true;
         }
         return true;
@@ -299,13 +300,15 @@ bool VideoWindow::pickFace(cv::Mat image, cv::Rect2d& roi, cv::Rect2d& bestRoi) 
 bool VideoWindow::processAverageFace() {
     int i = 0;
     for(auto& face: faces) {
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_" + to_string(i) + ".jpg", face.face);
+        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_" +
+                    to_string(i) + ".jpg", face.face);
         averageFaceCreator.getLandmarks(face);
         averageFaceCreator.alignFace(face);
         ++i;
     }
     averageFace = averageFaceCreator.makeAverageFace(faces);
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best.jpg", averageFace);
+    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_best.jpg",
+                averageFace);
     std::cout << "finish processAverageFace" << std::endl;
     return true;
 }
@@ -323,24 +326,6 @@ bool VideoWindow::askForAverageFace() {
 
 }
 
-/*void VideoWindow::updateSmallFaces(std::vector<Face> &faces) {
-    for(int i = 0; i < faces.size(); ++i) {
-        QPixmap pixmap = mat2Pixmap(faces.at(i).face);
-        if(NULL == smallFaces.at(i)) {
-            QLabel temp;
-            temp.setFixedHeight(SMALL_FACE_SIZE);
-            temp.setFixedWidth(SMALL_FACE_SIZE);
-            temp.setPixmap(pixmap);
-            smallFaces.at(i) = temp;
-            QLayout* la = this->layout();
-            dynamic_cast<QGridLayout*>(la)->addWidget(smallFaces.at(i), 2, i);
-
-        } else {
-
-        }
-    }
-}*/
-
 void VideoWindow::showRecoWindow(QImage qimage, int id) {
     write_log("showRecoWindow, id: " + std::to_string(id));
 
@@ -349,7 +334,9 @@ void VideoWindow::showRecoWindow(QImage qimage, int id) {
         recoWindow = nullptr;
     }
     QPixmap faceFromDB;
-    std::string fullPath = pathToDB.toStdString()+std::to_string(id)+ "/" +DEFAULT_IMG_NAME+ "0.jpg";
+    std::string fullPath = pathToDB.toStdString()+std::to_string(id)+ "/" +
+            DEFAULT_IMG_NAME+ "0.jpg";
+
     write_log(fullPath);
     bool result = faceFromDB.load(QString::fromStdString(fullPath));
     if(result) {

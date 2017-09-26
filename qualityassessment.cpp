@@ -1,9 +1,5 @@
 #include "qualityassessment.h"
 
-double QualityAssessment::getContrast(cv::Mat& image) {
-
-}
-
 double QualityAssessment::getBlurriness(cv::Mat& image) {
     cv::Mat Gx;
     cv::Mat Gy;
@@ -24,9 +20,6 @@ double QualityAssessment::getScore(cv::Mat& image) {
 
         result += blurCoef * getBlurriness(image);
         write_log("blur score = " + std::to_string(result));
-    }
-    if(measuringContrast) {
-        result += contrastCoef * getContrast(image);
     }
     if(measuringSize) {
         double sizeScore = sizeCoef * ((double)(image.rows) / FACE_SIZE_WE);

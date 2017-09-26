@@ -2,15 +2,19 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/core/utility.hpp>
+#include <QString>
+#include <QFileDialog>
 
 FaceDetector::FaceDetector() {
-    if(!face_cascade.load(FACE_CASCADE_PATH)) {
+    if(!face_cascade.load(getLocalPath() + CASCADE_PATH)) {
         printf("--(!)Error loading face cascade\n");
     }
 }
 
-bool FaceDetector::getBestFace(const cv::Mat& frame, cv::Rect2d& roi, cv::Rect& bestFaceRoi) {
-    std::cout << "start: getBestFace " << std::endl;
+bool FaceDetector::getBestFace(const cv::Mat& frame, cv::Rect2d& roi,
+                               cv::Rect& bestFaceRoi) {
+
+    write_log("start: getBestFace ");
     std::vector<cv::Rect> detected_faces;
     cv::Rect roi_(roi);
     bool result = false;
@@ -41,7 +45,9 @@ bool FaceDetector::getBestFace(const cv::Mat& frame, cv::Rect2d& roi, cv::Rect& 
 
 }
 
-bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat>& faces) {
+bool FaceDetector::detectAndCropFaces(std::string directory,
+                                      std::vector<cv::Mat>& faces) {
+
     std::cout << "start detectAndCropFaces " << std::endl;
     std::vector<cv::Mat> images;
     readImages(directory, images);
@@ -52,12 +58,10 @@ bool FaceDetector::detectAndCropFaces(std::string directory, std::vector<cv::Mat
         cv::Mat face;
         if(detectAndCropFace(image, face)) {
             cv::Mat equalized = preprocessor.equalizeColor(face);
-            cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/tracked_faces/img_" + to_string(i) + ".jpg", equalized);
-
             faces.push_back(equalized.clone());
         }
     }
-    std::cout << "end: detectAndCropFaces " << "faces size: " << faces.size() << std::endl;
+    write_log("end: detectAndCropFaces. Faces size: " + std::to_string(faces.size()));
     return faces.size() > 0;
 }
 
@@ -65,6 +69,7 @@ bool FaceDetector::cropFace(cv::Mat& src, cv::Mat dst) {
     std::vector<cv::Rect> detected_faces;
     face_cascade.detectMultiScale(src, detected_faces);
     dst = src(detected_faces[0]).clone();
+    return true;
 }
 
 bool FaceDetector::detectAndCropFace(cv::Mat& src, cv::Mat& dst) {

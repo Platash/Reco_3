@@ -22,7 +22,8 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_b_open_video_clicked() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Video File"), "/home/siobhan/UJ/Masters_stuff/db/vid",
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Video File"),
+                                                    "/home/siobhan/UJ/Masters_stuff/db/vid",
                                                     tr("Video Files (*.mpeg4 *.mp4 *.avi *.3gp)"));
 
     if(!fileName.isEmpty() && !fileName.isNull()) {
@@ -30,7 +31,8 @@ void MainWindow::on_b_open_video_clicked() {
             delete videoWindow;
             videoWindow = nullptr;
         }
-        videoWindow = new VideoWindow(fileName.toStdString(), &recognizer, pathToDB);
+        videoWindow = new VideoWindow(fileName.toStdString(),
+                                      &recognizer, pathToDB);
         videoWindow->setLabel();
         videoWindow->show();
     }
@@ -48,7 +50,8 @@ void MainWindow::on_b_prepare_db_clicked() {
 void MainWindow::on_b_train_reco_clicked() {
     QString pathSrc = QFileDialog::getExistingDirectory(this, tr("Choose Sourse Directory"),
                                                         "/home/siobhan/UJ/Masters_stuff/db",
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                        QFileDialog::ShowDirsOnly |
+                                                        QFileDialog::DontResolveSymlinks);
 
     if(!pathSrc.isEmpty() && !pathSrc.isNull()) {
         QLabel* info = findChild<QLabel*>("l_info");
@@ -78,7 +81,8 @@ void MainWindow::on_b_load_reco_clicked() {
 void MainWindow::on_b_choose_db_clicked() {
     QString pathSrc = QFileDialog::getExistingDirectory(this, tr("Choose Database Directory"),
                                                         "/home/siobhan/UJ/Masters_stuff/db",
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                        QFileDialog::ShowDirsOnly |
+                                                        QFileDialog::DontResolveSymlinks);
     if(!pathSrc.isEmpty() && !pathSrc.isNull()) {
         pathToDB = pathSrc;
         ui->l_db->setText("Current DB: " + pathToDB);

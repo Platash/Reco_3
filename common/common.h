@@ -20,8 +20,8 @@
 #define SOURCE_IMAGE_MAX_SIZE 800
 
 
-#define CASCADE_PATH "/home/siobhan/UJ/Masters/Cascades/"
-#define LANDMARKS_PREDICTOR_PATH "/home/siobhan/UJ/Masters_stuff/shape_predictor_68_face_landmarks.dat"
+static const std::string CASCADE_PATH = "/res/haarcascade_frontalface_alt_tree.xml";
+static const std::string LANDMARKS_PREDICTOR_PATH = "/res/shape_predictor_68_face_landmarks.dat";
 
 #define LOGGING
 
@@ -36,23 +36,26 @@
 
 static const std::string DEFAULT_IMG_NAME = "img";
 static const std::string DEFULT_AVG_NAME = "avg";
-static const std::string DEFAULT_DB = "/home/siobhan/UJ/Masters_stuff/db/dst/";
-static const std::string FACE_RESULT_PATH = "/home/siobhan/UJ/Masters_stuff/results/tracked_faces/";
-static const std::string FACE_CASCADE_PATH = "/home/siobhan/UJ/Masters/Cascades/haarcascade_frontalface_alt_tree.xml";
+static const std::string DEFAULT_DB = "./db/dst/";
 
 //===================IO methods =======================
 //namespace com {
 
 
 int readFileNames(std::vector<std::string> &filenames, const std::string &directory);
-int readSubdirNames(std::vector<std::string> &subdirnames, const std::string &directory);
+int readSubdirNames(std::vector<std::string> &subdirnames,
+                    const std::string &directory);
+
 void readImages(std::string directory, std::vector<cv::Mat>& images);
 void writeImage(cv::Mat image, std::string path, std::string name);
 void writeImages(std::vector<cv::Mat> &images, std::string path, std::string name);
 void writeImages(std::vector<Face> &faces, std::string path, std::string name);
 void writeShapeToFile(dlib::full_object_detection shape, std::string path);
-void read_csv(const std::string& filename, std::vector<cv::Mat>& images, std::vector<int>& labels, char separator = ';');
+void read_csv(const std::string& filename, std::vector<cv::Mat>& images,
+              std::vector<int>& labels, char separator = ';');
+
 void write_log(std::string text);
+std::string getLocalPath() ;
 
 //==================Image processing =================
 cv::Mat normalize(cv::InputArray _src);
@@ -60,7 +63,9 @@ QPixmap mat2Pixmap(cv::Mat matImg);
 QImage Mat2QImage(cv::Mat const& src);
 QImage cvMat2qImage(cv::Mat mat);
 void drawMask(cv::Mat &src, cv::Point2f left, cv::Point2f right, cv::Point2f down);
-bool applyBlurredMask(cv::Mat src, cv::Mat mask, cv::Mat &dst, double sigma, double maskRadius);
+bool applyBlurredMask(cv::Mat src, cv::Mat mask, cv::Mat &dst, double sigma,
+                      double maskRadius);
+
 cv::Mat cropFace(cv::Mat img);
 
 

@@ -1,5 +1,6 @@
 #include "averageface.h"
 
+
 void AverageFace::init(std::string path) {
     dlib::deserialize(path) >> shapePredictor;
 
@@ -11,7 +12,7 @@ void AverageFace::init(std::string path) {
 void AverageFace::getLandmarks(Face& face) {
     write_log("start getLandmarks");
     if(!isInitialized) {
-        init(LANDMARKS_PREDICTOR_PATH);
+        init(getLocalPath() + LANDMARKS_PREDICTOR_PATH);
 
     }
     dlib::array2d<dlib::bgr_pixel> dlibImage;
@@ -57,7 +58,9 @@ void AverageFace::alignFace(Face& face) {
     similarityTransform(eyecornerSrc, eyecornerDst, tform);
     // Apply similarity transform to input image and landmarks
     cv::Mat img = cv::Mat::zeros(FACE_SIZE_HE, FACE_SIZE_WE, CV_32FC3);
-    cv::warpAffine(face.face, img, tform, img.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
+    cv::warpAffine(face.face, img, tform, img.size(), cv::INTER_CUBIC,
+                   cv::BORDER_CONSTANT, cv::Scalar(180, 180, 180));
+
     cv::transform(face.landmarks, face.landmarks, tform);
     for (size_t j = 0; j < boundaryPts.size(); j++) {
         face.landmarks.push_back(boundaryPts[j]);
@@ -78,7 +81,7 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
             pointsAvg[j] += face.landmarks[j] * ( 1.0 / faceCount);
         }
         pointsNorm.push_back(face.landmarks);
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/aligned_for" + std::to_string(i) +".jpg", face.face);
+
         i++;
         imagesNorm.push_back(face.face);
 
@@ -115,7 +118,6 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
             }
             warpTriangle(imagesNorm[i], img, tin, tout);
         }
-        cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_a" + std::to_string(i) +".jpg", img);
         output = output + img;
     }
 
@@ -128,7 +130,8 @@ cv::Mat AverageFace::makeAverageFace(std::vector<Face>& faces) {
     return cropped;
 }
 
-void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::vector<cv::Point2f> &outPoints,
+void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints,
+                                      std::vector<cv::Point2f> &outPoints,
                                       cv::Mat& tform) {
     std::vector <cv::Point2f> inPts = inPoints;
     std::vector <cv::Point2f> outPts = outPoints;
@@ -136,16 +139,23 @@ void AverageFace::similarityTransform(std::vector<cv::Point2f> &inPoints, std::v
     inPts.push_back(cv::Point2f(0,0));
     outPts.push_back(cv::Point2f(0,0));
 
-    inPts[2].x =  c60 * (inPts[0].x - inPts[1].x) - s60 * (inPts[0].y - inPts[1].y) + inPts[1].x;
-    inPts[2].y =  s60 * (inPts[0].x - inPts[1].x) + c60 * (inPts[0].y - inPts[1].y) + inPts[1].y;
+    inPts[2].x =  c60 * (inPts[0].x - inPts[1].x) - s60 *
+            (inPts[0].y - inPts[1].y) + inPts[1].x;
 
-    outPts[2].x =  c60 * (outPts[0].x - outPts[1].x) - s60 * (outPts[0].y - outPts[1].y) + outPts[1].x;
-    outPts[2].y =  s60 * (outPts[0].x - outPts[1].x) + c60 * (outPts[0].y - outPts[1].y) + outPts[1].y;
+    inPts[2].y =  s60 * (inPts[0].x - inPts[1].x) + c60 *
+            (inPts[0].y - inPts[1].y) + inPts[1].y;
+
+    outPts[2].x =  c60 * (outPts[0].x - outPts[1].x) - s60 *
+            (outPts[0].y - outPts[1].y) + outPts[1].x;
+
+    outPts[2].y =  s60 * (outPts[0].x - outPts[1].x) + c60 *
+            (outPts[0].y - outPts[1].y) + outPts[1].y;
 
     tform = cv::estimateRigidTransform(inPts, outPts, false);
 }
 
-void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Point2f> &points,
+void AverageFace::calculateDelaunayTriangles(cv::Rect rect,
+                                             std::vector<cv::Point2f> &points,
                                              std::vector<std::vector<int> > &delaunayTri) {
     write_log( "start delaunay" );
 
@@ -180,16 +190,19 @@ void AverageFace::calculateDelaunayTriangles(cv::Rect rect, std::vector<cv::Poin
 
 }
 
-void AverageFace::applyAffineTransform(cv::Mat& warpImage, cv::Mat& src, std::vector<cv::Point2f> &srcTri,
+void AverageFace::applyAffineTransform(cv::Mat& warpImage, cv::Mat& src,
+                                       std::vector<cv::Point2f> &srcTri,
                                        std::vector<cv::Point2f> &dstTri) {
     // Given a pair of triangles, find the affine transform.
     cv::Mat warpMat = getAffineTransform(srcTri, dstTri);
 
     // Apply the Affine Transform just found to the src image
-    warpAffine(src, warpImage, warpMat, warpImage.size(), cv::INTER_LINEAR, cv::BORDER_REFLECT_101);
+    warpAffine(src, warpImage, warpMat, warpImage.size(), cv::INTER_LINEAR,
+               cv::BORDER_REFLECT_101);
 }
 
-void AverageFace::warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Point2f> t1,
+void AverageFace::warpTriangle(cv::Mat& img1, cv::Mat& img2,
+                               std::vector<cv::Point2f> t1,
                                std::vector<cv::Point2f> t2) {
     // Find bounding rectangle for each triangle
     cv::Rect r1 = boundingRect(t1);
@@ -200,8 +213,7 @@ void AverageFace::warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Poi
     std::vector<cv::Point2f> t2Rect;
     std::vector<cv::Point> t2RectInt;
     for(int i = 0; i < 3; i++) {
-        //tRect.push_back( Point2f( t[i].x - r.x, t[i].y -  r.y) );
-        t2RectInt.push_back(cv::Point((int)(t2[i].x - r2.x), (int)(t2[i].y - r2.y)) ); // for fillConvexPoly
+        t2RectInt.push_back(cv::Point((int)(t2[i].x - r2.x), (int)(t2[i].y - r2.y)));
 
         t1Rect.push_back(cv::Point2f( t1[i].x - r1.x, t1[i].y -  r1.y) );
         t2Rect.push_back(cv::Point2f( t2[i].x - r2.x, t2[i].y - r2.y) );
@@ -212,7 +224,7 @@ void AverageFace::warpTriangle(cv::Mat& img1, cv::Mat& img2, std::vector<cv::Poi
     fillConvexPoly(mask, t2RectInt, cv::Scalar(1.0, 1.0, 1.0), 16, 0);
 
     // Apply warpImage to small rectangular patches
-    cv::Mat img1Rect, img2Rect;
+    cv::Mat img1Rect;
     img1(r1).copyTo(img1Rect);
 
     cv::Mat warpImage = cv::Mat::zeros(r2.height, r2.width, img1Rect.type());

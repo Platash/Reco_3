@@ -6,9 +6,11 @@
 #include <algorithm>
 #include <random>
 
-DBCreationWindow::DBCreationWindow(QWidget *parent):QWidget(parent), ui(new Ui::DBCreationWindow) {
+DBCreationWindow::DBCreationWindow(QWidget *parent):QWidget(parent),
+    ui(new Ui::DBCreationWindow) {
+
     ui->setupUi(this);
-    averageFace.init(LANDMARKS_PREDICTOR_PATH);
+    averageFace.init(getLocalPath() + LANDMARKS_PREDICTOR_PATH);
     dstChosen = false;
     srcChosen = false;
 }
@@ -26,7 +28,9 @@ void DBCreationWindow::on_b_create_db_clicked() {
         bool makeAdditionalAverages = ui->c_create_averages->isChecked();
         int coef = ui->s_average_count->value();
 
-        if(prepareDatabase(image_count, makeMainAverage, makeAdditionalAverages, coef)){
+        if(prepareDatabase(image_count, makeMainAverage,
+                           makeAdditionalAverages, coef)){
+
             ui->l_info->setText("DB is ready");
         }
 
@@ -48,11 +52,13 @@ void DBCreationWindow::on_b_choose_src_clicked() {
 }
 
 void DBCreationWindow::on_b_choose_dst_clicked() {
-    pathDst = QFileDialog::getExistingDirectory(this, tr("Choose Destination Directory"),
+    pathDst = QFileDialog::getExistingDirectory(this,
+                                                tr("Choose Destination Directory"),
                                                 "/home/siobhan/UJ/Masters_stuff/db",
                                                 QFileDialog::ShowDirsOnly |
                                                 QFileDialog::DontResolveSymlinks |
                                                 QFileDialog::DontUseNativeDialog);
+
     if(!pathDst.isEmpty() && !pathDst.isNull()) {
         ui->l_dst->setText(pathDst);
         dstChosen = true;
@@ -74,7 +80,8 @@ bool DBCreationWindow::prepareDatabase(u_int maxFaceCount, bool makeAverage,
         std::vector<Face> faces;
         std::vector<cv::Mat> croppedFaces;
         int max;
-        if(faceDetector.detectAndCropFaces(pathSrc.toStdString() + "/" + subdirname + "/", images)) {
+        if(faceDetector.detectAndCropFaces(pathSrc.toStdString() + "/" +
+                                           subdirname + "/", images)) {
             auto rng = std::default_random_engine {};
             std::shuffle(std::begin(images), std::end(images), rng);
             max = images.size() > maxFaceCount ? maxFaceCount : images.size();

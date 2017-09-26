@@ -19,7 +19,7 @@ signals:
     void selectionSet(QPoint p1, QPoint p2);
 
 public:
-    explicit VideoLabel(QWidget* parent =0, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit VideoLabel(QWidget* parent =0);
 
     ~VideoLabel();
     friend class VideoWindow;
@@ -32,8 +32,6 @@ private:
 
     QPoint p1;
     QPoint p2;
-   // std::atomic<bool> drawSelection{false};
-    //QPainter* painter;
    bool buttonPressed;
     QRubberBand* rubberBand;
 };

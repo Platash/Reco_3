@@ -10,6 +10,7 @@
 #include "videowindow.h"
 #include "reco/facerecognition.h"
 #include "dbcreationwindow.h"
+#include "common/common.h"
 
 namespace Ui {
 class MainWindow;

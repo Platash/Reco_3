@@ -111,7 +111,6 @@ private:
 
     AverageFace averageFaceCreator;
     Preprocessing prep;
-    //ImageProcessor processor;
     FaceRecognition* reco;
     PeopleTracker myTracker;
     FaceDetector faceDetector;

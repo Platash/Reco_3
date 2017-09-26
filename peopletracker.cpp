@@ -36,6 +36,7 @@ void PeopleTracker::startTracking(TrackerType trackerType, cv::Mat frame_p,
 
     fileNameIndex = 0;
     frameCount = 0;
+    validatePoints(p1_x_, p1_y_, p2_x_, p2_y_);
     p1_x = p1_x_;
     p1_y = p1_y_;
     p2_x = p2_x_;
@@ -48,12 +49,26 @@ void PeopleTracker::startTracking(TrackerType trackerType, cv::Mat frame_p,
 
 void PeopleTracker::modifyTracking(int p1_x_, int p1_y_, int p2_x_, int p2_y_) {
     write_log( "modify tracking" );
+    validatePoints(p1_x_, p1_y_, p2_x_, p2_y_);
     p1_x = p1_x_;
     p1_x = p1_x_;
     p1_y = p1_y_;
     p2_x = p2_x_;
     p2_y = p2_y_;
     roiChanged = true;
+}
+
+void PeopleTracker::validatePoints(int& p1_x, int& p1_y, int& p2_x, int& p2_y) {
+    if(p1_x > p2_x) {
+        int temp = p2_x;
+        p2_x = p1_x;
+        p1_x = temp;
+    }
+    if(p1_y > p2_y) {
+        int temp = p2_y;
+        p2_y = p1_y;
+        p1_y = temp;
+    }
 }
 
 void PeopleTracker::stopTracking() {
@@ -78,7 +93,6 @@ bool PeopleTracker::track(cv::Mat frame) {
     }
 
     if(tracker->update(frame, roi)) {
-        //rectangle(*frame_p, roi, cv::Scalar(255, 0, 0), 2, 1);
         return true;
     }
     return false;

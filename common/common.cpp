@@ -3,12 +3,15 @@
 #include <dirent.h>     // for linux systems
 #include <sys/stat.h>   // for linux systems
 #include <algorithm>    // std::sort
+#include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
 
 using namespace std;
 
 typedef struct stat Stat;
 
-//======================= IO methods ==================================================
+//======================= IO methods ========================================
 
 int readFileNames(vector<string> &filenames, const string &directory) {
 
@@ -37,7 +40,7 @@ int readFileNames(vector<string> &filenames, const string &directory) {
     }
     closedir(dir);
 
-    std::sort (filenames.begin(), filenames.end()); //optional, sort the filenames
+    std::sort (filenames.begin(), filenames.end());
     return(filenames.size()); //Return how many we found
 }
 
@@ -68,7 +71,7 @@ int readSubdirNames(std::vector<string> &subdirnames, const string &directory) {
     }
     closedir(dir);
 
-    std::sort (subdirnames.begin(), subdirnames.end()); //optional, sort the filenames
+    std::sort (subdirnames.begin(), subdirnames.end());
     return(subdirnames.size()); //Return how many we found
 }
 
@@ -83,7 +86,8 @@ void readImages(std::string directory, std::vector<cv::Mat>& images) {
         cv::Mat src = cv::imread(directory + fileNames[i]);
 
         if (!src.data) { //Protect against no file
-            cerr << directory + fileNames[i] << ", file #" << i << ", is not an image" << endl;
+            cerr << directory + fileNames[i] << ", file #" << i
+                 << ", is not an image" << endl;
             continue;
         }
         images.push_back(src);
@@ -103,8 +107,10 @@ void writeImage(cv::Mat image, std::string path, std::string name) {
     cv::imwrite(path + name + ".jpg", image);
 }
 
-void writeImages(std::vector<cv::Mat> &images, std::string path, std::string name) {
-    std::cout << "Start: writeImages: " << path << " " << images.size() << std::endl;
+void writeImages(std::vector<cv::Mat> &images, std::string path,
+                 std::string name) {
+    std::cout << "Start: writeImages: " << path << " " << images.size()
+              << std::endl;
 
     mkdir(path);
 
@@ -114,7 +120,8 @@ void writeImages(std::vector<cv::Mat> &images, std::string path, std::string nam
 }
 
 void writeImages(std::vector<Face> &faces, std::string path, std::string name) {
-    std::cout << "Start: writeImages: " << path << " " << faces.size() << std::endl;
+    std::cout << "Start: writeImages: " << path << " " << faces.size()
+              << std::endl;
 
     mkdir(path);
 
@@ -140,7 +147,7 @@ void write_log(std::string text) {
 }
 
 
-//========================= Image processing ============================================
+//========================= Image processing ===================================
 
 cv::Mat normalize(cv::InputArray _src) {
     cv::Mat src = _src.getMat();
@@ -165,9 +172,11 @@ QPixmap mat2Pixmap(cv::Mat matImg) {
     cv::Mat RGBframe;
     if (matImg.channels()== 3){
         cv::cvtColor(matImg, RGBframe, CV_BGR2RGB);
-        img = QImage((const unsigned char*)(RGBframe.data), RGBframe.cols, RGBframe.rows, QImage::Format_RGB888);
+        img = QImage((const unsigned char*)(RGBframe.data), RGBframe.cols,
+                     RGBframe.rows, QImage::Format_RGB888);
     } else {
-        img = QImage((const unsigned char*)(matImg.data), matImg.cols, matImg.rows, QImage::Format_Indexed8);
+        img = QImage((const unsigned char*)(matImg.data), matImg.cols,
+                     matImg.rows, QImage::Format_Indexed8);
     }
     return QPixmap::fromImage(img);
 }
@@ -196,11 +205,13 @@ QImage cvMat2qImage(cv::Mat mat) {
         for (int i=0; i<256; i++) {
             colorTable.push_back(qRgb(i,i,i));
         }
-        QImage img((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
+        QImage img((const uchar*)mat.data, mat.cols, mat.rows, mat.step,
+                   QImage::Format_Indexed8);
         img.setColorTable(colorTable);
         return img;
     } else if(mat.type()==CV_8UC3) {
-        QImage img((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+        QImage img((const uchar*)mat.data, mat.cols, mat.rows, mat.step,
+                   QImage::Format_RGB888);
         return img;
     } else if(mat.type()==CV_16UC1) {
         mat.convertTo(mat, CV_8UC1, 1.0/256.0);
@@ -212,7 +223,8 @@ QImage cvMat2qImage(cv::Mat mat) {
         cv::Mat rgb(mat.size(), CV_32FC3);
         rgb.addref();
         cv::cvtColor(mat, rgb, cv::COLOR_GRAY2RGB);
-        QImage img((const uchar*)rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB32);
+        QImage img((const uchar*)rgb.data, rgb.cols, rgb.rows, rgb.step,
+                   QImage::Format_RGB32);
         rgb.release();
         return img;
     } else if(mat.type()==CV_32FC3) {
@@ -225,7 +237,8 @@ QImage cvMat2qImage(cv::Mat mat) {
 }
 
 
-void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right, cv::Point2f down) {
+void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right,
+              cv::Point2f down) {
 
     cv::Mat mask(src.rows, src.cols, src.type(), cv::Scalar(255,255,255));
     cv::Mat blurredMask;
@@ -237,10 +250,6 @@ void drawMask(cv::Mat& src, cv::Point2f left, cv::Point2f right, cv::Point2f dow
     cv::ellipse(mask, rect, cv::Scalar(0,0,0), CV_FILLED);
     blur(mask, blurredMask, cv::Size(50, 50));
     src = src + blurredMask;
-
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_mask.jpg", mask);
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_blurred_mask.jpg", blurredMask);
-    cv::imwrite("/home/siobhan/UJ/Masters_stuff/results/best/img_masked_face.jpg", src);
 
 }
 
@@ -258,4 +267,16 @@ cv::Mat cropFace(cv::Mat img) {
     cv::Mat cropped = scaled(roi);
 
     return cropped;
+}
+
+std::string getLocalPath() {
+    char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        std::string str(cwd);
+        write_log("Current working dir: " + str);
+        return str;
+    }
+    else
+        perror("getcwd() error");
+        return "";
 }
